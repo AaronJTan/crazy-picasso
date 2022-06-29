@@ -11,14 +11,12 @@ Crazy Picasso is a web-based multiplayer drawing and guessing game. A player may
 - Real-time interactions
 
     “Guessers” will be able to see what the “drawer” is drawing and will be able to enter their word guesses in real-time
-
-- WebRTC - Video call
     
     Players can turn on their voice and video while playing the game to have real-time communication with other players. 
 
 - OAuth 2.0 Client
     
-    New users can sign up with their Google or Facebook accounts. 
+    New users can sign up with their Google or Facebook accounts and send messages to their friends inviting them to join a private room.
 
 - Non-trivial frontend
     
@@ -36,6 +34,8 @@ Crazy Picasso is a web-based multiplayer drawing and guessing game. A player may
 - Webhooks - broadcast to a player’s discord server whenever they start a   private room and when they leave the game
 - OAuth 2.0
 - Players can modify their user profiles
+- Video vall
+- UI Animations
 
 ## Describe the tech stack that would be used to build the application 
 - Frontend Framework: React
@@ -46,12 +46,17 @@ Crazy Picasso is a web-based multiplayer drawing and guessing game. A player may
 <u>Backend</u>
 - Socket.io – for real time, bi-directional communication between web-clients and the server. This will be used to achieve real-time drawing and guessing.
 - Passport.js – middleware for authentication and authorization
-- Redis - 
+- Redis - for caching
 
 <u>Frontend</u>
 - Material-UI – library of React components
-- Two.js - 
-- Konva.js
+- Two.js - api for creating 2D shapes
+- Konva.js - HTML5 2d canvas js library
 
 ## Describe The Method Of Deployment 
-- Amazon Lightsail
+- We will be deploying our container web application on **Amazon Lightsail**.
+- Nginx will be our reverse proxy.
+- Docker images - Nginx, Express Backend Image, React Frontend Image, MongoDB Image
+- Our Docker images will be deployed into an Amazon Lightsail container service to be able to run on AWS infrastructure.
+    
+
