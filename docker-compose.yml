@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:  
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '${HOST_PORT}:80'
+
+  api:
+    build:
+      dockerfile: "Dockerfile${TYPE}"
+      context: './server'
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+
+  client:
+    build:
+      dockerfile: "Dockerfile${TYPE}"
+      context: './client'
+    volumes:
+      - /app/node_modules
+      - ./client:/app
