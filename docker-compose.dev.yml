@@ -10,11 +10,11 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - '3051:80'
+      - '3050:80'
 
   api:
     build:
-      dockerfile: "Dockerfile"
+      dockerfile: "Dockerfile.dev"
       context: './server'
     volumes:
       - /app/node_modules
@@ -22,7 +22,7 @@ services:
 
   client:
     build:
-      dockerfile: "Dockerfile"
+      dockerfile: "Dockerfile.dev"
       context: './client'
     volumes:
       - /app/node_modules
