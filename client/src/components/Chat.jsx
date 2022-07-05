@@ -1,7 +1,7 @@
 import {
-  Container,
-  Divider,
-  FormControl,
+Container,
+Divider,
+FormControl,
   Grid,
   IconButton,
   List,
@@ -16,23 +16,26 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { chatMessageObj } from "../model/ChatMessageObj";
 import "../css/Chat.css";
 import SendIcon from "@mui/icons-material/Send";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:3001");
 
 export default function Chat() {
   const ENTER_KEY_CODE = 13;
 
-  // const scrollBottomRef = useRef(null);
+  const scrollBottomRef = useRef(null);
   // const webSocket = useRef(null);
   const [prevMessages, setPrevMessages] = useState([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setPrevMessages([...prevMessages, {message: data.message}]);
-    })
-  }, [prevMessages])
+      setPrevMessages([...prevMessages, { message: data.message }]);
+    });
+    if (scrollBottomRef.current) {
+      scrollBottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [prevMessages]);
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -47,7 +50,7 @@ export default function Chat() {
   const sendMessage = () => {
     if (message) {
       console.log("Send!");
-      socket.emit("send_message", {message: message});
+      socket.emit("send_message", { message: message });
       setPrevMessages([...prevMessages, new chatMessageObj(message)]);
       setMessage("");
     }
@@ -68,7 +71,7 @@ export default function Chat() {
               <Grid id="chat-window" xs={12} item>
                 <List id="chat-window-messages">
                   {listPrevMessages}
-                  {/* <ListItem ref={scrollBottomRef}></ListItem> */}
+                  <ListItem ref={scrollBottomRef}></ListItem>
                 </List>
               </Grid>
               {/* Message Input */}
