@@ -1,0 +1,19 @@
+.home-btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+  margin-top: 50px;
+  gap: 20px;
+}
+
+#public-btn{
+  transform: rotate(15deg);
+  color: white;
+  background-color: pink;
+  box-shadow: 5px 10px #888888;
+}
+
+#private-btn{
+  transform: rotate(-10deg);
+}
