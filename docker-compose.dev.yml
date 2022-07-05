@@ -20,6 +20,8 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
+    environment:
+      DB_CONNECTION: mongodb://mongo:27017/crazy-picasso_backend
     external_links:
       - mongo
 
