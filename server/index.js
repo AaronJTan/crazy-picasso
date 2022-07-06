@@ -4,23 +4,25 @@ const http = require("http");
 const server = http.createServer(app);
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
-mongoose
-  .connect(
-    process.env.DB_CONNECTION,
-    { useNewUrlParser: true }
-  )
-  .then(() => {
-    console.log('MongoDB Connected')
-  })
-  .catch(err => {
-    console.log(err)
-  });
+// mongoose
+//   .connect(
+//     process.env.DB_CONNECTION,
+//     { useNewUrlParser: true }
+//   )
+//   .then(() => {
+//     console.log('MongoDB Connected')
+//   })
+//   .catch(err => {
+//     console.log(err)
+//   });
 
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.set('view engine', 'ejs');
+
 
 const cors = require('cors');
 app.use(cors());
@@ -37,6 +39,17 @@ app.get("/", function(req, res, next) {
   next();
 });
 
+app.get("/public/", (req, res, next) => {
+  console.log("hello?")
+  res.redirect(`/public/${uuidv4()}`);
+})
+
+
+
+app.get("/video", (req, res) => {
+  res.render('room');
+})
+
 const { Server, Socket } = require("socket.io");
 const io = new Server(server, {
   cors: {
@@ -51,7 +64,12 @@ io.on("connection", (socket) => {
     console.log(data);
     socket.broadcast.emit("receive_message", data);
   });
+  socket.on('join-room', (userId) => {
+    console.log("User joined the room");
+  })
 });
+
+
 
 /* ------------------------------INITIALIZE SERVER------------------------------*/
 const PORT = 3003;
