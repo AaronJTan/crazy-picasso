@@ -24,7 +24,6 @@ export default function Chat() {
   const ENTER_KEY_CODE = 13;
 
   const scrollBottomRef = useRef(null);
-  // const webSocket = useRef(null);
   const [prevMessages, setPrevMessages] = useState([]);
   const [message, setMessage] = useState("");
 
