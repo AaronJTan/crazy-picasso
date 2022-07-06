@@ -8,10 +8,6 @@ const HomePage = () => {
 
   let navigate = useNavigate();
 
-
-  const goToGamePage = () => {
-    let path = ''
-  }
   return (
     <>
       <Typography variant="h2" align="center">Crazy Picasso</Typography>
@@ -27,7 +23,7 @@ const HomePage = () => {
         <Button className="home-btn" id='private-btn' variant="contained">
           Create Private
         </Button>
-        <Button className="home-btn" id='public-btn' variant="contained" onClick={() => window.location.href='/game-play'}>
+        <Button className="home-btn" id='public-btn' variant="contained" onClick={() => window.location.href=`/public`}>
           Join Public
         </Button>
       </div>

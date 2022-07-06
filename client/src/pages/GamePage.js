@@ -1,8 +1,5 @@
-import Navbar from "../components/Navbar.js"
+import Navbar from "../components/Navbar.jsx"
 import "../css/GamePage.css"
-import Button from '@mui/material/Button'
-import BasicTextFields from "../components/BasicTextField.js"
-import { Stack } from "@mui/material"
 import Chat from "../components/Chat.jsx"
 
 const GamePage = () => {
@@ -10,7 +7,11 @@ const GamePage = () => {
     <>
       <Navbar />
       <div className="section" id="players">
-          Players Webcam
+          <div id="video-grid">
+            
+
+
+          </div>
       </div>
       <div className="container">
         <div className="section" id="drawing">
