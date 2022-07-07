@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - '3051:80'
+      - '80:80'
 
   api:
     container_name: crazy-picasso_backend

@@ -40,7 +40,7 @@ app.get("/", function(req, res, next) {
 const { Server, Socket } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: `http://localhost:${process.env.NGINX_PORT}`,
+    origin: `http://localhost`,
     method: ["GET", "POST"],
   },
 });
