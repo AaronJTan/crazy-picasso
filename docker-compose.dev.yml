@@ -21,7 +21,8 @@ services:
       - /app/node_modules
       - ./server:/app
     environment:
-      DB_CONNECTION: mongodb://mongo:27017/crazy-picasso_backend
+      DB_CONNECTION: mongodb://mongo:27017/crazy-picasso
+      CORS_ORIGIN: http://localhost
     external_links:
       - mongo
 
@@ -32,6 +33,8 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+    environment:
+      - REACT_APP_SERVER_URL=http://localhost
   
   mongo:
     container_name: mongo

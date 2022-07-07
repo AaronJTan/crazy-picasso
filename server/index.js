@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -40,7 +41,7 @@ app.get("/", function(req, res, next) {
 const { Server, Socket } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: `http://localhost`,
+    origin: process.env.CORS_ORIGIN,
     method: ["GET", "POST"],
   },
 });
