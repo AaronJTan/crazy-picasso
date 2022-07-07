@@ -2,9 +2,22 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
+const passportSetup = require("./config/passport");
+require('dotenv').config();
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
-// const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
+mongoose
+  .connect(process.env.MDB_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log("MongoDB Connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+// Uncomment below for docker run
 
 // mongoose
 //   .connect(
@@ -21,34 +34,35 @@ const server = http.createServer(app);
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
   next();
 });
 
 /* ------------------------------ROUTES------------------------------*/
 /* Temporary*/
-app.get("/", function(req, res, next) {
+app.get("/", function (req, res, next) {
+  console.log("homepage");
   res.json("HELLO");
   next();
 });
 
+const authRoutes = require("./routes/authRoutes");
+
+app.use("/auth", authRoutes);
+
 app.get("/public/", (req, res, next) => {
-  console.log("hello?")
-  res.redirect(`/public/${uuidv4()}`);
-})
-
-
+  res.json("public");
+});
 
 app.get("/video", (req, res) => {
-  res.render('room');
-})
+  res.render("room");
+});
 
 const { Server, Socket } = require("socket.io");
 const io = new Server(server, {
@@ -64,15 +78,13 @@ io.on("connection", (socket) => {
     console.log(data);
     socket.broadcast.emit("receive_message", data);
   });
-  socket.on('join-room', (userId) => {
+  socket.on("join-room", (userId) => {
     console.log("User joined the room");
-  })
+  });
 });
 
-
-
 /* ------------------------------INITIALIZE SERVER------------------------------*/
-const PORT = 3003;
+const PORT = 3001;
 
 server.listen(PORT, () => {
   console.log(`listening on PORT: ${PORT}`);

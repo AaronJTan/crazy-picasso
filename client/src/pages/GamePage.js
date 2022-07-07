@@ -1,17 +1,13 @@
-import Navbar from "../components/Navbar.jsx"
-import "../css/GamePage.css"
-import Chat from "../components/Chat.jsx"
+import Navbar from "../components/Navbar.jsx";
+import "../css/GamePage.css";
+import Chat from "../components/Chat.jsx";
 
 const GamePage = () => {
   return (
     <>
       <Navbar />
       <div className="section" id="players">
-          <div id="video-grid">
-            
-
-
-          </div>
+        <div id="video-grid"></div>
       </div>
       <div className="container">
         <div className="section" id="drawing">
@@ -24,11 +20,11 @@ const GamePage = () => {
         </div>
 
         <div className="section" id="chatting">
-          <Chat />  
+          <Chat />
         </div>
       </div>
     </>
   );
-}
- 
+};
+
 export default GamePage;
