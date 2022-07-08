@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import BasicTextFields from "../components/BasicTextField.js"
 import { Stack } from "@mui/material"
 import Chat from "../components/Chat.jsx"
+import Canvas from "../components/Canvas.jsx"
 
 const GamePage = () => {
   return (
@@ -15,7 +16,7 @@ const GamePage = () => {
       <div className="container">
         <div className="section" id="drawing">
           <div className="section" id="canvas">
-            canvas drawing
+            <Canvas />
           </div>
           <div className="section" id="palette">
             palette
