@@ -9,8 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 export default function Navbar() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, mb: 1 }}>
+      <AppBar position="static" color='transparent'>
         <Toolbar>
           <IconButton
             size="large"
@@ -21,8 +21,8 @@ export default function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Play Crazy Picasso
+          <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+            Crazy Picasso
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>

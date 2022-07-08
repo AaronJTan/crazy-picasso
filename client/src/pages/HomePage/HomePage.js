@@ -14,7 +14,7 @@ const HomePage = () => {
   }
   return (
     <>
-      <Typography variant="h2" align="center">Crazy Picasso</Typography>
+      {/* <Typography variant="h2" align="center">Crazy Picasso</Typography> */}
       <div className="home-btn-container">
         <Button className="home-btn" variant="contained">
           Sign Up

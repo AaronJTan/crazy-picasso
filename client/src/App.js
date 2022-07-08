@@ -1,16 +1,14 @@
+import { Outlet } from 'react-router-dom';
 import './App.css';
-import GamePage from './pages/GamePage/GamePage';
-import HomePage from './pages/HomePage/HomePage';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/game-play" element={<GamePage />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Navbar />
+
+      <Outlet />
+    </div>
   );
 }
 
