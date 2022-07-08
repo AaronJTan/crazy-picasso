@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import "../css/HomePage.css";
+import "./HomePage.css";
 import { Fragment } from "react";
 
 const HomePage = () => {

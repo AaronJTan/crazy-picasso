@@ -13,8 +13,8 @@ FormControl,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { chatMessageObj } from "../model/ChatMessageObj";
-import "../css/Chat.css";
+import { chatMessageObj } from "../../model/ChatMessageObj";
+import "./Chat.css";
 import SendIcon from "@mui/icons-material/Send";
 import io from "socket.io-client";
 

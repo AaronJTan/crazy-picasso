@@ -1,10 +1,7 @@
-import Navbar from "../components/Navbar.js"
-import "../css/GamePage.css"
-import Button from '@mui/material/Button'
-import BasicTextFields from "../components/BasicTextField.js"
-import { Stack } from "@mui/material"
-import Chat from "../components/Chat.jsx"
-import Canvas from "../components/Canvas.jsx"
+import Navbar from "../../components/Navbar/Navbar.js"
+import "./GamePage.css"
+import Chat from "../../components/Chat/Chat.jsx"
+import Canvas from "../../components/Canvas/Canvas.jsx"
 
 const GamePage = () => {
   return (
