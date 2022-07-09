@@ -18,7 +18,7 @@ import "../css/Chat.css";
 import SendIcon from "@mui/icons-material/Send";
 import io from "socket.io-client";
 
-const socket = io.connect(`http://localhost:${process.env.REACT_APP_NGINX_PORT}/`);
+const socket = io.connect(process.env.REACT_APP_SERVER_URL);
 
 export default function Chat() {
   const ENTER_KEY_CODE = 13;

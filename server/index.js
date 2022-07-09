@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -105,7 +106,7 @@ const { Server, Socket } = require("socket.io");
 const playerModel = require("./models/playerModel");
 const io = new Server(server, {
   cors: {
-    origin: `http://localhost:${process.env.NGINX_PORT}`,
+    origin: process.env.CORS_ORIGIN,
     method: ["GET", "POST"],
   },
 });
