@@ -32,9 +32,10 @@ export default function SignIn() {
       setEmail("");
       setPassword("");
       if (!res.ok) {
+        window.location.href = "/auth/signin";
         alert(`LOGIN FAILED with ${email}`);
       } else {
-        alert(`LOGIN SUCCESS with ${email}`);
+        window.location.href = "/select-room";
       }
     });
   };

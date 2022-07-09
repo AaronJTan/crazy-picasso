@@ -2,8 +2,45 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
-const passportSetup = require("./config/passport");
-require('dotenv').config();
+// const passportSetup = require("./config/passport");
+require("dotenv").config();
+const session = require("express-session");
+const passport = require("passport");
+const initializePassport = require("./config/passport");
+const flash = require('express-flash');
+// initializePassport(passport, email => {
+//   return playerModel.find(user => user.email === email)
+// }, id => {
+//   playerModel.find(user => user.id === id)
+// })
+
+// app.use(flash());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+/* ------------------------------Cookie Session------------------------------*/
+
+// app.use(
+//   cookieSession({
+//     
+//     keys: ["c09isawesome"],
+//   })
+// );
+
+// app.use(passport.initialize());
+// app.use(
+//   passport.session({
+//     saveUninitialized: false,
+//     resave: false,
+//   })
+// );
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -65,6 +102,7 @@ app.get("/video", (req, res) => {
 });
 
 const { Server, Socket } = require("socket.io");
+const playerModel = require("./models/playerModel");
 const io = new Server(server, {
   cors: {
     origin: `http://localhost:${process.env.NGINX_PORT}`,
