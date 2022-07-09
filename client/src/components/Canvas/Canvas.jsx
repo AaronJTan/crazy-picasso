@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 
-function Canvas() {
+function Canvas({socket}) {
 
     useEffect(() => {
         handleCanvasActions();

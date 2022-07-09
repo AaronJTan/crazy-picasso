@@ -12,11 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { chatMessageObj } from "../../model/ChatMessageObj";
 import "./Chat.css";
 import SendIcon from "@mui/icons-material/Send";
-import io from "socket.io-client";
 
-const socket = io.connect(process.env.REACT_APP_SERVER_URL);
-
-export default function Chat() {
+export default function Chat({socket}) {
   const ENTER_KEY_CODE = 13;
 
   const scrollBottomRef = useRef(null);
