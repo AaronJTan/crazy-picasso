@@ -4,24 +4,34 @@ const playerSchema = mongoose.Schema(
   {
     firstName: {
       type: String,
-      require: true,
+      require: false,
     },
 
     lastName: {
       type: String,
-      require: true,
+      require: false,
+    },
+
+    username: {
+      type: String,
+      require: false,
+      unique: true
     },
 
     email: {
       type: String,
-      require: true,
-      unique: true,
+      require: false,
     },
 
     password: {
       type: String,
-      require: true,
+      require: false,
     },
+
+    googleId: {
+      type: String,
+      require: false
+    }
   },
   {
     timestamps: true,
