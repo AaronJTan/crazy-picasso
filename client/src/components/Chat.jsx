@@ -9,18 +9,16 @@ FormControl,
   ListItemText,
   Paper,
   TextField,
-  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { chatMessageObj } from "../model/ChatMessageObj";
 import "../css/Chat.css";
 import SendIcon from "@mui/icons-material/Send";
 import io from "socket.io-client";
 
 const socket = io.connect(process.env.REACT_APP_SERVER_URL);
 
-export default function Chat() {
+export default function Chat({username}) {
   const ENTER_KEY_CODE = 13;
 
   const scrollBottomRef = useRef(null);
@@ -29,7 +27,7 @@ export default function Chat() {
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setPrevMessages([...prevMessages, { message: data.message }]);
+      setPrevMessages([...prevMessages, { author: data.author, message: data.message }]);
     });
     if (scrollBottomRef.current) {
       scrollBottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -49,15 +47,15 @@ export default function Chat() {
   const sendMessage = () => {
     if (message) {
       console.log("Send!");
-      socket.emit("send_message", { message: message });
-      setPrevMessages([...prevMessages, new chatMessageObj(message)]);
+      socket.emit("send_message", { author: username, message: message });
+      setPrevMessages([...prevMessages, { author: username, message: message }]);
       setMessage("");
     }
   };
 
-  const listPrevMessages = prevMessages.map((chatMessageObj, index) => (
+  const listPrevMessages = prevMessages.map((msg, index) => (
     <ListItem key={index}>
-      <ListItemText primary={`${chatMessageObj.user}: ${chatMessageObj.message}`} />
+      <ListItemText primary={`${msg.author}: ${msg.message}`} />
     </ListItem>
   ));
 

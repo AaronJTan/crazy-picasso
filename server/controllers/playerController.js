@@ -2,8 +2,11 @@ const Player = require("../models/playerModel");
 const bcrypt = require("bcrypt");
 
 const signupPlayer = async (req, res) => {
+
+  
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
+  let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
 
@@ -21,6 +24,7 @@ const signupPlayer = async (req, res) => {
   const newPlayer = await Player.create({
     firstName,
     lastName,
+    username,
     email,
     password: saltedhash,
   });
@@ -30,6 +34,7 @@ const signupPlayer = async (req, res) => {
       _id: newPlayer.id,
       firstName: newPlayer.firstName,
       lastName: newPlayer.lastName,
+      username: newPlayer.username,
       email: newPlayer.email,
     });
   } else {
@@ -38,8 +43,12 @@ const signupPlayer = async (req, res) => {
 };
 
 const signinPlayer = async (req, res) => {
+  console.log("signinPlayer");
+  
   let email = req.body.email;
   let password = req.body.password;
+
+  console.log(req.user.email);
 
   if (!email || !password) {
     res.status(400).json({ error: "missing inputs" });

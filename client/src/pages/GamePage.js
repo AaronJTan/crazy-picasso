@@ -1,8 +1,10 @@
 import Navbar from "../components/Navbar.jsx";
 import "../css/GamePage.css";
 import Chat from "../components/Chat.jsx";
+import { useLocation } from "react-router-dom";
 
 const GamePage = () => {
+  const location = useLocation();
   return (
     <>
       <Navbar />
@@ -20,7 +22,7 @@ const GamePage = () => {
         </div>
 
         <div className="section" id="chatting">
-          <Chat />
+          <Chat username={location.state.username}/>
         </div>
       </div>
     </>

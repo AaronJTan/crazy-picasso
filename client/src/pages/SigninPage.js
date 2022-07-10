@@ -11,16 +11,21 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
+import SelectRoomPage from "./SelectRoomPage";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
+    console.log("handleSubmit");
     event.preventDefault();
-    const player = { email, password };
+    const player = { username, password };
+    
 
     await fetch("/auth/signin/", {
       method: "POST",
@@ -29,13 +34,15 @@ export default function SignIn() {
         "Content-Type": "application/json",
       },
     }).then((res) => {
-      setEmail("");
+      console.log("fetch /auth/signin/ ???");
+      setUsername("");
       setPassword("");
       if (!res.ok) {
         window.location.href = "/auth/signin";
-        alert(`LOGIN FAILED with ${email}`);
+        alert(`LOGIN FAILED with ${username}`);
       } else {
-        window.location.href = "/select-room";
+        console.log("res successful");
+        navigate('/select-room', {state:{username: username}});
       }
     });
   };
@@ -63,12 +70,12 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               autoFocus
             />
             <TextField

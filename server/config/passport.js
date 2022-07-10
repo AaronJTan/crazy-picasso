@@ -5,33 +5,39 @@ const Player = require("../models/playerModel");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-require("https").globalAgent.options.rejectUnauthorized = false;
 
-passport.use(new LocalStrategy({usernameField: "email" }, async function verify(email, password, cb) {
-  if (!email || !password) {
+passport.use(new LocalStrategy({usernameField: "username" }, async function verify(username, password, cb) {
+  console.log("passport verify");
+  console.log(username);
+  console.log(password);
+  
+
+  if (!username || !password) {
     return cb(null, false, { message: "missing inputs"});
     // res.status(400).json({ error: "missing inputs" });
   }
 
-  const player = await Player.findOne({ email });
+  const player = await Player.findOne({ username });
 
   if (player && (await bcrypt.compare(password, player.password))) {
+    console.log("player retrieved inside passport: ", player);
     return cb(null, player);
     // res.status(200).json({
     //   _id: player.id,
     //   firstName: player.firstName,
     //   lastName: player.lastName,
-    //   email: player.email,
+    //   username: player.username,
     // });
   } else {
-    return cb(null, false, { message: "login failed, invalid email or password" })
+    return cb(null, false, { message: "login failed, invalid username or password" })
     // res.status(400).json({ error: "login failed, invalid email or password" });
   }
 }));
 
 passport.serializeUser(function(user, cb) {
+  console.log("user: ", user);
   process.nextTick(function() {
-    cb(null, { id: user.id, email: user.email });
+    cb(null, { id: user.id, username: user.username, email: user.email });
   });
 });
 

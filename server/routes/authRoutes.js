@@ -7,10 +7,7 @@ const { signupPlayer, signinPlayer } = require("../controllers/playerController"
 // router.post("/signin", signinPlayer);
 
 router.post("/signup", signupPlayer);
-router.post("/signin", passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/auth/signin'
-}));
+router.post("/signin", passport.authenticate('local'), signinPlayer);
 
 router.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));
 
