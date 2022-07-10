@@ -38,10 +38,8 @@ export default function SignIn() {
       setUsername("");
       setPassword("");
       if (!res.ok) {
-        window.location.href = "/auth/signin";
-        alert(`LOGIN FAILED with ${username}`);
+        window.location.href = "/";
       } else {
-        console.log("res successful");
         navigate('/select-room', {state:{username: username}});
       }
     });

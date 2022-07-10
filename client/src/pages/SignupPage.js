@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
@@ -20,6 +21,7 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,9 +39,9 @@ export default function SignUp() {
       setEmail("");
       setPassword("");
       if (!res.ok) {
-        alert(`SIGNUP FAILED.`);
+        window.location.href = "/auth/signup";
       } else {
-        alert(`WELCOME ${firstName} ${lastName} !!! SIGNUP SUCCESS with ${email}`);
+        navigate('/select-room', {state:{username: username}});
       }
     });
   };
