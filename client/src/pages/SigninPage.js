@@ -38,7 +38,7 @@ export default function SignIn() {
       setUsername("");
       setPassword("");
       if (!res.ok) {
-        window.location.href = "/";
+        navigate("/");
       } else {
         navigate('/select-room', {state:{username: username}});
       }

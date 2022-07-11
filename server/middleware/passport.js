@@ -6,48 +6,33 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-passport.use(new LocalStrategy({usernameField: "username" }, async function verify(username, password, cb) {
-  console.log("passport verify");
-  console.log(username);
-  console.log(password);
-  
+passport.use(
+  new LocalStrategy({ usernameField: "username" }, async function verify(username, password, cb) {
+    if (!username || !password) {
+      return cb(null, false, { message: "missing inputs" });
+    }
 
-  if (!username || !password) {
-    return cb(null, false, { message: "missing inputs"});
-    // res.status(400).json({ error: "missing inputs" });
-  }
+    const player = await Player.findOne({ username });
 
-  const player = await Player.findOne({ username });
+    if (player && (await bcrypt.compare(password, player.password))) {
+      return cb(null, player);
+    } else {
+      return cb(null, false, { message: "login failed, invalid username or password" });
+    }
+  })
+);
 
-  if (player && (await bcrypt.compare(password, player.password))) {
-    console.log("player retrieved inside passport: ", player);
-    return cb(null, player);
-    // res.status(200).json({
-    //   _id: player.id,
-    //   firstName: player.firstName,
-    //   lastName: player.lastName,
-    //   username: player.username,
-    // });
-  } else {
-    return cb(null, false, { message: "login failed, invalid username or password" })
-    // res.status(400).json({ error: "login failed, invalid email or password" });
-  }
-}));
-
-passport.serializeUser(function(user, cb) {
-  console.log("user: ", user);
-  process.nextTick(function() {
+passport.serializeUser(function (user, cb) {
+  process.nextTick(function () {
     cb(null, { id: user.id, username: user.username, email: user.email });
   });
 });
 
-passport.deserializeUser(function(user, cb) {
-  process.nextTick(function() {
+passport.deserializeUser(function (user, cb) {
+  process.nextTick(function () {
     return cb(null, user);
   });
 });
-
-
 
 // function initialize(passport, getUserByEmail, getUserById) {
 
@@ -56,7 +41,7 @@ passport.deserializeUser(function(user, cb) {
 //       if (user == null) {
 //         return done(null, false, { message: "No user found with that email"})
 //       }
-    
+
 //       try {
 //         if (await bcrypt.compare(password, user.password)) {
 //           return done(null, user);
@@ -73,9 +58,9 @@ passport.deserializeUser(function(user, cb) {
 //       return cb(null, false, { message: "missing inputs"});
 //       // res.status(400).json({ error: "missing inputs" });
 //     }
-  
+
 //     const player = await Player.findOne({ email });
-  
+
 //     if (player && (await bcrypt.compare(password, player.password))) {
 //       return cb(null, player);
 //       // res.status(200).json({
@@ -93,17 +78,14 @@ passport.deserializeUser(function(user, cb) {
 //   passport.serializeUser((user, done) => {
 //     done(null, user.id);
 //   });
-  
+
 //   passport.deserializeUser((id, done) => {
 //     done(null, getUserById(id));
 //   });
 
-
 // }
 
 // module.exports = initialize
-
-
 
 // passport.use(
 //   new GoogleStrategy(

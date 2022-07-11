@@ -1,6 +1,5 @@
 import {
 Container,
-Divider,
 FormControl,
   Grid,
   IconButton,
@@ -14,20 +13,18 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import "../css/Chat.css";
 import SendIcon from "@mui/icons-material/Send";
-import io from "socket.io-client";
 
-const socket = io.connect(process.env.REACT_APP_SERVER_URL);
+export default function Chat({username, roomCode, socket}) {
 
-export default function Chat({username}) {
   const ENTER_KEY_CODE = 13;
-
   const scrollBottomRef = useRef(null);
   const [prevMessages, setPrevMessages] = useState([]);
   const [message, setMessage] = useState("");
 
+
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setPrevMessages([...prevMessages, { author: data.author, message: data.message }]);
+      setPrevMessages([...prevMessages, { roomCode: roomCode, author: data.author, message: data.message }]);
     });
     if (scrollBottomRef.current) {
       scrollBottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -38,6 +35,7 @@ export default function Chat({username}) {
     setMessage(event.target.value);
   };
 
+  // Allow enter key to send message directly
   const handleEnterKey = (event) => {
     if (event.keyCode === ENTER_KEY_CODE) {
       sendMessage();
@@ -46,9 +44,12 @@ export default function Chat({username}) {
 
   const sendMessage = () => {
     if (message) {
-      console.log("Send!");
-      socket.emit("send_message", { author: username, message: message });
-      setPrevMessages([...prevMessages, { author: username, message: message }]);
+      // send current message with author info using socket io
+      // the message data will be broadcasted to other players
+      socket.emit("send_message", { roomCode: roomCode, author: username, message: message });
+      // update previous message list
+      setPrevMessages([...prevMessages, { roomCode: roomCode, author: username, message: message }]);
+      // set current message back to empty string
       setMessage("");
     }
   };

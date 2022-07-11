@@ -2,13 +2,12 @@ const Player = require("../models/playerModel");
 const bcrypt = require("bcrypt");
 
 const signupPlayer = async (req, res) => {
-
-  
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
   let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
+  console.log(username);
 
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({ error: "missing inputs" });
@@ -42,33 +41,32 @@ const signupPlayer = async (req, res) => {
   }
 };
 
-const signinPlayer = async (req, res) => {
-  console.log("signinPlayer");
-  
-  let email = req.body.email;
-  let password = req.body.password;
+// const signinPlayer = async (req, res) => {
+//   console.log("signinPlayer");
 
-  console.log(req.user.email);
+//   let email = req.body.email;
+//   let password = req.body.password;
 
-  if (!email || !password) {
-    res.status(400).json({ error: "missing inputs" });
-  }
+//   console.log(req.user.email);
 
-  const player = await Player.findOne({ email });
+//   if (!email || !password) {
+//     res.status(400).json({ error: "missing inputs" });
+//   }
 
-  if (player && (await bcrypt.compare(password, player.password))) {
-    res.status(200).json({
-      _id: player.id,
-      firstName: player.firstName,
-      lastName: player.lastName,
-      email: player.email,
-    });
-  } else {
-    res.status(400).json({ error: "login failed, invalid email or password" });
-  }
-};
+//   const player = await Player.findOne({ email });
+
+//   if (player && (await bcrypt.compare(password, player.password))) {
+//     res.status(200).json({
+//       _id: player.id,
+//       firstName: player.firstName,
+//       lastName: player.lastName,
+//       email: player.email,
+//     });
+//   } else {
+//     res.status(400).json({ error: "login failed, invalid email or password" });
+//   }
+// };
 
 module.exports = {
   signupPlayer,
-  signinPlayer,
 };
