@@ -41,13 +41,14 @@ function PaintToolBar() {
             <Box sx={{display: "flex", flexDirection: "column"}}>
                 <Box sx={{display: "flex"}}>
                     {colors.slice(0, colorSecondRowIndex).map(function (color, i) {
-                        return <Box style={{ width: "24px", height: "24px", border: "1px solid black", backgroundColor: color }}></Box>
+                        return <Box style={{ width: "24px", height: "24px", border: "1px solid black", backgroundColor: color }} key={i}
+                        ></Box>
                     })}
                 </Box>
 
                 <Box sx={{display: "flex"}}>
                     {colors.slice(colorSecondRowIndex, colors.length).map(function (color, i) {
-                        return <Box style={{ width: "24px", height: "24px", border: "1px solid black", backgroundColor: color }}></Box>
+                        return <Box style={{ width: "24px", height: "24px", border: "1px solid black", backgroundColor: color }} key={i}></Box>
                     })}
                 </Box>
             </Box>
