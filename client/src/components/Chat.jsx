@@ -13,6 +13,7 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import "../css/Chat.css";
 import SendIcon from "@mui/icons-material/Send";
+import React, {Component} from "react";
 
 export default function Chat({username, roomCode, socket}) {
 

@@ -1,6 +1,7 @@
 import { Link, Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import "../css/HomePage.css";
+import React, {Component} from "react";
 
 const HomePage = () => {
 

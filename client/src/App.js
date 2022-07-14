@@ -5,6 +5,7 @@ import SignUp from "./pages/SignupPage";
 import SignIn from "./pages/SigninPage";
 import "./App.css";
 import SelectRoomPage from "./pages/SelectRoomPage";
+import React, {Component} from "react";
 
 function App() {
   return (
