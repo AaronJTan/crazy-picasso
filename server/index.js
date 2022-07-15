@@ -49,7 +49,13 @@ app.use(express.json());
 app.set("view engine", "ejs");
 
 const cors = require("cors");
-app.use(cors());
+// app.use(cors());
+
+app.use(function(req, res, next) {
+  req.header("Access-Control-Allow-Origin", "*");
+  req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
@@ -65,7 +71,7 @@ app.get("/", function (req, res, next) {
 const authRoutes = require("./routes/authRoutes");
 
 // signup route handler
-app.post("/auth", authRoutes);
+app.use("/auth", authRoutes);
 
 require("./middleware/passport");
 // authenticate with passport for signin endpoint 
@@ -76,7 +82,7 @@ app.post("/auth/signin", passport.authenticate('local'), (req, res) => {
 
 const { Server, Socket } = require("socket.io");
 
-const sharedsession = require("express-socket.io-session");
+
 const io = new Server(server, {
   cors: {
     origin: process.env.CORS_ORIGIN,
@@ -84,28 +90,16 @@ const io = new Server(server, {
   },
 });
 
-io.use(sharedsession(session));
+// const sharedsession = require("express-socket.io-session");
+// io.use(sharedsession(session));
 
 io.on("connection", (socket) => {
-  // Accept a login event with user's data
-  // socket.on("login", function(userdata) {
-  //   socket.handshake.session.userdata = userdata;
-  //   socket.handshake.session.save();
-  // });
-  // socket.on("logout", function(userdata) {
-  //     if (socket.handshake.session.userdata) {
-  //         delete socket.handshake.session.userdata;
-  //         socket.handshake.session.save();
-  //     }
-  // });
-
   socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined the room: ${data}`);
   })
   socket.on("send_message", (data) => {
     socket.to(data.roomCode).emit("receive_message", data);
-    // socket.broadcast.emit("receive_message", data);
   });
 
   socket.on("drawing", (data) => {
