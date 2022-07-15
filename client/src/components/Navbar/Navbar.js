@@ -29,7 +29,9 @@ export default function Navbar() {
               Crazy Picasso
             </Link>
           </Typography>
+          {/* <Button color="inherit">Signup</Button>
           <Button color="inherit">Login</Button>
+          <Button color="inherit">Login with Google</Button> */}
         </Toolbar>
       </AppBar>
     </Box>
