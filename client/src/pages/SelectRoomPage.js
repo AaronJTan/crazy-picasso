@@ -6,8 +6,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-// const socket = io.connect(process.env.REACT_APP_SERVER_URL);
-
 const SelectRoomPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,14 +19,14 @@ const SelectRoomPage = () => {
   const createPrivateRoom = (e) => {
     e.preventDefault();
     setPrivateRooms([...privateRooms, newPrivateCode]);
-    navigate("/private", { state: { username: username, roomCode: newPrivateCode } });
+    navigate("/game-play", { state: { username: username, roomCode: newPrivateCode } });
   };
 
   const joinPrivateRoom = (e) => {
     e.preventDefault();
     console.log(privateRooms);
     if (privateRooms.includes(existingPrivateCode)) {
-      navigate("/private", { state: { username: username, roomCode: existingPrivateCode} });
+      navigate("/game-play", { state: { username: username, roomCode: existingPrivateCode} });
     } else {
       setExistingPrivateCode("");
       navigate("/select-room", { state: { username: username}});
@@ -38,15 +36,12 @@ const SelectRoomPage = () => {
 
   const enterPublicRoom = (e) => {
     e.preventDefault();
-    navigate("/public", { state: { username: username, roomCode: "public" } });
+    navigate("/game-play", { state: { username: username, roomCode: "public" } });
   };
 
   return (
     <>
-      <Typography variant="h2" align="center">
-        Crazy Picasso
-      </Typography>
-      <h1>{username}</h1>
+      <h1>Welcome {username}! Select the room you want to join!</h1>
       <div className="home-btn-container">
         <Button className="home-btn" id="public-btn" variant="contained" onClick={enterPublicRoom}>
           Join Public

@@ -1,7 +1,6 @@
-import { Link, Typography } from "@mui/material";
+import { Link } from "@mui/material";
 import { Button } from "@mui/material";
-import "../css/HomePage.css";
-import React, {Component} from "react";
+import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 
 const HomePage = () => {
@@ -15,12 +14,10 @@ const HomePage = () => {
     window.location.href = "/auth/signup";
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
-      <Typography variant="h2" align="center">
-        Crazy Picasso
-      </Typography>
-      {/* <Typography variant="h2" align="center">Crazy Picasso</Typography> */}
       <div className="home-btn-container">
         <Button className="home-btn" variant="contained" onClick={handleSignup}>
           Sign Up
