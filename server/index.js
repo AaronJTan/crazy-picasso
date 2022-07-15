@@ -104,8 +104,12 @@ io.on("connection", (socket) => {
     console.log(`User with ID: ${socket.id} joined the room: ${data}`);
   })
   socket.on("send_message", (data) => {
-    console.log(data.roomCode)
     socket.to(data.roomCode).emit("receive_message", data);
+    // socket.broadcast.emit("receive_message", data);
+  });
+
+  socket.on("drawing", (data) => {
+    socket.broadcast.emit("live_drawing", data);
   });
 });
 
