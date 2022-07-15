@@ -27,6 +27,7 @@ export default function SignUp() {
     e.preventDefault();
     const player = { firstName, lastName, username, email, password };
 
+    console.log("hit handleSubmit signup");
     await fetch("/auth/signup", {
       method: "POST",
       body: JSON.stringify(player),
@@ -39,8 +40,10 @@ export default function SignUp() {
       setEmail("");
       setPassword("");
       if (!res.ok) {
-        window.location.href = "/auth/signup";
+        console.log("signup not okay");
+        navigate("/auth/signup")
       } else {
+        console.log("signup okay");
         navigate('/select-room', {state:{username: username}});
       }
     });

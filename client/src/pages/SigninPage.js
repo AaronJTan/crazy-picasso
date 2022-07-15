@@ -11,8 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
-import SelectRoomPage from "./SelectRoomPage";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
@@ -38,8 +37,10 @@ export default function SignIn() {
       setUsername("");
       setPassword("");
       if (!res.ok) {
-        navigate("/");
+        console.log("res not okay for signin");
+        navigate("/auth/signin");
       } else {
+        console.log("res okay for signin");
         navigate('/select-room', {state:{username: username}});
       }
     });
