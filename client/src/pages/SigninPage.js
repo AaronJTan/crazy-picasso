@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GoogleButton from "react-google-button";
 
 const theme = createTheme();
 
@@ -24,7 +25,6 @@ export default function SignIn() {
     console.log("handleSubmit");
     event.preventDefault();
     const player = { username, password };
-    
 
     await fetch("/auth/signin/", {
       method: "POST",
@@ -41,7 +41,7 @@ export default function SignIn() {
         navigate("/auth/signin");
       } else {
         console.log("res okay for signin");
-        navigate('/select-room', {state:{username: username}});
+        navigate("/select-room", { state: { username: username } });
       }
     });
   };
@@ -92,6 +92,13 @@ export default function SignIn() {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
+            <Link href="http://localhost:3001/auth/google">
+              <GoogleButton fullWidth
+                onClick={() => {
+                  console.log("Google button clicked");
+                }}
+              />
+            </Link>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

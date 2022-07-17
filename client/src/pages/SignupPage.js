@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GoogleButton from "react-google-button";
 
 const theme = createTheme();
 
@@ -135,6 +136,13 @@ export default function SignUp() {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign Up
             </Button>
+            <Link href="http://localhost:3001/auth/google">
+              <GoogleButton label="Sign up with Google" 
+                onClick={() => {
+                  console.log("Google button clicked");
+                }}
+              />
+            </Link>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/auth/signin/" variant="body2">
