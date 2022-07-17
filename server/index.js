@@ -3,19 +3,13 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 require("dotenv").config();
-const session = require("express-session")({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-});
+const session = require("express-session")
 const passport = require("passport");
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 /* ------------------------------Cookie Session------------------------------*/
 
-app.use(session);
-
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(cookieParser());
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -28,6 +22,27 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+// const connection = mongoose.createConnection(process.env.MDB_URI, { useNewUrlParser: true })
+
+let sessionStore = new MongoDBStore({
+  uri: process.env.MDB_URI,
+  collection: 'sessions'
+})
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: sessionStore,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 // equals 1 day
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Uncomment below for docker run
 
@@ -46,7 +61,6 @@ mongoose
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.set("view engine", "ejs");
 
 const cors = require("cors");
 // app.use(cors());
@@ -68,20 +82,20 @@ app.get("/", function (req, res, next) {
   res.json("HELLO");
 });
 
+// local signup/login routes
 const authRoutes = require("./routes/authRoutes");
-
-// signup route handler
 app.use("/auth", authRoutes);
 
-require("./middleware/passport");
-// authenticate with passport for signin endpoint 
-app.post("/auth/signin", passport.authenticate('local'), (req, res) => {
-  console.log("Session: ", req.session);
-  return res.status(200).json("signin success");
-});
+// private-rooms routes (create and join a private room)
+const privateRoomRoutes = require("./routes/privateRoomRoutes");
+app.use("/private-rooms", privateRoomRoutes);
 
-const { Server, Socket } = require("socket.io");
+// google oAuth login
 
+
+/* ------------------------------SOCKET.IO------------------------------*/
+
+const { Server } = require("socket.io");
 
 const io = new Server(server, {
   cors: {
@@ -89,9 +103,6 @@ const io = new Server(server, {
     method: ["GET", "POST"],
   },
 });
-
-// const sharedsession = require("express-socket.io-session");
-// io.use(sharedsession(session));
 
 io.on("connection", (socket) => {
   socket.on("join_room", (data) => {
