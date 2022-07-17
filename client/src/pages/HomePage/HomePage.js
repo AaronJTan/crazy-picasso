@@ -20,18 +20,18 @@ const HomePage = () => {
   return (
     <>
       <div className="home-btn-container">
-        <Button className="home-btn" variant="contained" onClick={handleSignup}>
+        {/* <Button className="home-btn" variant="contained" onClick={handleSignup}>
           Sign Up
         </Button>
         <Button className="home-btn" variant="contained" onClick={handleSignin}>
           Sign In
-        </Button>
+        </Button> */}
         {/* using fetch gives CORS error. For now, directly provide URL for Google OAuth */}
-        <Link href="http://localhost:3001/auth/google">
+        {/* <Link href="http://localhost:3001/auth/google">
           <Button className="home-btn" variant="contained">
             Sign In with Google
           </Button>
-        </Link>
+        </Link> */}
       </div>
       
       {/* <div className="home-btn-container">
