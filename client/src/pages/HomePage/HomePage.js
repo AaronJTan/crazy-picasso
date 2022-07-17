@@ -5,16 +5,17 @@ import "./HomePage.css";
 
 const HomePage = () => {
 
+  const navigate = useNavigate();
 
   const handleSignin = () => {
-    window.location.href = "/auth/signin";
+    navigate("/auth/signin");
   };
 
   const handleSignup = () => {
-    window.location.href = "/auth/signup";
+    navigate("/auth/signup");
   };
 
-  const navigate = useNavigate();
+  
 
   return (
     <>
@@ -33,14 +34,14 @@ const HomePage = () => {
         </Link>
       </div>
       
-      <div className="home-btn-container">
+      {/* <div className="home-btn-container">
         <Button className="home-btn" id='private-btn' variant="contained">
           Create Private
         </Button>
         <Button className="home-btn" id='public-btn' variant="contained" onClick={() => navigate('/game-play')}>
           Join Public
         </Button>
-      </div>
+      </div> */}
     </>
   );
 };
