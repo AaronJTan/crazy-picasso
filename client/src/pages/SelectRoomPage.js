@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../css/SelectRoomPage.css";
@@ -14,23 +14,46 @@ const SelectRoomPage = () => {
   const username = location.state.username;
   const [newPrivateCode, setNewPrivateCode] = useState("");
   const [existingPrivateCode, setExistingPrivateCode] = useState("");
-  const [privateRooms, setPrivateRooms] = useState([]);
 
-  const createPrivateRoom = (e) => {
+  const createPrivateRoom = async (e) => {
     e.preventDefault();
-    setPrivateRooms([...privateRooms, newPrivateCode]);
-    navigate("/game-play", { state: { username: username, roomCode: newPrivateCode } });
-  };
+    // setPrivateRooms([...privateRooms, newPrivateCode]);
 
-  const joinPrivateRoom = (e) => {
+    const data = { roomCode : newPrivateCode };
+
+    await fetch("/private-rooms/create", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      if (res.ok) {
+        navigate("/game-play", { state: { username: username, roomCode: newPrivateCode } });
+      } else {
+        navigate("/select-room", { state: { username: username}});
+      }
+    })
+  }
+
+  const joinPrivateRoom = async (e) => {
     e.preventDefault();
-    console.log(privateRooms);
-    if (privateRooms.includes(existingPrivateCode)) {
-      navigate("/game-play", { state: { username: username, roomCode: existingPrivateCode} });
-    } else {
-      setExistingPrivateCode("");
-      navigate("/select-room", { state: { username: username}});
-    }
+
+    const data = { roomCode : existingPrivateCode};
+    
+    await fetch("/private-rooms/join", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      if (res.ok) {
+        navigate("/game-play", { state: { username: username, roomCode: existingPrivateCode } });
+      } else {
+        navigate("/select-room", { state: { username: username}});
+      }
+    })
     
   };
 
@@ -59,7 +82,7 @@ const SelectRoomPage = () => {
           <TextField
             id="outlined-basic"
             label="Room Code"
-            variant="outlined"
+            variant="standard"
             onChange={(e) => setNewPrivateCode(e.target.value)}
             value={newPrivateCode}
           />
