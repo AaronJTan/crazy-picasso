@@ -5,18 +5,6 @@ import "./HomePage.css";
 
 const HomePage = () => {
 
-  const navigate = useNavigate();
-
-  const handleSignin = () => {
-    navigate("/auth/signin");
-  };
-
-  const handleSignup = () => {
-    navigate("/auth/signup");
-  };
-
-  
-
   return (
     <>
       <div className="home-btn-container">
@@ -27,11 +15,7 @@ const HomePage = () => {
           Sign In
         </Button> */}
         {/* using fetch gives CORS error. For now, directly provide URL for Google OAuth */}
-        {/* <Link href="http://localhost:3001/auth/google">
-          <Button className="home-btn" variant="contained">
-            Sign In with Google
-          </Button>
-        </Link> */}
+
       </div>
       
       {/* <div className="home-btn-container">
