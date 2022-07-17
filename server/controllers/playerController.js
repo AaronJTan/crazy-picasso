@@ -7,7 +7,6 @@ const signupPlayer = async (req, res) => {
   let username = req.body.username;
   let email = req.body.email;
   let password = req.body.password;
-  console.log(username);
 
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({ error: "missing inputs" });
@@ -41,32 +40,33 @@ const signupPlayer = async (req, res) => {
   }
 };
 
-// const signinPlayer = async (req, res) => {
-//   console.log("signinPlayer");
+const signinPlayer = async (req, res) => {
+  console.log("signinPlayer");
 
-//   let email = req.body.email;
-//   let password = req.body.password;
+  let username = req.body.username;
+  let password = req.body.password;
 
-//   console.log(req.user.email);
+  console.log(req.user.username);
 
-//   if (!email || !password) {
-//     res.status(400).json({ error: "missing inputs" });
-//   }
+  if (!username || !password) {
+    res.status(400).json({ error: "missing inputs" });
+  }
 
-//   const player = await Player.findOne({ email });
+  const player = await Player.findOne({ username });
 
-//   if (player && (await bcrypt.compare(password, player.password))) {
-//     res.status(200).json({
-//       _id: player.id,
-//       firstName: player.firstName,
-//       lastName: player.lastName,
-//       email: player.email,
-//     });
-//   } else {
-//     res.status(400).json({ error: "login failed, invalid email or password" });
-//   }
-// };
+  if (player && (await bcrypt.compare(password, player.password))) {
+    res.status(200).json({
+      _id: player.id,
+      firstName: player.firstName,
+      lastName: player.lastName,
+      username: player.username,
+    });
+  } else {
+    res.status(400).json({ error: "login failed, invalid username or password" });
+  }
+};
 
 module.exports = {
   signupPlayer,
+  signinPlayer
 };
