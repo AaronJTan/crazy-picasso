@@ -1,10 +1,11 @@
 const router = require("express").Router();
 // const passport = require("passport");
-const { signupPlayer, signinPlayer } = require("../controllers/playerController");
+const { signupPlayer, signinPlayer, logoutPlayer } = require("../controllers/playerController");
 
 // defines endpoints for signup and signin
 router.post("/signup", signupPlayer);
 router.post("/signin", signinPlayer);
+router.get("/logout", logoutPlayer);
 
 // router.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));
 

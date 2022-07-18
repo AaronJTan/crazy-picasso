@@ -7,10 +7,6 @@ const session = require("express-session")
 const passport = require("passport");
 const MongoDBStore = require('connect-mongodb-session')(session);
 
-/* ------------------------------Cookie Session------------------------------*/
-
-// app.use(cookieParser());
-
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
 
@@ -22,8 +18,6 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
-// const connection = mongoose.createConnection(process.env.MDB_URI, { useNewUrlParser: true })
 
 let sessionStore = new MongoDBStore({
   uri: process.env.MDB_URI,

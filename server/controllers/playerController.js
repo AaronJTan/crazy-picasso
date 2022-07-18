@@ -28,6 +28,8 @@ const signupPlayer = async (req, res) => {
   });
 
   if (newPlayer) {
+    req.session.username = newPlayer.username;
+    req.session.email = newPlayer.email;
     res.status(200).json({
       _id: newPlayer.id,
       firstName: newPlayer.firstName,
@@ -45,8 +47,6 @@ const signinPlayer = async (req, res) => {
 
   let username = req.body.username;
   let password = req.body.password;
-
-  console.log(req.user.username);
 
   if (!username || !password) {
     res.status(400).json({ error: "missing inputs" });
@@ -66,7 +66,13 @@ const signinPlayer = async (req, res) => {
   }
 };
 
+const logoutPlayer = (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+}
+
 module.exports = {
   signupPlayer,
-  signinPlayer
+  signinPlayer,
+  logoutPlayer
 };
