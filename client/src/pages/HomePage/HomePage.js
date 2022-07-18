@@ -2,30 +2,44 @@ import { Link } from "@mui/material";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
+import img1 from '../../images/crying-woman.jpg';
+import img2 from '../../images/smily-woman.jpg';
+import img3 from '../../images/monster.jpg';
+import img4 from '../../images/selfie.jpg';
+import 'animate.css';
+
+
 
 const HomePage = () => {
 
   return (
     <>
-      <div className="home-btn-container">
-        {/* <Button className="home-btn" variant="contained" onClick={handleSignup}>
-          Sign Up
-        </Button>
-        <Button className="home-btn" variant="contained" onClick={handleSignin}>
-          Sign In
-        </Button> */}
-        {/* using fetch gives CORS error. For now, directly provide URL for Google OAuth */}
+      <section className="intro">
+        <h1 className="intro-h1 animate__animated animate__rotateIn">
+          <span className="intro-c">C</span>
+          <span className="intro-r">r</span>
+          <span className="intro-a">a</span>
+          <span className="intro-z">z</span>
+          <span className="intro-y">y </span>
+          <span className="">Picasso</span>
+        </h1>
+        <div className="intro-images">
+          <div className="img1 animate__animated animate__backInLeft">
+            <img src={img1} width="200" height="250"/>
+          </div>
+          <div className="img2 animate__animated animate__backInDown">
+            <img src={img2} width="200" height="250"/>
+          </div>
+          <div className="img3 animate__animated animate__backInUp">
+            <img src={img3} width="200" height="250"/>
+          </div>
+          <div className="img4 animate__animated animate__backInRight">
+            <img src={img4} width="200" height="250"/>
+          </div>
+        </div>
 
-      </div>
-      
-      {/* <div className="home-btn-container">
-        <Button className="home-btn" id='private-btn' variant="contained">
-          Create Private
-        </Button>
-        <Button className="home-btn" id='public-btn' variant="contained" onClick={() => navigate('/game-play')}>
-          Join Public
-        </Button>
-      </div> */}
+
+      </section>
     </>
   );
 };
