@@ -69,3 +69,19 @@ body {
   top: 15%;
   left: 5%;  
 }
+
+.intro-buttons { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 300px;
+  margin: 20px auto;
+  gap: 20px;
+}
+
+.intro-button {
+  font-family: 'Indie Flower';
+  font-size: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}

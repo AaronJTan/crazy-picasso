@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleButton from "react-google-button";
+import "./SignInPage.css";
 
 const theme = createTheme();
 
@@ -58,9 +59,6 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -93,7 +91,7 @@ export default function SignIn() {
               Sign In
             </Button>
             <Link href="http://localhost:3001/auth/google">
-              <GoogleButton fullWidth
+              <GoogleButton
                 onClick={() => {
                   console.log("Google button clicked");
                 }}

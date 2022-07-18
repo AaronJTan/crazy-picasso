@@ -5,8 +5,8 @@ import App from "./App";
 import GamePage from "./pages/GamePage/GamePage";
 import HomePage from "./pages/HomePage/HomePage";
 import SignUp from "./pages/SignupPage";
-import SignIn from "./pages/SigninPage";
-import SelectRoomPage from "./pages/SelectRoomPage";
+import SignIn from "./pages/SignInPage/SignInPage";
+import SelectRoomPage from "./pages/SelectRoomPage/SelectRoomPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
