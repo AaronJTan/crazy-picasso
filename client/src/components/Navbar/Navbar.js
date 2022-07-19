@@ -28,12 +28,12 @@ export default function Navbar() {
               Crazy Picasso
             </Link>
           </Typography>
-          <Link component={RouterLink} to="/auth/signup" style={{ textDecoration: "none", color: "black" }}>
+          {/* <Link component={RouterLink} to="/auth/signup" style={{ textDecoration: "none", color: "black" }}>
             <Button color="inherit">Sign up</Button>
           </Link>
           <Link component={RouterLink} to="/auth/signin" style={{ textDecoration: "none", color: "black" }}>
             <Button color="inherit">Log In</Button>
-          </Link>
+          </Link> */}
           {/* <Button color="inherit">Login with Google</Button> */}
         </Toolbar>
       </AppBar>
