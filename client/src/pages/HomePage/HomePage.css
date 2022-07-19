@@ -1,19 +1,81 @@
-.home-btn-container {
+body {
+  font-family: 'Indie Flower', serif;
+}
+
+.intro-h1 {
+  font-size: 11vw;
+  margin-top: 3rem;
+  margin-bottom: 0;
+  min-width: 60vw;
+  width: auto;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+
+.intro-c {
+  color: red;
+}
+
+.intro-r {
+  color: yellow;
+}
+
+.intro-a {
+  color: blue;
+}
+
+.intro-z {
+  color: green;
+}
+
+.intro-y {
+  color: red;
+}
+
+.intro-images {
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-bottom: 50px;
-  margin-top: 50px;
+  align-items: center;
+}
+
+.img1 {
+  /* position: absolute; */
+  /* transform: translate(-30%, 40%); */
+  transform: rotate(10deg);  
+}
+
+.img2 {
+  /* position: absolute; */
+  transform: translate(-90%, 40%);
+  transform: rotate(-10deg);
+  top: 45%;
+  left: 55%;  
+}
+
+.img3 {
+  /* position: absolute; */
+  transform: translate(-30%, 40%);
+  transform: rotate(20deg);
+  top: 45%;
+  left: 25%;
+}
+
+.img4 {
+  /* position: absolute; */
+  transform: translate(-30%, 40%);
+  transform: rotate(-30deg);
+  top: 15%;
+  left: 5%;  
+}
+
+.intro-buttons { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 300px;
+  margin: 20px auto;
   gap: 20px;
 }
 
-#public-btn{
-  transform: rotate(15deg);
-  color: white;
-  background-color: pink;
-  box-shadow: 5px 10px #888888;
-}
-
-#private-btn{
-  transform: rotate(-10deg);
-}
