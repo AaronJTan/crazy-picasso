@@ -17,3 +17,28 @@
 #private-btn{
   transform: rotate(-10deg);
 }
+
+.room-buttons { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 300px;
+  margin: 20px auto;
+  gap: 20px;
+}
+
+.room-button {
+  font-family: 'Indie Flower';
+  font-size: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.private-rooms {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  margin: auto;
+  gap: 20px;
+}

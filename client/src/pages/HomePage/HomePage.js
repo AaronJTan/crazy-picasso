@@ -48,14 +48,14 @@ const HomePage = () => {
 
         <div className="intro-buttons">
           <button
-            className="intro-button animate__animated animate__lightSpeedInLeft animate__delay-2s"
+            className="button animate__animated animate__lightSpeedInLeft animate__delay-2s"
             id="signup"
             onClick={handleSignUp}
           >
             Sign Up
           </button>
           <button
-            className="intro-button animate__animated animate__lightSpeedInRight animate__delay-2s"
+            className="button animate__animated animate__lightSpeedInRight animate__delay-2s"
             onClick={handleSignIn}
           >
             Sign In

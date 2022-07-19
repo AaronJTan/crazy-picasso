@@ -6,9 +6,37 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-image: url('../public/background.jpeg');
+  font-family: 'Indie Flower', serif;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+button {
+  font-family: 'Indie Flower';
+  font-size: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+label {
+  text-align: left;
+  font-size: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 25%;
+  justify-content: center;
+  margin: 0% auto;
+}
+
+input {
+  padding: 5% 0;
+  border-style: ridge;
+  border-radius: 20px;
 }

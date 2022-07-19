@@ -48,70 +48,27 @@ export default function SignIn() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Sign In
-            </Button>
-            <Link href="http://localhost:3001/auth/google">
-              <GoogleButton
-                onClick={() => {
-                  console.log("Google button clicked");
-                }}
-              />
-            </Link>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/auth/signup/" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+    <>
+      <h1 className="animate__animated animate__rotateIn">Sign In</h1>
+      <form>
+        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="fname">Username</label>
+        <input
+          className="animate__animated animate__lightSpeedInRight animate__delay-1s"
+          type="text"
+          id="create-roomcode"
+          name="create-roomcode"
+        />
+        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="fname">Password</label>
+        <input
+          className="animate__animated animate__lightSpeedInRight animate__delay-1s"
+          type="password"
+          id="create-roomcode"
+          name="create-roomcode"
+        />
+        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Username</button>
+        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Google</button>
+        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Facebook</button>
+      </form>
+    </>
   );
 }
