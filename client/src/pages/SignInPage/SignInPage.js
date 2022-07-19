@@ -51,21 +51,26 @@ export default function SignIn() {
     <>
       <h1 className="animate__animated animate__rotateIn">Sign In</h1>
       <form>
-        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="fname">Username</label>
+        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="username">Username</label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
-          id="create-roomcode"
-          name="create-roomcode"
+          name="username"
+          onChange={e => setUsername(e.target.value)}
+          value={username}
+          required
         />
-        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="fname">Password</label>
+        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="password">Password</label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="password"
           id="create-roomcode"
-          name="create-roomcode"
+          name="password"
+          onChange={e => setPassword(e.target.value)}
+          value={password}
+          required
         />
-        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Username</button>
+        <button className="button animate__animated animate__zoomIn animate__delay-2s" onClick={handleSubmit}>Sign In with Username</button>
         <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Google</button>
         <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Facebook</button>
       </form>
