@@ -8,6 +8,7 @@ body {
   background-image: url('../public/background.jpeg');
   font-family: 'Indie Flower', serif;
   cursor: url("./images/cursor.png"), default;
+  
 
 }
 
@@ -20,8 +21,7 @@ button {
   font-family: 'Indie Flower';
   font-size: 20px;
   border-radius: 20px;
-  cursor: pointer;
-  
+  cursor: url("./images/pointer.png"), pointer;  
 }
 
 label {
@@ -49,6 +49,7 @@ input {
   text-indent: 20px;
   font-family: 'Indie Flower', serif;
   font-size: 20px;
+  cursor: url("./images/text-cursor.png"), text;  
 }
 
 input::placeholder {
