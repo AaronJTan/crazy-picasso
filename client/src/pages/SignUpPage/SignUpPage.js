@@ -60,7 +60,7 @@ export default function SignUp() {
 
   return (
     <>
-      <h1 className="animate__animated animate__rotateIn">Sign Up to Become Crazy Picasso!</h1>
+      <h1 className="animate__animated animate__rotateIn">Sign up to become crazy picasso!</h1>
       <form className="sign-up-form">
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"

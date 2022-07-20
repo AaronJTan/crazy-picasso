@@ -49,7 +49,7 @@ export default function SignIn() {
 
   return (
     <>
-      <h1 className="animate__animated animate__rotateIn">Welcome Back!</h1>
+      <h1 className="animate__animated animate__rotateIn">Sign in to play the game!</h1>
       <form>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
