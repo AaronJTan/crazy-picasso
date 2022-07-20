@@ -9,12 +9,23 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const GamePage = () => {
-  const socket = io.connect(process.env.REACT_APP_SERVER_URL);
+  const socket = io.connect(process.env.REACT_APP_SERVER_URL, {autoConnect: false});
+
+  // catch-all lister: any event received by the client will be printied in the console.
+  socket.onAny((event, ...args) => {
+    console.log(event, args);
+  })
 
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
   const location = useLocation();
   const username = location.state.username;
   const roomCode = location.state.roomCode;
+
+  if (username) {
+    socket.auth = { username };
+    socket.connect();
+  }
+  
 
   useEffect(() => {
     socket.emit("join_room", roomCode);
