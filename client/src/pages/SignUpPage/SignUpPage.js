@@ -60,90 +60,61 @@ export default function SignUp() {
 
   return (
     <>
-      <h1 className="animate__animated animate__rotateIn">Sign Up</h1>
+      <h1 className="animate__animated animate__rotateIn">Sign Up to Become Crazy Picasso!</h1>
       <form className="sign-up-form">
-        <label
-          className="animate__animated animate__lightSpeedInLeft animate__delay-1s"
-          for="first-name"
-        >
-          First Name
-        </label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
           id="first-name"
           onChange={e => setFirstName(e.target.value)}
           value={firstName}
+          placeholder="What's your first name...?"
           required
         />
-
-        <label
-          className="animate__animated animate__lightSpeedInLeft animate__delay-1s"
-          for="last-name"
-          
-        >
-          Last Name
-        </label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
           id="last-name"
           onChange={e => setLastName(e.target.value)}
           value={lastName}
+          placeholder="What's your last name...?"
           required
         />
-
-        <label
-          className="animate__animated animate__lightSpeedInLeft animate__delay-1s"
-          for="username"
-        >
-          Username
-        </label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
           id="username"
           onChange={e => setUsername(e.target.value)}
           value={username}
+          placeholder="Create your username..."
           required
         />
-
-        <label
-          className="animate__animated animate__lightSpeedInLeft animate__delay-1s"
-          for="email"
-        >
-          Email
-        </label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
           id="email"
           onChange={e => setEmail(e.target.value)}
           value={email}
+          placeholder="Type your email..."
           required
         />
-
-        <label
-          className="animate__animated animate__lightSpeedInLeft animate__delay-1s"
-          for="password"
-        >
-          Password
-        </label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="password"
           id="password"
           onChange={e => setPassword(e.target.value)}
           value={password}
+          placeholder="Type your password..."
           required
         />
-
-        <button
-          className="button animate__animated animate__zoomIn animate__delay-2s"
-          onClick={handleSubmit}
-        >
-          Sign Up with Username
-        </button>
+        <div className="auth-buttons">
+          <button
+            className="button animate__animated animate__zoomIn animate__delay-2s"
+            onClick={handleSubmit}
+          >
+            Sign Up with Username
+          </button>
+        </div>
       </form>
     </>
   );

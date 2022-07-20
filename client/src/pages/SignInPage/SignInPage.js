@@ -49,18 +49,17 @@ export default function SignIn() {
 
   return (
     <>
-      <h1 className="animate__animated animate__rotateIn">Sign In</h1>
+      <h1 className="animate__animated animate__rotateIn">Welcome Back!</h1>
       <form>
-        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="username">Username</label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="text"
           name="username"
           onChange={e => setUsername(e.target.value)}
+          placeholder="Type your username..."
           value={username}
           required
         />
-        <label className="animate__animated animate__lightSpeedInLeft animate__delay-1s" for="password">Password</label>
         <input
           className="animate__animated animate__lightSpeedInRight animate__delay-1s"
           type="password"
@@ -68,11 +67,14 @@ export default function SignIn() {
           name="password"
           onChange={e => setPassword(e.target.value)}
           value={password}
+          placeholder="Type your password..."
           required
         />
-        <button className="button animate__animated animate__zoomIn animate__delay-2s" onClick={handleSubmit}>Sign In with Username</button>
-        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Google</button>
-        <button className="button animate__animated animate__zoomIn animate__delay-2s">Sign In with Facebook</button>
+        <div className="auth-buttons">
+          <button className="button animate__animated animate__zoomIn animate__delay-2s" onClick={handleSubmit}>Sign In with Username</button>
+          <button className="button animate__animated animate__zoomIn animate__delay-2s" id="google-button">Sign In with Google</button>
+          <button className="button animate__animated animate__zoomIn animate__delay-2s" id="fb-button">Sign In with Facebook</button>
+        </div>
       </form>
     </>
   );
