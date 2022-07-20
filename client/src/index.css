@@ -7,6 +7,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-image: url('../public/background.jpeg');
   font-family: 'Indie Flower', serif;
+  cursor: url("./images/brush.png"), default;
+
 }
 
 code {
@@ -19,6 +21,7 @@ button {
   font-size: 20px;
   border-radius: 20px;
   cursor: pointer;
+  
 }
 
 label {
