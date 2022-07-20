@@ -1,5 +1,5 @@
 html {
-  cursor: url("./images/cursor.png"), move;
+  cursor: url("./images/cursor.png"), default;
   min-height: 100%;
 }
 
