@@ -1,10 +1,6 @@
-import { Button } from "@mui/material";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SelectRoomPage.css";
-import * as React from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 
 const SelectRoomPage = () => {
   const navigate = useNavigate();
@@ -63,33 +59,39 @@ const SelectRoomPage = () => {
 
   return (
     <>
-      <h1>Welcome {username}! Select the room you want to join!</h1>
-      <div className="room-buttons">
-        <button className="room-button animate__animated animate__fadeInUp" onClick={enterPublicRoom}>Join Public</button>
+      <h1>Welcome {username}!</h1>
+      <h1>Play with random players?</h1>
+      
+      <div className="room-select">        
+        <button className="button animate__animated animate__fadeInUp" onClick={enterPublicRoom}>
+          Join Public
+        </button>
       </div>
-      <div className="private-rooms">
-        <div className="animate__animated animate__fadeInUp">
-          <label for="fname">Type Your Room Code</label>
-          <input
-            type="text"
-            id="create-roomcode"
-            name="create-roomcode"
-            onChange={(e) => setNewPrivateCode(e.target.value)}
-            value={newPrivateCode}
-          />
-          <button className="room-button" onClick={createPrivateRoom}>Create Private</button>
-        </div>
-        <div className="animate__animated animate__fadeInUp">
-          <label for="fname">Type Your Room Code</label>
-          <input
-            type="text"
-            id="join-roomcode"
-            name="join-roomcode"
-            onChange={(e) => setExistingPrivateCode(e.target.value)}
-            value={existingPrivateCode}
-          />
-          <button className="button animate__animated animate__fadeInUp" onClick={joinPrivateRoom}>Join Private</button>
-        </div>
+      <h1>Play with friends in private!</h1>
+      <div className="room-select">
+        <input
+          type="text"
+          id="create-roomcode"
+          name="create-roomcode"
+          onChange={(e) => setNewPrivateCode(e.target.value)}
+          value={newPrivateCode}
+          placeholder="Type your roomcode to create..."
+        />
+        <button className="button" onClick={createPrivateRoom}>
+          Create Private
+        </button>
+
+        <input
+          type="text"
+          id="join-roomcode"
+          name="join-roomcode"
+          onChange={(e) => setExistingPrivateCode(e.target.value)}
+          value={existingPrivateCode}
+          placeholder="Type your roomcode to join..."
+        />
+        <button className="button animate__animated animate__fadeInUp" onClick={joinPrivateRoom}>
+          Join Private
+        </button>
       </div>
     </>
   );
