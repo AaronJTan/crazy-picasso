@@ -7,7 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-image: url('../public/background.jpeg');
   font-family: 'Indie Flower', serif;
-  cursor: url("./images/brush.png"), default;
+  cursor: url("./images/cursor.png"), default;
 
 }
 
