@@ -66,34 +66,35 @@ export default function Chat({ username, roomCode, socket }) {
   return (
     <Fragment>
       <Container>
-        <Paper elevation={5}>
+        <Paper elevation={10}>
           <Box p={3}>
-            <Grid container spacing={4} alignItems="center">
-              <Grid id="chat-window" xs={12} item>
-                <List id="chat-window-messages">
-                  {listPrevMessages}
-                  <ListItem ref={scrollBottomRef}></ListItem>
-                </List>
+              <Grid container spacing={4} alignItems="center">
+                {/* Chat Window */}
+                <Grid id="chat-window" xs={12} item>
+                  <List id="chat-window-messages">
+                    {listPrevMessages}
+                    <ListItem ref={scrollBottomRef}></ListItem>
+                  </List>
+                </Grid>
+                {/* Message Input */}
+                <Grid xs={10} item>
+                  <FormControl fullWidth>
+                    <TextField
+                      onChange={handleMessageChange}
+                      onKeyDown={handleEnterKey}
+                      value={message}
+                      label="Type your message..."
+                      variant="outlined"
+                    />
+                  </FormControl>
+                </Grid>
+                {/* Send Message */}
+                <Grid xs={1} item>
+                  <IconButton onClick={sendMessage} aria-label="send" color="primary">
+                    <SendIcon />
+                  </IconButton>
+                </Grid>
               </Grid>
-              {/* Message Input */}
-              <Grid xs={10} item>
-                <FormControl fullWidth>
-                  <TextField
-                    onChange={handleMessageChange}
-                    onKeyDown={handleEnterKey}
-                    value={message}
-                    label="Type your message..."
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              {/* Send Message */}
-              <Grid xs={1} item>
-                <IconButton onClick={sendMessage} aria-label="send" color="primary">
-                  <SendIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
           </Box>
         </Paper>
       </Container>

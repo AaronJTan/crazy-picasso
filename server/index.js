@@ -3,9 +3,9 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 require("dotenv").config();
-const session = require("express-session")
+const session = require("express-session");
 const passport = require("passport");
-const MongoDBStore = require('connect-mongodb-session')(session);
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -21,22 +21,23 @@ mongoose
 
 let sessionStore = new MongoDBStore({
   uri: process.env.MDB_URI,
-  collection: 'sessions'
-})
+  collection: "sessions",
+});
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: sessionStore,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 // equals 1 day
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // equals 1 day
+    },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // Uncomment below for docker run
 
@@ -59,7 +60,7 @@ app.use(express.json());
 const cors = require("cors");
 // app.use(cors());
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   req.header("Access-Control-Allow-Origin", "*");
   req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
@@ -86,7 +87,6 @@ app.use("/private-rooms", privateRoomRoutes);
 
 // google oAuth login
 
-
 /* ------------------------------SOCKET.IO------------------------------*/
 
 const { Server } = require("socket.io");
@@ -98,11 +98,34 @@ const io = new Server(server, {
   },
 });
 
+// Socket middleware to check the username and allow the connection
+io.use((socket, next) => {
+  console.log("io middleware");
+  const username = socket.handshake.auth.username;
+  console.log("io middleware username: ", username);
+  // username is added as an attribute of socket object which can be reused later
+  socket.username = username;
+  next();
+});
+
 io.on("connection", (socket) => {
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined the room: ${data}`);
-  })
+  const users = [];
+  
+  // looping over the io.of("/").sockets object,
+  // a map of all currently connected socket instances indexed by ID
+  for (let [id, socket] of io.of("/").sockets) {
+    if (!users.includes(socket.username)) {
+      users.push(socket.username);
+    }
+  }
+  // send user list to connected clients => gives an error / slowdown
+  // socket.broadcast.emit("users", users);
+
+  socket.on("join_public_room", (data) => {
+    socket.join(data.roomCode);
+    console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
+  });
+
   socket.on("send_message", (data) => {
     socket.to(data.roomCode).emit("receive_message", data);
   });
