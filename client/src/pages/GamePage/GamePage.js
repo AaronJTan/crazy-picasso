@@ -7,7 +7,6 @@ import io from "socket.io-client";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 import PlayersList from "../../components/PlayersList/PlayersList";
 
 const GamePage = () => {
