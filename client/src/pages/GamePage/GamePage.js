@@ -15,46 +15,38 @@ const GamePage = () => {
   const roomCode = location.state.roomCode;
 
   const socket = io(process.env.REACT_APP_SERVER_URL);
+
+  // const socket = io.connect(process.env.REACT_APP_SERVER_URL)
+
+  // send username to socket to construct username list in socket server side
   socket.auth = { username };
   socket.connect();
+
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
   const [users, setUsers] = useState([]);
 
-  // const updateUsers = () => {
-  //   setUsers
-  // }
-
   useEffect(() => {
-    console.log("inside useEffect");
     if (roomCode === "public") {
       socket.emit("join_public_room", { roomCode: roomCode, username: username });
     }
   });
 
-  // socket.on("new_user_connected", (data) => {
-  //   console.log(data);
-
-  // })
-
-  useEffect(() => {
-    socket.on("users", (data) => {
-      console.log("users: ", data);
-      // updateUsers()
-      setUsers(data);
-    });
-  }, []);
-
-  
+  socket.on("users", (data) => {
+    console.log("users: ", data);
+    setUsers(data);
+  });
 
   return (
     <>
-      {paintData.strokeStyle}
+      {/* {paintData.strokeStyle} */}
       <h1>
-        My username is {username}. I join the room code: {roomCode}
+        I'm {username}. 
+      </h1>
+      <h1>
+        I joined the public room!
       </h1>
       
-      <Container maxWidth="xl">
-        
+      <Container maxWidth="xl">        
         <Box sx={{ display: "flex" }}>
           <PlayersList users={users} />
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
