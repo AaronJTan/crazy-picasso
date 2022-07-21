@@ -99,31 +99,28 @@ const io = new Server(server, {
 });
 
 // Socket middleware to check the username and allow the connection
-// io.use((socket, next) => {
-//   console.log("io middleware");
-//   const username = socket.handshake.auth.username;
-//   console.log("io middleware username: ", username);
-//   if (!username) {
-//     return next(new Error("invalid username"));
-//   }
+io.use((socket, next) => {
+  console.log("io middleware");
+  const username = socket.handshake.auth.username;
+  console.log("io middleware username: ", username);
   // username is added as an attribute of socket object which can be reused later
-//   socket.username = username;
-//   next();
-// });
+  socket.username = username;
+  next();
+});
 
 io.on("connection", (socket) => {
-  // const users = [];
+  const users = [];
+  
   // looping over the io.of("/").sockets object,
   // a map of all currently connected socket instances indexed by ID
-  // for (let [id, socket] of io.of("/").sockets) {
-  //   users.push({
-  //     userId: id,
-  //     username: socket.username
-  //   })
-  // }
-  // console.log("before emit users from server");
-  // console.log(users);
-  // socket.emit("users", users);
+  for (let [id, socket] of io.of("/").sockets) {
+    if (!users.includes(socket.username)) {
+      users.push(socket.username);
+    }
+  }
+  console.log("before emit users from server");
+  console.log(users);
+  socket.emit("users", users);
 
   // notify existing users
     // emit to all connected clients
@@ -132,15 +129,17 @@ io.on("connection", (socket) => {
   //   username: socket.username,
   // });
 
-  const users = [];
+  console.log("current user: ", socket.username);
 
   socket.on("join_public_room", (data) => {
+    
     socket.join(data.roomCode);
+    // users.push(data.username);
     if (!users.includes(data.username)) {
       users.push(data.username);
     }
     console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
-    // socket.emit("new_user_connected", users);
+    // socket.broadcast.emit("new_user_connected", users);
   });
 
   socket.on("send_message", (data) => {

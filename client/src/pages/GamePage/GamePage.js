@@ -7,24 +7,45 @@ import io from "socket.io-client";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import PlayersList from "../../components/PlayersList/PlayersList";
 
 const GamePage = () => {
-  
   const location = useLocation();
   const username = location.state.username;
   const roomCode = location.state.roomCode;
 
-  const socket = io.connect(process.env.REACT_APP_SERVER_URL);     
+  const socket = io(process.env.REACT_APP_SERVER_URL);
+  socket.auth = { username };
+  socket.connect();
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
-  const [users, setUsers] = useState(['abc']);  
+  const [users, setUsers] = useState([]);
+
+  // const updateUsers = () => {
+  //   setUsers
+  // }
 
   useEffect(() => {
     console.log("inside useEffect");
-    if (roomCode === 'public') {
-      socket.emit("join_public_room", {roomCode: roomCode, username: username});
+    if (roomCode === "public") {
+      socket.emit("join_public_room", { roomCode: roomCode, username: username });
     }
   });
+
+  // socket.on("new_user_connected", (data) => {
+  //   console.log(data);
+
+  // })
+
+  useEffect(() => {
+    socket.on("users", (data) => {
+      console.log("users: ", data);
+      // updateUsers()
+      setUsers(data);
+    });
+  }, []);
+
+  
 
   return (
     <>
@@ -32,9 +53,11 @@ const GamePage = () => {
       <h1>
         My username is {username}. I join the room code: {roomCode}
       </h1>
+      
       <Container maxWidth="xl">
+        
         <Box sx={{ display: "flex" }}>
-          <Typography>{users}</Typography>
+          <PlayersList users={users} />
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Canvas socket={socket} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
