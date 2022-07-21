@@ -24,11 +24,6 @@ button {
   cursor: url("./images/pointer.png"), pointer;
 }
 
-label {
-  text-align: left;
-  font-size: 25px;
-}
-
 h1 {
   font-size: 40px;
 }
@@ -43,7 +38,7 @@ form {
 }
 
 input {
-  padding: 5% 0;
+  padding: 2% 0;
   border-style: ridge;
   border-radius: 20px;
   text-indent: 20px;
@@ -53,7 +48,6 @@ input {
 }
 
 input::placeholder {
-  /* text-align: center; */
   font-family: "Indie Flower", serif;
   font-size: 20px;
 }
