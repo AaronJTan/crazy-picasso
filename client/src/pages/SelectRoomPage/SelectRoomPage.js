@@ -63,7 +63,7 @@ const SelectRoomPage = () => {
       <h1>Play with random players?</h1>
       
       <div className="room-select">        
-        <button className="button animate__animated animate__fadeInUp" onClick={enterPublicRoom}>
+        <button className="button animate__fadeInUp" id="join-public" onClick={enterPublicRoom}>
           Join Public
         </button>
       </div>
@@ -77,7 +77,7 @@ const SelectRoomPage = () => {
           value={newPrivateCode}
           placeholder="Type your roomcode to create..."
         />
-        <button className="button" onClick={createPrivateRoom}>
+        <button className="button animate__fadeInUp" id="create-private" onClick={createPrivateRoom}>
           Create Private
         </button>
 
@@ -89,7 +89,7 @@ const SelectRoomPage = () => {
           value={existingPrivateCode}
           placeholder="Type your roomcode to join..."
         />
-        <button className="button animate__animated animate__fadeInUp" onClick={joinPrivateRoom}>
+        <button className="button animate__fadeInUp" id="join-private" onClick={joinPrivateRoom}>
           Join Private
         </button>
       </div>
