@@ -1,5 +1,5 @@
 import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
-import { Fragment } from "react";
+
 
 const PlayersList = ({ users }) => {
   const playersList = users.map((user, index) => (

@@ -118,28 +118,12 @@ io.on("connection", (socket) => {
       users.push(socket.username);
     }
   }
-  console.log("before emit users from server");
-  console.log(users);
-  socket.emit("users", users);
-
-  // notify existing users
-    // emit to all connected clients
-  // socket.broadcast.emit("user connected", {
-  //   userID: socket.id,
-  //   username: socket.username,
-  // });
-
-  console.log("current user: ", socket.username);
+  // send user list to connected clients => gives an error / slowdown
+  // socket.broadcast.emit("users", users);
 
   socket.on("join_public_room", (data) => {
-    
     socket.join(data.roomCode);
-    // users.push(data.username);
-    if (!users.includes(data.username)) {
-      users.push(data.username);
-    }
     console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
-    // socket.broadcast.emit("new_user_connected", users);
   });
 
   socket.on("send_message", (data) => {
