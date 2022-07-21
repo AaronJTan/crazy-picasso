@@ -8,6 +8,7 @@ import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PlayersList from "../../components/PlayersList/PlayersList";
+import RandomWords from "../../components/RandomWords/RandomWords";
 
 const GamePage = () => {
   const location = useLocation();
@@ -39,21 +40,17 @@ const GamePage = () => {
   return (
     <>
       {/* {paintData.strokeStyle} */}
-      <h1>
-        I'm {username}. 
-      </h1>
-      <h1>
-        I joined the public room!
-      </h1>
+
+      <h1>I'm {username}. I joined the public room!</h1>
       
-      <Container maxWidth="xl">        
+      <Container maxWidth="xl">
+        <RandomWords />
         <Box sx={{ display: "flex" }}>
           <PlayersList users={users} />
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Canvas socket={socket} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-
           <Chat username={username} roomCode={roomCode} socket={socket} />
         </Box>
       </Container>
