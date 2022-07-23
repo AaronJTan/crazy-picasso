@@ -55,6 +55,8 @@ const signinPlayer = async (req, res) => {
   const player = await Player.findOne({ username });
 
   if (player && (await bcrypt.compare(password, player.password))) {
+    req.session.username = player.username;
+
     res.status(200).json({
       _id: player.id,
       firstName: player.firstName,
@@ -71,8 +73,17 @@ const logoutPlayer = (req, res) => {
   res.redirect('/');
 }
 
+const currentPlayer = (req, res) => {
+  if (!req.session.username) {
+    res.status(400).json({ error: "user not logged in"});
+  }
+
+  res.status(200).json({username: req.session.username});
+}
+
 module.exports = {
   signupPlayer,
   signinPlayer,
-  logoutPlayer
+  logoutPlayer,
+  currentPlayer
 };

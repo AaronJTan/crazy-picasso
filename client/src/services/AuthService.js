@@ -14,11 +14,23 @@ const login = async (loginPayload) => {
         throw (data);
     }
 
-    localStorage.setItem("user", JSON.stringify(body));
+    return data;
+}
+
+const getPlayer = async () => {
+    const response = await fetch("/auth/player/");
+
+    let body = await response.json();
+    let data = {status: response.status, body};
+    
+    if (!response.ok) {
+        throw (data);
+    }
 
     return data;
 }
 
 export default {
-    login
+    login,
+    getPlayer
 }
