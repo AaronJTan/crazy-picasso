@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
+import AuthService from "../../services/AuthService"
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -8,27 +9,15 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    console.log("handleSubmit");
     event.preventDefault();
-    const player = { username, password };
+    const loginPayload = { username, password };
 
-    await fetch("/auth/signin/", {
-      method: "POST",
-      body: JSON.stringify(player),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      console.log("fetch /auth/signin/ ???");
+    AuthService.login(loginPayload).then((response) => {
+      navigate("/select-room", { state: { username: username } });
+    })
+    .catch((response) => {
       setUsername("");
       setPassword("");
-      if (!res.ok) {
-        console.log("res not okay for signin");
-        navigate("/auth/signin");
-      } else {
-        console.log("res okay for signin");
-        navigate("/select-room", { state: { username: username } });
-      }
     });
   };
 
