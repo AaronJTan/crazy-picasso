@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = () => {
+const SelectRoomPage = ({usernameP}) => {
   const navigate = useNavigate();
   const location = useLocation();
   // navigate can send data as state
   // received from SigninPage
-  const username = location.state.username;
+  const username = usernameP || location.state.username;
   const [newPrivateCode, setNewPrivateCode] = useState("");
   const [existingPrivateCode, setExistingPrivateCode] = useState("");
 
@@ -27,7 +27,7 @@ const SelectRoomPage = () => {
       if (res.ok) {
         navigate("/game-play", { state: { username: username, roomCode: newPrivateCode } });
       } else {
-        navigate("/select-room", { state: { username: username } });
+        navigate("/", { state: { username: username } });
       }
     });
   };
@@ -47,7 +47,7 @@ const SelectRoomPage = () => {
       if (res.ok) {
         navigate("/game-play", { state: { username: username, roomCode: existingPrivateCode } });
       } else {
-        navigate("/select-room", { state: { username: username } });
+        navigate("/", { state: { username: username } });
       }
     });
   };

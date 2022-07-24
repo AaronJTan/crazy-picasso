@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BaseLayout from "../../layouts/BaseLayout";
 
 import "./SignUpPage.css";
 
@@ -39,13 +40,13 @@ export default function SignUp() {
         navigate("/auth/signup");
       } else {
         console.log("signup okay");
-        navigate("/select-room", { state: { username: username } });
+        navigate("/", { state: { username: username } });
       }
     });
   };
 
   return (
-    <>
+    <BaseLayout>
       {/* animations disabled by removing animate__animated from className */}
       <h1 className="animate__rotateIn">Sign up to become crazy picasso!</h1>
       <form className="sign-up-form">
@@ -103,6 +104,6 @@ export default function SignUp() {
           </button>
         </div>
       </form>
-    </>
+    </BaseLayout>
   );
 }

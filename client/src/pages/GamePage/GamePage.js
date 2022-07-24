@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
+import BaseLayout from "../../layouts/BaseLayout";
 
 const GamePage = () => {
   const location = useLocation();
@@ -38,11 +39,11 @@ const GamePage = () => {
   });
 
   return (
-    <>
+    <BaseLayout>
       {/* {paintData.strokeStyle} */}
 
       <h1>I'm {username}. I joined the public room!</h1>
-      
+
       <Container maxWidth="xl">
         <RandomWords />
         <Box sx={{ display: "flex" }}>
@@ -56,7 +57,7 @@ const GamePage = () => {
       </Container>
 
       <br />
-    </>
+    </BaseLayout>
   );
 };
 

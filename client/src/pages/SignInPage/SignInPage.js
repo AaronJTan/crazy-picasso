@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import AuthService from "../../services/AuthService"
+import BaseLayout from "../../layouts/BaseLayout";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -13,16 +14,16 @@ export default function SignIn() {
     const loginPayload = { username, password };
 
     AuthService.login(loginPayload).then((response) => {
-      navigate("/select-room", { state: { username: username } });
+      navigate("/", { state: { username: username } });
     })
-    .catch((response) => {
-      setUsername("");
-      setPassword("");
-    });
+      .catch((response) => {
+        setUsername("");
+        setPassword("");
+      });
   };
 
   return (
-    <>
+    <BaseLayout>
       {/* animations disabled by removing animate__animated from className */}
       <h1 className="animate__rotateIn">Sign in to play the game!</h1>
       <form>
@@ -51,6 +52,6 @@ export default function SignIn() {
           <button className="button animate__zoomIn animate__delay-2s" id="fb-button">Sign In with Facebook</button>
         </div>
       </form>
-    </>
+    </BaseLayout>
   );
 }

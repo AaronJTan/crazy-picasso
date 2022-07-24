@@ -15,13 +15,10 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />}>
-          <Route index element={<HomePage />} />
-          <Route path="/game-play" element={<GamePage />} />
-          <Route path="/auth/signup/" element={<SignUp />} />
-          <Route path="/auth/signin/" element={<SignIn />} />
-          <Route path="/select-room" element={<SelectRoomPage />} />
-        </Route>
+        <Route path="/" element={<App />} />
+        <Route path="/auth/signup/" element={<SignUp />} />
+        <Route path="/auth/signin/" element={<SignIn />} />
+        <Route path="/game-play" element={<GamePage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
