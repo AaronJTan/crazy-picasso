@@ -1,17 +1,33 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseLayout from "../../layouts/BaseLayout";
+import AuthService from "../../services/AuthService";
 
 import "./SignUpPage.css";
 
 export default function SignUp() {
+  const [user, setUser] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    AuthService.getPlayer().then((response) => {
+      setUser(response.body.username);
+    })
+      .catch((response) => {
+        setUser(null);
+      });
+  }, [])
+
+  if (user) {
+    navigate("/");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
