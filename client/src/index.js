@@ -16,8 +16,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/auth/signup/" element={<SignUp />} />
-        <Route path="/auth/signin/" element={<SignIn />} />
+        <Route path="/signup/" element={<SignUp />} />
+        <Route path="/signin/" element={<SignIn />} />
         <Route path="/game-play" element={<GamePage />} />
       </Routes>
     </BrowserRouter>

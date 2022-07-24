@@ -37,7 +37,7 @@ export default function SignUp() {
       setPassword("");
       if (!res.ok) {
         console.log("signup not okay");
-        navigate("/auth/signup");
+        navigate("/signup");
       } else {
         console.log("signup okay");
         navigate("/", { state: { username: username } });
