@@ -17,6 +17,10 @@ const login = async (loginPayload) => {
     return data;
 }
 
+const logout = async () => {
+    await fetch("/auth/logout/");
+}
+
 const getPlayer = async () => {
     const response = await fetch("/auth/player/");
 
@@ -32,5 +36,6 @@ const getPlayer = async () => {
 
 export default {
     login,
+    logout,
     getPlayer
 }

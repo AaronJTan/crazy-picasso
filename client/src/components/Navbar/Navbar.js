@@ -12,14 +12,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useEffect, useState } from 'react';
 import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import AuthService from '../../services/AuthService';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 const pages = [];
-const settings = ['Logout'];
 
 const HamburgerMenuMenu = (props) => {
   const { handleOpenNavMenu, anchorElNav, handleCloseNavMenu } = props;
@@ -82,6 +79,7 @@ const HamburgerMenuMenu = (props) => {
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
@@ -97,6 +95,7 @@ const Navbar = () => {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -109,6 +108,12 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    AuthService.logout();
+    navigate("/");
+    window.location.reload();
+  }
+
   return (
     <AppBar position="static" color='transparent'>
       <Container maxWidth="xl" sx={{ backgroundColor: "white" }}>
@@ -117,7 +122,7 @@ const Navbar = () => {
             variant="h4"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: 2}}
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}
           >
             <Link component={RouterLink} to="/" style={{ textDecoration: "none", color: "black" }}>
               Crazy Picasso
@@ -166,11 +171,11 @@ const Navbar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+
               </Menu>
             </Box>
           }
