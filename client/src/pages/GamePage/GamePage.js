@@ -6,15 +6,13 @@ import Container from "@mui/material/Container";
 import io from "socket.io-client";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
 import BaseLayout from "../../layouts/BaseLayout";
 
-const GamePage = () => {
-  const location = useLocation();
-  const username = location.state.username;
-  const roomCode = location.state.roomCode;
+const GamePage = ({roomDetails}) => {
+  const username = roomDetails.username;
+  const roomCode = roomDetails.roomCode;
 
   const socketRef = useRef(null);
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
@@ -48,7 +46,7 @@ const GamePage = () => {
   }
   
   return (
-    <BaseLayout>
+    <>
       {/* {paintData.strokeStyle} */}
 
       <h1>I'm {username}. I joined the public room!</h1>
@@ -66,7 +64,7 @@ const GamePage = () => {
       </Container>
 
       <br />
-    </BaseLayout>
+    </>
   );
 };
 

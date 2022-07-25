@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = ({usernameP}) => {
+const SelectRoomPage = ({setRoomDetails, user}) => {
   const navigate = useNavigate();
-  const location = useLocation();
   // navigate can send data as state
   // received from SigninPage
-  const username = usernameP || location.state.username;
+  const username = user;
   const [newPrivateCode, setNewPrivateCode] = useState("");
   const [existingPrivateCode, setExistingPrivateCode] = useState("");
 
@@ -54,7 +53,7 @@ const SelectRoomPage = ({usernameP}) => {
 
   const enterPublicRoom = (e) => {
     e.preventDefault();
-    navigate("/game-play", { state: { username: username, roomCode: "public" } });
+    setRoomDetails({ username: username, roomCode: "public" })
   };
 
   return (

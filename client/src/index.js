@@ -18,7 +18,6 @@ root.render(
         <Route path="/" element={<App />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/game-play" element={<GamePage />} />
       </Routes>
     </BrowserRouter>
   // </React.StrictMode>
