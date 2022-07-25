@@ -85,11 +85,12 @@ const Navbar = () => {
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
-      setUser(response.body.username);
-    })
-      .catch((response) => {
+      if (response.body.username) {
+        setUser(response.body.username);
+      } else {
         setUser(null);
-      });
+      }
+    })
   }, [])
 
   const handleOpenNavMenu = (event) => {

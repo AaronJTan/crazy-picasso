@@ -5,23 +5,17 @@ import AuthService from "../../services/AuthService"
 import BaseLayout from "../../layouts/BaseLayout";
 
 export default function SignIn() {
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
-      setUser(response.body.username);
+      if (response.body.username) {
+        navigate("/");
+      } 
     })
-      .catch((response) => {
-        setUser(null);
-      });
   }, [])
-
-  if (user) {
-    navigate("/");
-  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();

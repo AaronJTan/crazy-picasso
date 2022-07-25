@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import './App.css';
-import Navbar from './components/Navbar/Navbar';
 import BaseLayout from './layouts/BaseLayout';
 import HomePage from './pages/HomePage/HomePage';
 import SelectRoomPage from './pages/SelectRoomPage/SelectRoomPage';
@@ -13,11 +11,12 @@ function App() {
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
-      setUser(response.body.username);
-    })
-      .catch((response) => {
+      if (response.body.username) {
+        setUser(response.body.username);
+      } else {
         setUser(null);
-      });
+      }
+    })
   }, [])
 
   return (

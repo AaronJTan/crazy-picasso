@@ -8,7 +8,6 @@ import AuthService from "../../services/AuthService";
 import "./SignUpPage.css";
 
 export default function SignUp() {
-  const [user, setUser] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
@@ -18,16 +17,11 @@ export default function SignUp() {
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
-      setUser(response.body.username);
+      if (response.body.username) {
+        navigate("/");
+      } 
     })
-      .catch((response) => {
-        setUser(null);
-      });
   }, [])
-
-  if (user) {
-    navigate("/");
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
