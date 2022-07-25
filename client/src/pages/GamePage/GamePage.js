@@ -59,7 +59,7 @@ const GamePage = ({roomDetails}) => {
             <Canvas socketRef={socketRef} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-          {/* <Chat username={username} roomCode={roomCode} socketRef={socketRef} /> */}
+          <Chat username={username} roomCode={roomCode} socketRef={socketRef} />
         </Box>
       </Container>
 
