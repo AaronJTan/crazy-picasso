@@ -119,11 +119,13 @@ io.on("connection", (socket) => {
     }
   }
   // send user list to connected clients => gives an error / slowdown
-  // socket.broadcast.emit("users", users);
+  socket.broadcast.emit("user_joined", users);
 
-  socket.on("join_public_room", (data) => {
+  socket.on("join_public_room", (data, callback) => {
     socket.join(data.roomCode);
     console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
+
+    callback({users: users});
   });
 
   socket.on("send_message", (data) => {

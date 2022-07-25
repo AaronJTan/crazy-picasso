@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import io from "socket.io-client";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
@@ -16,28 +16,37 @@ const GamePage = () => {
   const username = location.state.username;
   const roomCode = location.state.roomCode;
 
-  const socket = io(process.env.REACT_APP_SERVER_URL);
-
-  // const socket = io.connect(process.env.REACT_APP_SERVER_URL)
-
-  // send username to socket to construct username list in socket server side
-  socket.auth = { username };
-  socket.connect();
-
+  const socketRef = useRef(null);
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
   const [users, setUsers] = useState([]);
+  const [wait, setWait] = useState(true);
 
   useEffect(() => {
+    socketRef.current = io(process.env.REACT_APP_SERVER_URL);
+    // send username to socket to construct username list in socket server side
+    socketRef.current.auth = { username };
+    socketRef.current.connect();
+    setWait(false);
+    
     if (roomCode === "public") {
-      socket.emit("join_public_room", { roomCode: roomCode, username: username });
+      socketRef.current.emit("join_public_room", { roomCode: roomCode, username: username }, (response) => {
+        setUsers(response.users);
+      });
     }
-  });
+    
+    socketRef.current.on("user_joined", (users) => {
+      setUsers(users);
+    });
+  }, [])
 
-  socket.on("users", (data) => {
-    console.log("users: ", data);
-    setUsers(data);
-  });
-
+  if (wait) {
+    return (
+      <BaseLayout>
+        TEST
+      </BaseLayout>
+    );
+  }
+  
   return (
     <BaseLayout>
       {/* {paintData.strokeStyle} */}
@@ -49,10 +58,10 @@ const GamePage = () => {
         <Box sx={{ display: "flex" }}>
           <PlayersList users={users} />
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <Canvas socket={socket} paintData={paintData} />
+            <Canvas socketRef={socketRef} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-          <Chat username={username} roomCode={roomCode} socket={socket} />
+          {/* <Chat username={username} roomCode={roomCode} socketRef={socketRef} /> */}
         </Box>
       </Container>
 
