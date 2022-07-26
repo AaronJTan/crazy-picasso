@@ -26,10 +26,10 @@ function App() {
     }
 
     if (!roomDetails) {
-      return <SelectRoomPage setRoomDetails={setRoomDetails} user={user} />;
+      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} />;
     }
 
-    return <GamePage roomDetails={roomDetails} />;
+    return <GamePage user={user} roomDetails={roomDetails} />;
   }
 
   return (

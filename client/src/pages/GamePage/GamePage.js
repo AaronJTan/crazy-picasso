@@ -10,8 +10,8 @@ import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
 import BaseLayout from "../../layouts/BaseLayout";
 
-const GamePage = ({roomDetails}) => {
-  const username = roomDetails.username;
+const GamePage = ({user, roomDetails}) => {
+  const username = user;
   const roomCode = roomDetails.roomCode;
 
   const socketRef = useRef(null);
@@ -27,7 +27,7 @@ const GamePage = ({roomDetails}) => {
     setWait(false);
     
     if (roomCode === "public") {
-      socketRef.current.emit("join_public_room", { roomCode: roomCode, username: username }, (response) => {
+      socketRef.current.emit("join_public_room", { roomCode: roomCode }, (response) => {
         setUsers(response.users);
       });
     }
@@ -44,15 +44,13 @@ const GamePage = ({roomDetails}) => {
   if (wait) {
     return (
       <BaseLayout>
-        TEST
+        Wait for users
       </BaseLayout>
     );
   }
   
   return (
     <>
-      {/* {paintData.strokeStyle} */}
-
       <h1>I'm {username}. I joined the public room!</h1>
 
       <Container maxWidth="xl">

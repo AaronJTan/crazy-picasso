@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = ({setRoomDetails, user}) => {
+const SelectRoomPage = ({user, setRoomDetails}) => {
   const navigate = useNavigate();
-  // navigate can send data as state
-  // received from SigninPage
-  const username = user;
   const [newPrivateCode, setNewPrivateCode] = useState("");
   const [existingPrivateCode, setExistingPrivateCode] = useState("");
-
+  const username = user;
+  
   const createPrivateRoom = async (e) => {
     e.preventDefault();
     // setPrivateRooms([...privateRooms, newPrivateCode]);
@@ -53,7 +51,7 @@ const SelectRoomPage = ({setRoomDetails, user}) => {
 
   const enterPublicRoom = (e) => {
     e.preventDefault();
-    setRoomDetails({ username: username, roomCode: "public" })
+    setRoomDetails({ roomCode: "public" })
   };
 
   return (
