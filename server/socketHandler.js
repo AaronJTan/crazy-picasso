@@ -1,18 +1,21 @@
 const users = [];
 
-const addUserToUsersList = (io, username) => {
-  // looping over the io.of("/").sockets object,
-  // a map of all currently connected socket instances indexed by ID
-  for (let [id, socket] of io.of("/").sockets) {
-    if (!users.includes(username)) {
-      users.push(username);
-    }
+const User = (function() {
+  return function User(username, roomCode) {
+    this.username = username;
+    this.roomCode = roomCode;
   }
+})();
+
+const addUserToUsersList = (io, username) => {
+  let user = new User(username, "public");
+  users.push(user);
+
 }
 
 const deleteUserFromList = (username) => {
-  let index = users.findIndex((user) => {
-    return user === username;
+  let index = users.findIndex((userObj) => {
+    return userObj.username === username;
   })
 
   users.splice(index, 1);
@@ -29,10 +32,10 @@ const listen = (io) => {
   });
 
   io.on("connection", (socket) => {
-    addUserToUsersList(io, socket.username);
-
     
     socket.on("join_public_room", (callback) => {
+      addUserToUsersList(io, socket.username);
+
       let roomCode = "public";
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
