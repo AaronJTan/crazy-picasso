@@ -35,6 +35,10 @@ const GamePage = ({roomDetails}) => {
     socketRef.current.on("user_joined", (users) => {
       setUsers(users);
     });
+
+    socketRef.current.on("user_disconnected", (users) => {
+      setUsers(users);
+    });
   }, [])
 
   if (wait) {

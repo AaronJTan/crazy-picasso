@@ -108,8 +108,8 @@ io.use((socket, next) => {
   next();
 });
 
+const users = [];
 io.on("connection", (socket) => {
-  const users = [];
   
   // looping over the io.of("/").sockets object,
   // a map of all currently connected socket instances indexed by ID
@@ -120,6 +120,8 @@ io.on("connection", (socket) => {
   }
   // send user list to connected clients => gives an error / slowdown
   socket.broadcast.emit("user_joined", users);
+  socket.to("public").emit("receive_message", { roomCode: "public", author: socket.username, message: "JOINED THE GAME" });
+  console.log(users);
 
   socket.on("join_public_room", (data, callback) => {
     socket.join(data.roomCode);
@@ -134,6 +136,17 @@ io.on("connection", (socket) => {
 
   socket.on("drawing", (data) => {
     socket.broadcast.emit("live_drawing", data);
+  });
+
+  socket.on("disconnect", (reason) => {
+    let index = users.findIndex((user) => {
+      return user == socket.username;
+    })
+
+    users.splice(index, 1);
+
+    socket.broadcast.emit("user_disconnected", users);
+    socket.to("public").emit("receive_message", { roomCode: "public", author: socket.username, message: "LEFT THE GAME" });
   });
 });
 
