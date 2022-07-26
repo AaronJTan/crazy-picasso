@@ -25,7 +25,7 @@ const GamePage = ({user}) => {
     socketRef.current.connect();
     setWait(false);
     
-    socketRef.current.emit("join_public_room", {}, (response) => {
+    socketRef.current.emit("join_public_room", (response) => {
       setUsers(response.users);
     });
     

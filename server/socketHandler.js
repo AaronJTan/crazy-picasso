@@ -32,7 +32,7 @@ const listen = (io) => {
     addUserToUsersList(io, socket.username);
 
     
-    socket.on("join_public_room", (data, callback) => {
+    socket.on("join_public_room", (callback) => {
       let roomCode = "public";
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
