@@ -1,4 +1,4 @@
-const users = [];
+const users = new Map();
 
 const User = (function() {
   return function User(username, roomCode) {
@@ -7,18 +7,33 @@ const User = (function() {
   }
 })();
 
-const addUserToUsersList = (io, username) => {
-  let user = new User(username, "public");
-  users.push(user);
-
+const addUserToRoom = (username, roomCode) => {
+  let user = new User(username, roomCode);
+  
+  if (!users.has(roomCode)) {
+    users.set(roomCode, [user]);
+  } else {
+    let usersInRoom = users.get(roomCode);
+    usersInRoom.push(user);
+  }
 }
 
-const deleteUserFromList = (username) => {
-  let index = users.findIndex((userObj) => {
+const getUsersInRoom = (roomCode) => {
+  let usersInRoom = users.get(roomCode);
+
+  return usersInRoom;
+}
+
+const removeUserFromRoom = (roomCode, username) => {
+  let usersInRoom = users.get(roomCode);
+  
+  let index = usersInRoom.findIndex((userObj) => {
     return userObj.username === username;
   })
 
-  users.splice(index, 1);
+  usersInRoom.splice(index, 1);
+
+  return usersInRoom;
 }
 
 const listen = (io) => {
@@ -34,34 +49,33 @@ const listen = (io) => {
   io.on("connection", (socket) => {
     
     socket.on("join_public_room", (callback) => {
-      addUserToUsersList(io, socket.username);
-
       let roomCode = "public";
+      socket.roomCode = roomCode;
+      addUserToRoom(socket.username, roomCode);
+
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
       
-      socket.to(roomCode).emit("user_joined", users);
+      let usersInRoom = getUsersInRoom(roomCode);
+      socket.to(roomCode).emit("user_joined", usersInRoom);
       socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
-      callback({ users: users });
+      callback({ users: usersInRoom });
     });
 
     socket.on("send_message", (data) => {
-      let roomCode = "public";
-      socket.to(roomCode).emit("receive_message", data);
+      socket.to(socket.roomCode).emit("receive_message", data);
     });
 
     socket.on("drawing", (data) => {
-      let roomCode = "public";
-      socket.to(roomCode).emit("live_drawing", data.socketData);
+      socket.to(socket.roomCode).emit("live_drawing", data.socketData);
     });
 
     socket.on("disconnect", () => {
-      let roomCode = "public";
-      deleteUserFromList(socket.username);
+      let usersInRoom = removeUserFromRoom(socket.roomCode, socket.username);
 
-      socket.to(roomCode).emit("user_disconnected", users);
-      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
+      socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
+      socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
     });
   });
 }
