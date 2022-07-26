@@ -13,7 +13,7 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 
-export default function Chat({ username, roomCode, socketRef }) {
+export default function Chat({ username, socketRef }) {
   const ENTER_KEY_CODE = 13;
   const scrollBottomRef = useRef(null);
   const [prevMessages, setPrevMessages] = useState([]);
@@ -23,7 +23,7 @@ export default function Chat({ username, roomCode, socketRef }) {
     socketRef.current.on("receive_message", (data) => {
       setPrevMessages([
         ...prevMessages,
-        { roomCode: roomCode, author: data.author, message: data.message },
+        { author: data.author, message: data.message },
       ]);
     });
     if (scrollBottomRef.current) {
@@ -46,11 +46,11 @@ export default function Chat({ username, roomCode, socketRef }) {
     if (message) {
       // send current message with author info using socket io
       // the message data will be broadcasted to other players
-      socketRef.current.emit("send_message", { roomCode: roomCode, author: username, message: message });
+      socketRef.current.emit("send_message", { author: username, message: message });
       // update previous message list
       setPrevMessages([
         ...prevMessages,
-        { roomCode: roomCode, author: username, message: message },
+        { author: username, message: message },
       ]);
       // set current message back to empty string
       setMessage("");

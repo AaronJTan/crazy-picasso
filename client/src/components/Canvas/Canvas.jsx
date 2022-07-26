@@ -65,7 +65,7 @@ function Canvas({ socketRef, paintData }) {
             ctx.closePath();
             ctx.stroke();
 
-            socketRef.current.emit("drawing", socketData);
+            socketRef.current.emit("drawing", { socketData });
         };
     }, [paintData]);
 

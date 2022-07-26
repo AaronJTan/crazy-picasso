@@ -31,29 +31,34 @@ const listen = (io) => {
   io.on("connection", (socket) => {
     addUserToUsersList(io, socket.username);
 
-    socket.broadcast.emit("user_joined", users);
-    socket.to("public").emit("receive_message", { roomCode: "public", author: socket.username, message: "JOINED THE GAME" });
-
+    
     socket.on("join_public_room", (data, callback) => {
-      socket.join(data.roomCode);
-      console.log(`User with ID: ${socket.id} ${socket.username} joined the public room`);
+      let roomCode = "public";
+      socket.join(roomCode);
+      console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
+      
+      socket.to(roomCode).emit("user_joined", users);
+      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
       callback({ users: users });
     });
 
     socket.on("send_message", (data) => {
-      socket.to(data.roomCode).emit("receive_message", data);
+      let roomCode = "public";
+      socket.to(roomCode).emit("receive_message", data);
     });
 
     socket.on("drawing", (data) => {
-      socket.broadcast.emit("live_drawing", data);
+      let roomCode = "public";
+      socket.to(roomCode).emit("live_drawing", data.socketData);
     });
 
     socket.on("disconnect", () => {
+      let roomCode = "public";
       deleteUserFromList(socket.username);
 
-      socket.broadcast.emit("user_disconnected", users);
-      socket.to("public").emit("receive_message", { roomCode: "public", author: socket.username, message: "LEFT THE GAME" });
+      socket.to(roomCode).emit("user_disconnected", users);
+      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
     });
   });
 }

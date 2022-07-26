@@ -10,9 +10,8 @@ import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
 import BaseLayout from "../../layouts/BaseLayout";
 
-const GamePage = ({user, roomDetails}) => {
+const GamePage = ({user}) => {
   const username = user;
-  const roomCode = roomDetails.roomCode;
 
   const socketRef = useRef(null);
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
@@ -26,11 +25,9 @@ const GamePage = ({user, roomDetails}) => {
     socketRef.current.connect();
     setWait(false);
     
-    if (roomCode === "public") {
-      socketRef.current.emit("join_public_room", { roomCode: roomCode }, (response) => {
-        setUsers(response.users);
-      });
-    }
+    socketRef.current.emit("join_public_room", {}, (response) => {
+      setUsers(response.users);
+    });
     
     socketRef.current.on("user_joined", (users) => {
       setUsers(users);
@@ -61,7 +58,7 @@ const GamePage = ({user, roomDetails}) => {
             <Canvas socketRef={socketRef} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-          <Chat username={username} roomCode={roomCode} socketRef={socketRef} />
+          <Chat username={username} socketRef={socketRef} />
         </Box>
       </Container>
 
