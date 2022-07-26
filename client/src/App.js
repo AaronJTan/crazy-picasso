@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './App.css';
 import BaseLayout from './layouts/BaseLayout';
 import GamePage from './pages/GamePage/GamePage';
 import HomePage from './pages/HomePage/HomePage';
 import SelectRoomPage from './pages/SelectRoomPage/SelectRoomPage';
 import AuthService from './services/AuthService';
+import io from "socket.io-client";
 
 function App() {
+  const socketRef = useRef(null);
   const [user, setUser] = useState(null);
-  const [roomDetails, setRoomDetails] = useState(null);
+  const [roomDetails, setRoomDetails] = useState({type: null});
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
@@ -18,18 +20,27 @@ function App() {
         setUser(null);
       }
     })
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (user != null) {
+      socketRef.current = io(process.env.REACT_APP_SERVER_URL);
+      // send username to socket to construct username list in socket server side
+      socketRef.current.auth = { username: user };
+      socketRef.current.connect();
+    }
+  }, [user]);
 
   const renderComponent = () => {
     if (!user) {
       return <HomePage />;
     }
 
-    if (!roomDetails) {
-      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} />;
+    if (roomDetails.type == null) {
+      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} socketRef={socketRef} />;
     }
 
-    return <GamePage user={user} roomDetails={roomDetails} />;
+    return <GamePage user={user} roomDetails={roomDetails} socketRef={socketRef} />;
   }
 
   return (

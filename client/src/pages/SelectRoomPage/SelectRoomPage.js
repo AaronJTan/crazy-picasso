@@ -1,12 +1,19 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PrivateLobby from "./PrivateLobby.js";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = ({user, setRoomDetails}) => {
+const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
   const navigate = useNavigate();
   const username = user;
+  const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: ""});
   
   const createPrivateRoom = async (e) => {
     e.preventDefault();
+
+    socketRef.current.emit("create_private_room", (response) => {
+      setPrivateLobby({...privateLobby, inuse: true, users: response.users, roomCode: response.roomCode });
+    });
   };
 
   const joinPrivateRoom = async (e) => {
@@ -15,8 +22,14 @@ const SelectRoomPage = ({user, setRoomDetails}) => {
 
   const enterPublicRoom = (e) => {
     e.preventDefault();
-    setRoomDetails(true)
+    setRoomDetails({...setRoomDetails, type: "public"})
   };
+
+  if (privateLobby.inuse) {
+    return (
+      <PrivateLobby privateLobby={privateLobby} />
+    )
+  }
 
   return (
     <>
@@ -30,15 +43,11 @@ const SelectRoomPage = ({user, setRoomDetails}) => {
       </div>
       <h1>Play with friends in private!</h1>
       <div className="room-select">
-        <input
-          type="text"
-          id="create-roomcode"
-          name="create-roomcode"
-          placeholder="Type your roomcode to create..."
-        />
         <button className="button animate__fadeInUp" id="create-private" onClick={createPrivateRoom}>
           Create Private
         </button>
+
+        <h2>Or</h2>
 
         <input
           type="text"

@@ -1,3 +1,4 @@
+const uuidGenerator = require('short-uuid');
 const users = new Map();
 
 const User = (function() {
@@ -36,6 +37,12 @@ const removeUserFromRoom = (roomCode, username) => {
   return usersInRoom;
 }
 
+const deleteRoomIfEmpty = (roomCode) => {
+  if (getUsersInRoom(roomCode).length == 0) {
+    users.delete(roomCode);
+  }
+}
+
 const listen = (io) => {
   // Socket middleware to check the username and allow the connection
   io.use((socket, next) => {
@@ -47,6 +54,22 @@ const listen = (io) => {
   });
 
   io.on("connection", (socket) => {
+
+    socket.on("create_private_room", (callback) => {
+      let roomCode = uuidGenerator.generate();
+      socket.roomCode = roomCode;
+      addUserToRoom(socket.username, roomCode);
+
+      socket.join(roomCode);
+      console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
+      console.log(users);
+
+      let usersInRoom = getUsersInRoom(roomCode);
+      // socket.to(roomCode).emit("user_joined", usersInRoom);
+      // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+
+      callback({ users: usersInRoom, roomCode });
+    });
     
     socket.on("join_public_room", (callback) => {
       let roomCode = "public";
@@ -55,7 +78,8 @@ const listen = (io) => {
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
-      
+      console.log(users);
+
       let usersInRoom = getUsersInRoom(roomCode);
       socket.to(roomCode).emit("user_joined", usersInRoom);
       socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
@@ -72,10 +96,13 @@ const listen = (io) => {
     });
 
     socket.on("disconnect", () => {
-      let usersInRoom = removeUserFromRoom(socket.roomCode, socket.username);
-
-      socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
-      socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
+      if (socket.roomCode) {
+        let usersInRoom = removeUserFromRoom(socket.roomCode, socket.username);
+        deleteRoomIfEmpty(socket.roomCode);
+  
+        socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
+        socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
+      }
     });
   });
 }

@@ -3,46 +3,46 @@ import Chat from "../../components/Chat/Chat.jsx";
 import Canvas from "../../components/Canvas/Canvas.jsx";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import io from "socket.io-client";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
-import BaseLayout from "../../layouts/BaseLayout";
 
-const GamePage = ({user}) => {
+const GamePage = ({user, socketRef}) => {
   const username = user;
 
-  const socketRef = useRef(null);
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
   const [users, setUsers] = useState([]);
   const [wait, setWait] = useState(true);
 
   useEffect(() => {
-    socketRef.current = io(process.env.REACT_APP_SERVER_URL);
-    // send username to socket to construct username list in socket server side
-    socketRef.current.auth = { username };
-    socketRef.current.connect();
-    setWait(false);
-    
     socketRef.current.emit("join_public_room", (response) => {
+      if (response.users.length >= 2) {
+        setWait(false);
+      }
+
       setUsers(response.users);
     });
     
     socketRef.current.on("user_joined", (users) => {
+      setWait(false);
       setUsers(users);
     });
 
     socketRef.current.on("user_disconnected", (users) => {
+      if (users.length == 1) {
+        setWait(true);
+      }
+
       setUsers(users);
     });
   }, [])
 
   if (wait) {
     return (
-      <BaseLayout>
+      <>
         Wait for users
-      </BaseLayout>
+      </>
     );
   }
   
