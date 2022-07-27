@@ -110,7 +110,7 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   const users = [];
-  
+
   // looping over the io.of("/").sockets object,
   // a map of all currently connected socket instances indexed by ID
   for (let [id, socket] of io.of("/").sockets) {
@@ -123,7 +123,13 @@ io.on("connection", (socket) => {
 
   socket.on("join_public_room", (data) => {
     socket.join(data.roomCode);
+    console.log("Roomcode: " + data.roomCode);
     console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
+    // send the newly joined username to other people who are already in the room
+    // socket.to(data.roomCode).broadcast.emit("user-connected", data.username);
+    // socket.on("disconnect", () => {
+    //   socket.to(data.roomCode).broadcast.emit('user-disconnected');
+    // });
   });
 
   socket.on("send_message", (data) => {
@@ -132,7 +138,7 @@ io.on("connection", (socket) => {
 
   socket.on("drawing", (data) => {
     socket.broadcast.emit("live_drawing", data);
-  });
+  }); 
 });
 
 /* ------------------------------INITIALIZE SERVER------------------------------*/
