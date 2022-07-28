@@ -65,13 +65,36 @@ const listen = (io) => {
       console.log(users);
 
       let usersInRoom = getUsersInRoom(roomCode);
-      // socket.to(roomCode).emit("user_joined", usersInRoom);
+
+      callback({ users: usersInRoom, roomCode });
+    });
+
+    socket.on("join_private_room", (data, callback) => {
+      let roomCode = data.privateRoomCode;
+      socket.roomCode = roomCode;
+      addUserToRoom(socket.username, roomCode);
+
+      socket.join(roomCode);
+      console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
+      console.log(users);
+
+      let usersInRoom = getUsersInRoom(roomCode);
+      socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
       // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
       callback({ users: usersInRoom, roomCode });
     });
+
+    socket.on("join_private_game", (callback) => {
+      let usersInRoom = getUsersInRoom(socket.roomCode);
+      callback({ users: usersInRoom });
+    });
+
+    socket.on("start_private_game", () => {
+      socket.to(socket.roomCode).emit("private_game_started");
+    });
     
-    socket.on("join_public_room", (callback) => {
+    socket.on("join_public_game", (callback) => {
       let roomCode = "public";
       socket.roomCode = roomCode;
       addUserToRoom(socket.username, roomCode);

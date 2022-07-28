@@ -1,33 +1,48 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PrivateLobby from "./PrivateLobby.js";
 import "./SelectRoomPage.css";
 
 const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
-  const navigate = useNavigate();
   const username = user;
-  const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: ""});
-  
-  const createPrivateRoom = async (e) => {
-    e.preventDefault();
+  const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: "", isHost: false});
+  const [privateRoomCode, setPrivateRoomCode] = useState("");
 
+  const startPrivateGame = () => {
+    setRoomDetails({ ...setRoomDetails, type: "private" })
+    socketRef.current.emit("start_private_game", {});
+  }
+
+  useEffect(() => {
+    if (socketRef.current && privateLobby.inuse) {
+      socketRef.current.on("user_joined_private_room", (users) => {
+        setPrivateLobby({...privateLobby, users});
+      });
+
+      socketRef.current.on("private_game_started", () => {
+        setRoomDetails({ ...setRoomDetails, type: "private" });
+      });
+    }
+  }, [privateLobby.inuse]);
+  
+  const createPrivateRoom = () => {
     socketRef.current.emit("create_private_room", (response) => {
+      setPrivateLobby({...privateLobby, inuse: true, users: response.users, roomCode: response.roomCode, isHost: true });
+    });
+  };
+
+  const joinPrivateRoom = () => {
+    socketRef.current.emit("join_private_room", { privateRoomCode }, (response) => {
       setPrivateLobby({...privateLobby, inuse: true, users: response.users, roomCode: response.roomCode });
     });
   };
 
-  const joinPrivateRoom = async (e) => {
-    e.preventDefault();
-  };
-
-  const enterPublicRoom = (e) => {
-    e.preventDefault();
+  const joinPublicRoom = () => {
     setRoomDetails({...setRoomDetails, type: "public"})
   };
 
   if (privateLobby.inuse) {
     return (
-      <PrivateLobby privateLobby={privateLobby} />
+      <PrivateLobby privateLobby={privateLobby} setRoomDetails={setRoomDetails} startPrivateGame={startPrivateGame} />
     )
   }
 
@@ -37,7 +52,7 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
       <h1>Play with random players?</h1>
       
       <div className="room-select">        
-        <button className="button animate__fadeInUp" id="join-public" onClick={enterPublicRoom}>
+        <button className="button animate__fadeInUp" id="join-public" onClick={joinPublicRoom}>
           Join Public
         </button>
       </div>
@@ -53,6 +68,8 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
           type="text"
           id="join-roomcode"
           name="join-roomcode"
+          onChange={(e) => setPrivateRoomCode(e.target.value)}
+          value={privateRoomCode}
           placeholder="Type your roomcode to join..."
         />
         <button className="button animate__fadeInUp" id="join-private" onClick={joinPrivateRoom}>

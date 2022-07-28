@@ -1,14 +1,26 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
-const PrivateLobby = ({ privateLobby }) => {
+const PrivateLobby = ({ privateLobby, setRoomDetails, startPrivateGame }) => {
     return (
         <Container>
             <h1>PRIVATE ROOM</h1>
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box sx={{ flex: 1 }}>
-                    <h2>PRIVATE LOBBY</h2>
+                    <h2>Game Settings</h2>
+
+                    {
+                        privateLobby.isHost ?
+
+                            <button className="button animate__fadeInUp" id="start-game" onClick={startPrivateGame}>
+                                Start Game
+                            </button>
+
+                            :
+
+                            <Box component="span" sx={{ backgroundColor: "white", borderRadius: "20px", padding: "1px 6px" }} className="test">Waiting for host to start the game</Box>
+                    }
                 </Box>
 
                 <Box sx={{ flex: 1, height: "100px" }}>
@@ -16,7 +28,7 @@ const PrivateLobby = ({ privateLobby }) => {
 
                     {
                         privateLobby.users.map((user, index) => {
-                            return <h3>{user.username}</h3>;
+                            return <h3 key={index}>{user.username}</h3>;
                         })
                     }
                 </Box>

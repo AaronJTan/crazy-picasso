@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import RandomWords from "../../components/RandomWords/RandomWords";
 
-const GamePage = ({user, socketRef}) => {
+const GamePage = ({user, roomDetails, socketRef}) => {
   const username = user;
 
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
@@ -16,13 +16,23 @@ const GamePage = ({user, socketRef}) => {
   const [wait, setWait] = useState(true);
 
   useEffect(() => {
-    socketRef.current.emit("join_public_room", (response) => {
-      if (response.users.length >= 2) {
-        setWait(false);
-      }
-
-      setUsers(response.users);
-    });
+    if (roomDetails.type == "public") {
+      socketRef.current.emit("join_public_game", (response) => {
+        if (response.users.length >= 2) {
+          setWait(false);
+        }
+  
+        setUsers(response.users);
+      });
+    } else {
+      socketRef.current.emit("join_private_game", (response) => {
+        if (response.users.length >= 2) {
+          setWait(false);
+        }
+  
+        setUsers(response.users);
+      });
+    }
     
     socketRef.current.on("user_joined", (users) => {
       setWait(false);
