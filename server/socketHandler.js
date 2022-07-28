@@ -87,6 +87,8 @@ const listen = (io) => {
 
     socket.on("join_private_game", (callback) => {
       let usersInRoom = getUsersInRoom(socket.roomCode);
+      socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+      
       callback({ users: usersInRoom });
     });
 

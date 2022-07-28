@@ -13,26 +13,19 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 
-export default function Chat({ username, socketRef }) {
+export default function Chat({ username, socketRef, guesses, setGuesses }) {
   const ENTER_KEY_CODE = 13;
   const scrollBottomRef = useRef(null);
-  const [prevMessages, setPrevMessages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [guess, setGuess] = useState("");
 
   useEffect(() => {
-    socketRef.current.on("receive_message", (data) => {
-      setPrevMessages([
-        ...prevMessages,
-        { author: data.author, message: data.message },
-      ]);
-    });
     if (scrollBottomRef.current) {
       scrollBottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [prevMessages]);
+  }, [guesses]);
 
   const handleMessageChange = (event) => {
-    setMessage(event.target.value);
+    setGuess(event.target.value);
   };
 
   // Allow enter key to send message directly
@@ -43,21 +36,21 @@ export default function Chat({ username, socketRef }) {
   };
 
   const sendMessage = () => {
-    if (message) {
+    if (guess) {
       // send current message with author info using socket io
       // the message data will be broadcasted to other players
-      socketRef.current.emit("send_message", { author: username, message: message });
+      socketRef.current.emit("send_message", { author: username, message: guess });
       // update previous message list
-      setPrevMessages([
-        ...prevMessages,
-        { author: username, message: message },
+      setGuesses(prevGuesses => [
+        ...prevGuesses,
+        { author: username, message: guess },
       ]);
       // set current message back to empty string
-      setMessage("");
+      setGuess("");
     }
   };
 
-  const listPrevMessages = prevMessages.map((msg, index) => (
+  const listPrevMessages = guesses.map((msg, index) => (
     <ListItem key={index}>
       <ListItemText primary={`${msg.author}: ${msg.message}`} />
     </ListItem>
@@ -82,8 +75,8 @@ export default function Chat({ username, socketRef }) {
                     <TextField
                       onChange={handleMessageChange}
                       onKeyDown={handleEnterKey}
-                      value={message}
-                      label="Type your message..."
+                      value={guess}
+                      label="Type your guess..."
                       variant="outlined"
                     />
                   </FormControl>

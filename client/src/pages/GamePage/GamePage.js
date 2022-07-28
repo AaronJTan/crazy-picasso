@@ -14,6 +14,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   const [paintData, setPaintData] = useState({ lineWidth: 5, strokeStyle: "black" });
   const [users, setUsers] = useState([]);
   const [wait, setWait] = useState(true);
+  const [guesses, setGuesses] = useState([]);
 
   useEffect(() => {
     if (roomDetails.type == "public") {
@@ -37,6 +38,13 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     socketRef.current.on("user_joined", (users) => {
       setWait(false);
       setUsers(users);
+    });
+
+    socketRef.current.on("receive_message", (data) => {
+      setGuesses(prevGuesses =>[
+        ...prevGuesses,
+        { author: data.author, message: data.message },
+      ]);
     });
 
     socketRef.current.on("user_disconnected", (users) => {
@@ -68,7 +76,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
             <Canvas socketRef={socketRef} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-          <Chat username={username} socketRef={socketRef} />
+          <Chat username={username} socketRef={socketRef} guesses={guesses} setGuesses={setGuesses} />
         </Box>
       </Container>
 
