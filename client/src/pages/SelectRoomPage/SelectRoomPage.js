@@ -8,36 +8,36 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
   const [privateRoomCode, setPrivateRoomCode] = useState("");
 
   const startPrivateGame = () => {
-    setRoomDetails({ ...setRoomDetails, type: "private" })
+    setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
     socketRef.current.emit("start_private_game", {});
   }
 
   useEffect(() => {
     if (socketRef.current && privateLobby.inuse) {
       socketRef.current.on("user_joined_private_room", (users) => {
-        setPrivateLobby({...privateLobby, users});
+        setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, users}));
       });
 
       socketRef.current.on("private_game_started", () => {
-        setRoomDetails({ ...setRoomDetails, type: "private" });
+        setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
       });
     }
   }, [privateLobby.inuse]);
   
   const createPrivateRoom = () => {
     socketRef.current.emit("create_private_room", (response) => {
-      setPrivateLobby({...privateLobby, inuse: true, users: response.users, roomCode: response.roomCode, isHost: true });
+      setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode, isHost: true }));
     });
   };
 
   const joinPrivateRoom = () => {
     socketRef.current.emit("join_private_room", { privateRoomCode }, (response) => {
-      setPrivateLobby({...privateLobby, inuse: true, users: response.users, roomCode: response.roomCode });
+      setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode }));
     });
   };
 
   const joinPublicRoom = () => {
-    setRoomDetails({...setRoomDetails, type: "public"})
+    setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "public" }))
   };
 
   if (privateLobby.inuse) {
