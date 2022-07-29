@@ -53,14 +53,12 @@ app.use(passport.session());
 //     console.log(err)
 //   });
 
-/* ------------------------------Google OAuth------------------------------*/
-
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const cors = require("cors");
-app.use(cors());
+// app.use(cors());
 
 app.use(function (req, res, next) {
   req.header("Access-Control-Allow-Origin", "*");
@@ -79,23 +77,9 @@ app.get("/", function (req, res, next) {
   res.json("HELLO");
 });
 
-require("./middleware/passport");
-
-// app.get('/google', passport.authenticate('google', { scope: ["email", "profile"] }));
-
-// app.get('/oauth2/redirect/google',
-//   passport.authenticate('google', { failureRedirect: '/auth/signin', failureMessage: true }),
-//   function(req, res) {
-//     res.redirect('/select-room');
-//   });
-
 // local signup/login routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
-
-// app.get("/google-auth", passport.authenticate("google", { scope: ["email", "profile"] }));
-
-
 
 // private-rooms routes (create and join a private room)
 const privateRoomRoutes = require("./routes/privateRoomRoutes");

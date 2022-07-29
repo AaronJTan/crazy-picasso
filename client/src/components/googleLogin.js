@@ -21,14 +21,10 @@ export default function GoogleLoginButton() {
       <GoogleLogin
         clientId={CLIENT_ID}
         buttonText="Login"
-        render={renderProps => (
-          <button onClick={renderProps.onClick} id="google-button">Sign in with Google</button>
-          // <button className="button animate__zoomIn animate__delay-2s" onClick={onGoogleSignIn} id="google-button">Sign In with Google</button>  style={customStyle}
-        )}
         onSuccess={onSuccess}
         onFailure={onFailure}
         cookiePolicy={"single_host_origin"}
-        isSignedIn={false}
+        isSignedIn={true}
       />
     </div>
   );
