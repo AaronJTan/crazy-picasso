@@ -47,6 +47,18 @@ const signinPlayer = async (req, res) => {
 
   let username = req.body.username;
   let password = req.body.password;
+  let googleId = req.body.googleId;
+
+  if (googleId && username) {
+    // user logged in with google account
+    req.session.username = username;
+    res.status(200).json({
+      // firstName: player.firstName,
+      // lastName: player.lastName,
+      username: username,
+    });
+    return;
+  }
 
   if (!username || !password) {
     res.status(400).json({ error: "missing inputs" });
@@ -75,7 +87,7 @@ const logoutPlayer = (req, res) => {
 
 const currentPlayer = (req, res) => {
   if (!req.session.username) {
-    return res.status(200).json({ error: "user not logged in"});
+    return res.status(400).json({ error: "user not logged in"});
   }
 
   return res.status(200).json({username: req.session.username});

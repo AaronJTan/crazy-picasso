@@ -1,5 +1,5 @@
 const router = require("express").Router();
-// const passport = require("passport");
+const passport = require("passport");
 const { signupPlayer, signinPlayer, logoutPlayer, currentPlayer } = require("../controllers/playerController");
 
 // defines endpoints for signup and signin
