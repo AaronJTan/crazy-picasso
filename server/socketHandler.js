@@ -1,5 +1,5 @@
 const uuidGenerator = require('short-uuid');
-const users = new Map();
+const rooms = new Map();
 
 const User = (function() {
   return function User(username, roomCode) {
@@ -8,25 +8,31 @@ const User = (function() {
   }
 })();
 
+const GameData = (function() {
+  return function GameData() {
+    this.hasStarted = false;
+  }
+})();
+
 const addUserToRoom = (username, roomCode) => {
   let user = new User(username, roomCode);
   
-  if (!users.has(roomCode)) {
-    users.set(roomCode, [user]);
+  if (!rooms.has(roomCode)) {
+    rooms.set(roomCode, { users: [user], gameData: new GameData() });
   } else {
-    let usersInRoom = users.get(roomCode);
+    let usersInRoom = getUsersInRoom(roomCode);
     usersInRoom.push(user);
   }
 }
 
 const getUsersInRoom = (roomCode) => {
-  let usersInRoom = users.get(roomCode);
+  let usersInRoom = rooms.get(roomCode).users;
 
   return usersInRoom;
 }
 
 const removeUserFromRoom = (roomCode, username) => {
-  let usersInRoom = users.get(roomCode);
+  let usersInRoom = getUsersInRoom(roomCode);
   
   let index = usersInRoom.findIndex((userObj) => {
     return userObj.username === username;
@@ -39,7 +45,7 @@ const removeUserFromRoom = (roomCode, username) => {
 
 const deleteRoomIfEmpty = (roomCode) => {
   if (getUsersInRoom(roomCode).length == 0) {
-    users.delete(roomCode);
+    rooms.delete(roomCode);
   }
 }
 
@@ -62,7 +68,7 @@ const listen = (io) => {
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
-      console.log(users);
+      console.log(rooms);
 
       let usersInRoom = getUsersInRoom(roomCode);
 
@@ -76,7 +82,7 @@ const listen = (io) => {
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
-      console.log(users);
+      console.log(rooms);
 
       let usersInRoom = getUsersInRoom(roomCode);
       socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
@@ -103,7 +109,7 @@ const listen = (io) => {
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
-      console.log(users);
+      console.log(rooms);
 
       let usersInRoom = getUsersInRoom(roomCode);
       socket.to(roomCode).emit("user_joined", usersInRoom);
