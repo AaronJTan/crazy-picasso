@@ -93,7 +93,14 @@ const listen = (io) => {
 
     socket.on("join_private_game", (callback) => {
       let usersInRoom = getUsersInRoom(socket.roomCode);
-      socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+      
+      if (usersInRoom.length >= 2) {
+        io.to(socket.roomCode).emit("set_wait_status", false);
+        
+        socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+      } else {
+        io.to(socket.roomCode).emit("set_wait_status", true);
+      }
       
       callback({ users: usersInRoom });
     });
@@ -112,8 +119,16 @@ const listen = (io) => {
       console.log(rooms);
 
       let usersInRoom = getUsersInRoom(roomCode);
-      socket.to(roomCode).emit("user_joined", usersInRoom);
-      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+      
+      if (usersInRoom.length >= 2) {
+        io.to(socket.roomCode).emit("set_wait_status", false);
+
+        socket.to(roomCode).emit("user_joined", usersInRoom);
+        socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+
+      } else {
+        io.to(socket.roomCode).emit("set_wait_status", true);
+      }
 
       callback({ users: usersInRoom });
     });
@@ -133,6 +148,10 @@ const listen = (io) => {
   
         socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
         socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
+
+        if (usersInRoom.length === 1) {
+          socket.to(socket.roomCode).emit("set_wait_status", true);
+        }
       }
     });
   });

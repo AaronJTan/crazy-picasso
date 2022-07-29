@@ -19,25 +19,20 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   useEffect(() => {
     if (roomDetails.type == "public") {
       socketRef.current.emit("join_public_game", (response) => {
-        if (response.users.length >= 2) {
-          setWait(false);
-        }
-  
         setUsers(response.users);
       });
     } else {
       socketRef.current.emit("join_private_game", (response) => {
-        if (response.users.length >= 2) {
-          setWait(false);
-        }
-  
         setUsers(response.users);
       });
     }
     
     socketRef.current.on("user_joined", (users) => {
-      setWait(false);
       setUsers(users);
+    });
+
+    socketRef.current.on("set_wait_status", (waitStatus) => {
+      setWait(waitStatus);
     });
 
     socketRef.current.on("receive_message", (data) => {
@@ -48,10 +43,6 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     });
 
     socketRef.current.on("user_disconnected", (users) => {
-      if (users.length == 1) {
-        setWait(true);
-      }
-
       setUsers(users);
     });
   }, [])
