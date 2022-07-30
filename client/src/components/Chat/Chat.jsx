@@ -12,12 +12,27 @@ import {
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
+import { makeStyles } from "@mui/styles";
+import "./Chat.css";
+
+const useStyles = makeStyles({
+  // each property inside makeStyles is a CSS class.
+  chatWindow: {
+    height: "30rem",
+    width: '25rem'
+  },
+  chatList: {
+    height: "25rem",
+    overflow: "auto",
+  },
+});
 
 export default function Chat({ username, roomCode, socket }) {
   const ENTER_KEY_CODE = 13;
   const scrollBottomRef = useRef(null);
   const [prevMessages, setPrevMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const classes = useStyles();
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
@@ -68,33 +83,33 @@ export default function Chat({ username, roomCode, socket }) {
       <Container>
         <Paper elevation={10}>
           <Box p={3}>
-              <Grid container spacing={4} alignItems="center">
-                {/* Chat Window */}
-                <Grid id="chat-window" xs={12} item>
-                  <List id="chat-window-messages">
-                    {listPrevMessages}
-                    <ListItem ref={scrollBottomRef}></ListItem>
-                  </List>
-                </Grid>
-                {/* Message Input */}
-                <Grid xs={10} item>
-                  <FormControl fullWidth>
-                    <TextField
-                      onChange={handleMessageChange}
-                      onKeyDown={handleEnterKey}
-                      value={message}
-                      label="Type your message..."
-                      variant="outlined"
-                    />
-                  </FormControl>
-                </Grid>
-                {/* Send Message */}
-                <Grid xs={1} item>
-                  <IconButton onClick={sendMessage} aria-label="send" color="primary">
-                    <SendIcon />
-                  </IconButton>
-                </Grid>
+            <Grid container spacing={4} alignItems="center">
+              {/* Chat Window */}
+              <Grid className={classes.chatWindow} xs={12} item>
+                <List className={classes.chatList}>
+                  {listPrevMessages}
+                  <ListItem ref={scrollBottomRef}></ListItem>
+                </List>
               </Grid>
+              {/* Message Input */}
+              <Grid xs={10} item>
+                <FormControl fullWidth>
+                  <TextField
+                    onChange={handleMessageChange}
+                    onKeyDown={handleEnterKey}
+                    value={message}
+                    label="Type your message..."
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              {/* Send Message */}
+              <Grid xs={1} item>
+                <IconButton onClick={sendMessage} aria-label="send" color="primary">
+                  <SendIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Box>
         </Paper>
       </Container>
