@@ -90,7 +90,7 @@ app.use("/private-rooms", privateRoomRoutes);
 /* ------------------------------SOCKET.IO------------------------------*/
 
 const { Server } = require("socket.io");
-const socketHandler = require("./socketHandler");
+const gameSocketConnection = require("./game/gameSocketConnection");
 
 const io = new Server(server, {
   cors: {
@@ -99,7 +99,7 @@ const io = new Server(server, {
   },
 });
 
-socketHandler.listen(io);
+gameSocketConnection.listen(io);
 /* ------------------------------INITIALIZE SERVER------------------------------*/
 const PORT = 3001;
 

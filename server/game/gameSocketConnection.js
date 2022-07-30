@@ -1,4 +1,4 @@
-const RoomModel = require("./models/Room");
+const RoomModel = require("../models/Room");
 const createGameHandlers = require("./gameHandlers");
 
 const addUserToRoom = async (username, roomCode) => {
