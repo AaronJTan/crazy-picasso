@@ -95,8 +95,6 @@ app.use("/auth", authRoutes);
 
 // app.get("/google-auth", passport.authenticate("google", { scope: ["email", "profile"] }));
 
-
-
 // private-rooms routes (create and join a private room)
 const privateRoomRoutes = require("./routes/privateRoomRoutes");
 app.use("/private-rooms", privateRoomRoutes);
@@ -138,11 +136,11 @@ io.on("connection", (socket) => {
   // socket.broadcast.emit("users", users);
 
   socket.on("join_public_room", (data) => {
+    console.log(`[join_public_room_server] New player ${data.username} joined in ${data.roomCode}`);
     socket.join(data.roomCode);
-    console.log("Roomcode: " + data.roomCode);
-    console.log(`User with ID: ${socket.id} ${data.username} joined the public room`);
+
     // send the newly joined username to other people who are already in the room
-    // socket.to(data.roomCode).broadcast.emit("user-connected", data.username);
+    // socket.to(data.roomCode).broadcast.emit("new_user_connected", data.username);
     // socket.on("disconnect", () => {
     //   socket.to(data.roomCode).broadcast.emit('user-disconnected');
     // });
@@ -154,7 +152,43 @@ io.on("connection", (socket) => {
 
   socket.on("drawing", (data) => {
     socket.broadcast.emit("live_drawing", data);
-  }); 
+  });
+});
+
+const nodemailer = require("nodemailer");
+
+// Step 1: Create transporter object
+// let transporter = nodemailer.createTransport({
+//   service: "AOL",
+//   auth: {
+//     user: "crazy_picasso@gmail.com",
+//     pass: "cscc09project",
+//   },
+// });
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.ethereal.email',
+  port: 587,
+  auth: {
+      user: 'coy82@ethereal.email',
+      pass: 'jtJHynyu5EcsfgW2Eh'
+  }
+});
+
+// Step 2
+let mailOptions = {
+  from: "coy82@ethereal.email",
+  to: "coy82@ethereal.email",
+  subject: "Testing",
+  text: "It works",
+};
+
+transporter.sendMail(mailOptions, function (err, data) {
+  if (err) {
+    console.log("Error occurs when sending an email", err);
+  } else {
+    console.log("Email sent!");
+  }
 });
 
 /* ------------------------------INITIALIZE SERVER------------------------------*/
