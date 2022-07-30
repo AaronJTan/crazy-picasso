@@ -1,51 +1,44 @@
 const uuidGenerator = require('short-uuid');
 const rooms = new Map();
+const RoomModel = require("./models/Room");
 
-const User = (function() {
-  return function User(username, roomCode) {
-    this.username = username;
-    this.roomCode = roomCode;
-  }
-})();
-
-const GameData = (function() {
-  return function GameData() {
-    this.hasStarted = false;
-  }
-})();
-
-const addUserToRoom = (username, roomCode) => {
-  let user = new User(username, roomCode);
+const addUserToRoom = async (username, roomCode) => {
+  let room = await RoomModel.findOne({ roomCode });
+  let user = {username};
   
-  if (!rooms.has(roomCode)) {
-    rooms.set(roomCode, { users: [user], gameData: new GameData() });
+  if (room === null ) {
+    await RoomModel.create({ roomCode, users: [user] });
   } else {
-    let usersInRoom = getUsersInRoom(roomCode);
-    usersInRoom.push(user);
+    room.users.push(user);
+
+    await room.save();
   }
 }
 
-const getUsersInRoom = (roomCode) => {
-  let usersInRoom = rooms.get(roomCode).users;
+const getUsersInRoom = async (roomCode) => {
+  let room = await RoomModel.findOne({ roomCode }).lean();
+  let usersInRoom = room.users;
 
   return usersInRoom;
 }
 
-const removeUserFromRoom = (roomCode, username) => {
-  let usersInRoom = getUsersInRoom(roomCode);
-  
-  let index = usersInRoom.findIndex((userObj) => {
-    return userObj.username === username;
-  })
+const removeUserFromRoom = async (roomCode, username) => {
+  let room = await RoomModel.findOneAndUpdate(
+    { roomCode },
+    { $pull: { users: { username } } },
+    { safe: true, multi: false, new: true }
+  ).lean();
 
-  usersInRoom.splice(index, 1);
+  let usersInRoom = room.users;
 
   return usersInRoom;
 }
 
-const deleteRoomIfEmpty = (roomCode) => {
-  if (getUsersInRoom(roomCode).length == 0) {
-    rooms.delete(roomCode);
+const deleteRoomIfEmpty = async (roomCode) => {
+  let usersInRoom = await getUsersInRoom(roomCode);
+
+  if (usersInRoom.length === 0) {
+    await RoomModel.deleteOne({ roomCode });
   }
 }
 
@@ -61,38 +54,38 @@ const listen = (io) => {
 
   io.on("connection", (socket) => {
 
-    socket.on("create_private_room", (callback) => {
+    socket.on("create_private_room", async (callback) => {
       let roomCode = uuidGenerator.generate();
       socket.roomCode = roomCode;
-      addUserToRoom(socket.username, roomCode);
+      await addUserToRoom(socket.username, roomCode);
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
       console.log(rooms);
 
-      let usersInRoom = getUsersInRoom(roomCode);
+      let usersInRoom = await getUsersInRoom(roomCode);
 
       callback({ users: usersInRoom, roomCode });
     });
 
-    socket.on("join_private_room", (data, callback) => {
+    socket.on("join_private_room", async (data, callback) => {
       let roomCode = data.privateRoomCode;
       socket.roomCode = roomCode;
-      addUserToRoom(socket.username, roomCode);
+      await addUserToRoom(socket.username, roomCode);
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
       console.log(rooms);
 
-      let usersInRoom = getUsersInRoom(roomCode);
+      let usersInRoom = await getUsersInRoom(roomCode);
       socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
       // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
       callback({ users: usersInRoom, roomCode });
     });
 
-    socket.on("join_private_game", (callback) => {
-      let usersInRoom = getUsersInRoom(socket.roomCode);
+    socket.on("join_private_game", async (callback) => {
+      let usersInRoom = await getUsersInRoom(socket.roomCode);
       
       if (usersInRoom.length >= 2) {
         io.to(socket.roomCode).emit("set_wait_status", false);
@@ -109,16 +102,15 @@ const listen = (io) => {
       socket.to(socket.roomCode).emit("private_game_started");
     });
     
-    socket.on("join_public_game", (callback) => {
+    socket.on("join_public_game", async (callback) => {
       let roomCode = "public";
       socket.roomCode = roomCode;
-      addUserToRoom(socket.username, roomCode);
+      await addUserToRoom(socket.username, roomCode);
 
       socket.join(roomCode);
       console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
-      console.log(rooms);
 
-      let usersInRoom = getUsersInRoom(roomCode);
+      let usersInRoom = await getUsersInRoom(roomCode);
       
       if (usersInRoom.length >= 2) {
         io.to(socket.roomCode).emit("set_wait_status", false);
@@ -141,10 +133,10 @@ const listen = (io) => {
       socket.to(socket.roomCode).emit("live_drawing", data.socketData);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       if (socket.roomCode) {
-        let usersInRoom = removeUserFromRoom(socket.roomCode, socket.username);
-        deleteRoomIfEmpty(socket.roomCode);
+        let usersInRoom = await removeUserFromRoom(socket.roomCode, socket.username);
+        await deleteRoomIfEmpty(socket.roomCode);
   
         socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
         socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
