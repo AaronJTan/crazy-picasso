@@ -1,6 +1,6 @@
-const uuidGenerator = require('short-uuid');
 const rooms = new Map();
 const RoomModel = require("./models/Room");
+const gameHandlers = require("./gameHandlers");
 
 const addUserToRoom = async (username, roomCode) => {
   let room = await RoomModel.findOne({ roomCode });
@@ -42,6 +42,8 @@ const deleteRoomIfEmpty = async (roomCode) => {
   }
 }
 
+const {createPrivateRoom} = gameHandlers(addUserToRoom, getUsersInRoom);
+
 const listen = (io) => {
   // Socket middleware to check the username and allow the connection
   io.use((socket, next) => {
@@ -54,19 +56,7 @@ const listen = (io) => {
 
   io.on("connection", (socket) => {
 
-    socket.on("create_private_room", async (callback) => {
-      let roomCode = uuidGenerator.generate();
-      socket.roomCode = roomCode;
-      await addUserToRoom(socket.username, roomCode);
-
-      socket.join(roomCode);
-      console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
-      console.log(rooms);
-
-      let usersInRoom = await getUsersInRoom(roomCode);
-
-      callback({ users: usersInRoom, roomCode });
-    });
+    socket.on("create_private_room", createPrivateRoom);
 
     socket.on("join_private_room", async (data, callback) => {
       let roomCode = data.privateRoomCode;
