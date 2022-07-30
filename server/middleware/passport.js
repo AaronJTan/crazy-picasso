@@ -1,7 +1,7 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const path = require("path");
-const Player = require("../models/playerModel");
+const Player = require("../models/schemas/playerModel");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });

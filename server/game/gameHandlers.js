@@ -1,6 +1,7 @@
 const uuidGenerator = require('short-uuid');
+const roomObj = require("../models/RoomActions");
 
-function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoom, deleteRoomIfEmpty) {
+function createGameHandlers(io) {
   let module = {};
 
   module.createPrivateRoom = async function (callback) {
@@ -8,12 +9,12 @@ function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoo
 
     let roomCode = uuidGenerator.generate();
     socket.roomCode = roomCode;
-    await addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
-    let usersInRoom = await getUsersInRoom(roomCode);
+    let usersInRoom = await roomObj.getUsersInRoom(roomCode);
 
     callback({ users: usersInRoom, roomCode });
   }
@@ -23,12 +24,12 @@ function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoo
 
     let roomCode = data.privateRoomCode;
     socket.roomCode = roomCode;
-    await addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
-    let usersInRoom = await getUsersInRoom(roomCode);
+    let usersInRoom = await roomObj.getUsersInRoom(roomCode);
     socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
     // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
@@ -38,7 +39,7 @@ function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoo
   module.joinPrivateGame = async function (callback) {
     const socket = this;
 
-    let usersInRoom = await getUsersInRoom(socket.roomCode);
+    let usersInRoom = await roomObj.getUsersInRoom(socket.roomCode);
     
     if (usersInRoom.length >= 2) {
       io.to(socket.roomCode).emit("set_wait_status", false);
@@ -62,12 +63,12 @@ function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoo
 
     let roomCode = "public";
     socket.roomCode = roomCode;
-    await addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
 
-    let usersInRoom = await getUsersInRoom(roomCode);
+    let usersInRoom = await roomObj.getUsersInRoom(roomCode);
     
     if (usersInRoom.length >= 2) {
       io.to(socket.roomCode).emit("set_wait_status", false);
@@ -98,8 +99,8 @@ function createGameHandlers(io, addUserToRoom, getUsersInRoom, removeUserFromRoo
     const socket = this;
 
     if (socket.roomCode) {
-      let usersInRoom = await removeUserFromRoom(socket.roomCode, socket.username);
-      await deleteRoomIfEmpty(socket.roomCode);
+      let usersInRoom = await roomObj.removeUserFromRoom(socket.roomCode, socket.username);
+      await roomObj.deleteRoomIfEmpty(socket.roomCode);
 
       socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
       socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "LEFT THE GAME" });
