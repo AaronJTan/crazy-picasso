@@ -61,33 +61,38 @@ const GamePage = () => {
 
   useEffect(() => {
     if (roomCode === "public") {
+      console.log("[join_public_room] sending data of roomCode and username to join-public_room");
       socket.emit("join_public_room", { roomCode: roomCode, username: username });
     }
   }, []);
 
   socket.on("users", (data) => {
-    console.log("users: ", data);
+    console.log("[users] receiving data from socket.on users, data: ", data);
     setUsers(data);
   });
 
   socket.on("user-connected", (data) => {
-    console.log("the new member just joined is " + data.username);
+    console.log("[user-connected] the new member just joined is " + data.username);
   });
 
   return (
     <BaseLayout>
-      <h1>I'm {username}. I joined the public room!</h1>
+      {/* <h1>I'm {username}. I joined the public room!</h1> */}
       <Container maxWidth="xl">
         
         <RandomWords />
         <Box sx={{ display: "flex" }}>
           <VideoChat roomCode={roomCode} socket={socket} username={username}/>
-          <PlayersList users={users} />
+          
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Canvas socket={socket} paintData={paintData} />
             <PaintToolBar setPaintData={setPaintData} />
           </Box>
-          <Chat username={username} roomCode={roomCode} socket={socket} />
+          <Box sx={{ display: "flex" }}>
+            <PlayersList users={users} />
+            <Chat username={username} roomCode={roomCode} socket={socket} />
+          </Box>
+          
         </Box>
       </Container>
 
