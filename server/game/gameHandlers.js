@@ -29,11 +29,18 @@ function createGameHandlers(io) {
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
-    let usersInRoom = await roomObj.getUsersInRoom(roomCode);
-    socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
-    // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+    let room = await roomObj.getRoom(roomCode);
+    let usersInRoom = room.users;
 
-    callback({ users: usersInRoom, roomCode });
+    if (!room.game.hasStarted) {
+      socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
+      // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+      callback({ users: usersInRoom, roomCode });
+    } else {
+      callback({ users: usersInRoom, roomCode, gameStarted: true });
+    }
+
+
   }
 
   module.joinPrivateGame = async function (callback) {
@@ -44,6 +51,7 @@ function createGameHandlers(io) {
     if (usersInRoom.length >= 2) {
       io.to(socket.roomCode).emit("set_wait_status", false);
       
+      socket.to(socket.roomCode).emit("user_joined", usersInRoom);
       socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
     } else {
       io.to(socket.roomCode).emit("set_wait_status", true);
@@ -52,8 +60,10 @@ function createGameHandlers(io) {
     callback({ users: usersInRoom });
   }
 
-  module.startPrivateGame = function () {
+  module.startPrivateGame = async function () {
     const socket = this;
+
+    await roomObj.setGameStarted(socket.roomCode, true);
 
     socket.to(socket.roomCode).emit("private_game_started");
   }

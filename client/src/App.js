@@ -10,6 +10,7 @@ import io from "socket.io-client";
 function App() {
   const socketRef = useRef(null);
   const [user, setUser] = useState(null);
+  const [socketActivated, setSocketActivated] = useState(false);
   const [roomDetails, setRoomDetails] = useState({type: null});
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function App() {
       // send username to socket to construct username list in socket server side
       socketRef.current.auth = { username: user };
       socketRef.current.connect();
+      setSocketActivated(true)
     }
   }, [user]);
 
@@ -37,7 +39,7 @@ function App() {
     }
 
     if (roomDetails.type == null) {
-      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} socketRef={socketRef} />;
+      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} socketRef={socketRef} socketActivated={socketActivated} />;
     }
 
     return <GamePage user={user} roomDetails={roomDetails} socketRef={socketRef} />;

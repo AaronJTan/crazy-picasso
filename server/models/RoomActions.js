@@ -1,5 +1,19 @@
 const RoomModel = require("./schemas/Room");
 
+const getRoom = async (roomCode) => {
+  let room = await RoomModel.findOne({ roomCode }).lean();
+
+  return room;
+}
+
+const setGameStarted = async (roomCode, hasStarted) => {
+  await RoomModel.findOneAndUpdate(
+    { roomCode },
+    { $set: { 'game.hasStarted': hasStarted } },
+    { safe: true, multi: false, new: true }
+  ).lean();
+}
+
 const addUserToRoom = async (username, roomCode) => {
   let room = await RoomModel.findOne({ roomCode });
   let user = {username};
@@ -41,6 +55,8 @@ const deleteRoomIfEmpty = async (roomCode) => {
 }
 
 module.exports = {
+  getRoom,
+  setGameStarted,
   addUserToRoom,
   getUsersInRoom,
   removeUserFromRoom,

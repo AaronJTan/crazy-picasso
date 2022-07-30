@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PrivateLobby from "./PrivateLobby.js";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
+const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
   const username = user;
   const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: "", isHost: false});
   const [privateRoomCode, setPrivateRoomCode] = useState("");
@@ -13,7 +13,7 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
   }
 
   useEffect(() => {
-    if (socketRef.current && privateLobby.inuse) {
+    if (socketRef.current) {
       socketRef.current.on("user_joined_private_room", (users) => {
         setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, users}));
       });
@@ -22,7 +22,7 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
         setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
       });
     }
-  }, [privateLobby.inuse]);
+  }, [socketActivated]);
   
   const createPrivateRoom = () => {
     socketRef.current.emit("create_private_room", (response) => {
@@ -32,7 +32,12 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef}) => {
 
   const joinPrivateRoom = () => {
     socketRef.current.emit("join_private_room", { privateRoomCode }, (response) => {
-      setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode }));
+
+      if (response.gameStarted) {
+        setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }));
+      } else {
+        setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode }));
+      }
     });
   };
 
