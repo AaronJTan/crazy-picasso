@@ -41,7 +41,7 @@ function Canvas({ socketRef, paintData }) {
             mouseData.previousY = mouseData.y;
 
             mouseData.x = e.pageX - canvas.offsetLeft;
-            mouseData.y = e.pageY - canvas.offsetTop;
+            mouseData.y = e.pageY - canvas.offsetTop + 20;
         }
 
         canvas.addEventListener('mousemove', handleCanvasMouseXY);
