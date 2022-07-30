@@ -36,7 +36,7 @@ const PrivateLobby = ({ privateLobby, setRoomDetails, startPrivateGame }) => {
 
             <Box sx={{ mt: 20 }}>
                 <h2>Invite your Friends!</h2>
-                <h3 style={{ backgroundColor: "white" }}>{process.env.REACT_APP_CLIENT_URL}/?{privateLobby.roomCode}</h3>
+                <h3 style={{ backgroundColor: "white" }}>{privateLobby.roomCode}</h3>
             </Box>
         </Container>
     )
