@@ -1,4 +1,4 @@
-const PrivateRoom = require("../models/privateRoomModel");
+const PrivateRoom = require("../models/schemas/privateRoomModel");
 
 const createPrivateRoom = async (req, res) => {
 

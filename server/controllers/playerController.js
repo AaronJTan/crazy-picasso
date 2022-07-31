@@ -1,4 +1,4 @@
-const Player = require("../models/playerModel");
+const Player = require("../models/schemas/playerModel");
 const bcrypt = require("bcrypt");
 
 const signupPlayer = async (req, res) => {

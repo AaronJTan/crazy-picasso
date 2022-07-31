@@ -4,7 +4,7 @@ import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 const PlayersList = ({ users }) => {
   const playersList = users.map((user, index) => (
     <ListItem key={index}>
-      <ListItemText primary={user} />
+      <ListItemText primary={user.username} />
     </ListItem>
   ));
 

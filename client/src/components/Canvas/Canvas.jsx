@@ -3,14 +3,14 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import "./Canvas.css";
 
-function Canvas({ socket, paintData }) {
+function Canvas({ socketRef, paintData }) {
 
     useEffect(() => {
         const handleLiveDrawing = () => {
             const canvas = document.querySelector('#board');
             const ctx = canvas.getContext('2d');
 
-            socket.on('live_drawing', handleLiveDrawing);
+            socketRef.current.on('live_drawing', handleLiveDrawing);
 
             function handleLiveDrawing(socketData) {
                 ctx.lineJoin = 'round';
@@ -41,7 +41,7 @@ function Canvas({ socket, paintData }) {
             mouseData.previousY = mouseData.y;
 
             mouseData.x = e.pageX - canvas.offsetLeft;
-            mouseData.y = e.pageY - canvas.offsetTop;
+            mouseData.y = e.pageY - canvas.offsetTop + 20;
         }
 
         canvas.addEventListener('mousemove', handleCanvasMouseXY);
@@ -65,7 +65,7 @@ function Canvas({ socket, paintData }) {
             ctx.closePath();
             ctx.stroke();
 
-            socket.emit("drawing", socketData);
+            socketRef.current.emit("drawing", { socketData });
         };
     }, [paintData]);
 

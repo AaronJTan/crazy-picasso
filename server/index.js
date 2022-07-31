@@ -104,55 +104,13 @@ app.use("/private-rooms", privateRoomRoutes);
 /* ------------------------------SOCKET.IO------------------------------*/
 
 const { Server } = require("socket.io");
+const gameSocketConnection = require("./game/gameSocketConnection");
 
 const io = new Server(server, {
   cors: {
     origin: process.env.CORS_ORIGIN,
     method: ["GET", "POST"],
   },
-});
-
-// Socket middleware to check the username and allow the connection
-io.use((socket, next) => {
-  console.log("io middleware");
-  const username = socket.handshake.auth.username;
-  console.log("io middleware username: ", username);
-  // username is added as an attribute of socket object which can be reused later
-  socket.username = username;
-  next();
-});
-
-io.on("connection", (socket) => {
-  const users = [];
-
-  // looping over the io.of("/").sockets object,
-  // a map of all currently connected socket instances indexed by ID
-  for (let [id, socket] of io.of("/").sockets) {
-    if (!users.includes(socket.username)) {
-      users.push(socket.username);
-    }
-  }
-  // send user list to connected clients => gives an error / slowdown
-  // socket.broadcast.emit("users", users);
-
-  socket.on("join_public_room", (data) => {
-    console.log(`[join_public_room_server] New player ${data.username} joined in ${data.roomCode}`);
-    socket.join(data.roomCode);
-
-    // send the newly joined username to other people who are already in the room
-    // socket.to(data.roomCode).broadcast.emit("new_user_connected", data.username);
-    // socket.on("disconnect", () => {
-    //   socket.to(data.roomCode).broadcast.emit('user-disconnected');
-    // });
-  });
-
-  socket.on("send_message", (data) => {
-    socket.to(data.roomCode).emit("receive_message", data);
-  });
-
-  socket.on("drawing", (data) => {
-    socket.broadcast.emit("live_drawing", data);
-  });
 });
 
 const nodemailer = require("nodemailer");
@@ -191,6 +149,7 @@ transporter.sendMail(mailOptions, function (err, data) {
   }
 });
 
+gameSocketConnection.listen(io);
 /* ------------------------------INITIALIZE SERVER------------------------------*/
 const PORT = 3001;
 

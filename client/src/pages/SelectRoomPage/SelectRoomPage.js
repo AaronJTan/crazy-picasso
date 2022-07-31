@@ -1,61 +1,55 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import PrivateLobby from "./PrivateLobby.js";
 import "./SelectRoomPage.css";
 
-const SelectRoomPage = ({usernameP}) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  // navigate can send data as state
-  // received from SigninPage
-  const username = usernameP || location.state.username;
-  const [newPrivateCode, setNewPrivateCode] = useState("");
-  const [existingPrivateCode, setExistingPrivateCode] = useState("");
+const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
+  const username = user;
+  const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: "", isHost: false});
+  const [privateRoomCode, setPrivateRoomCode] = useState("");
 
-  const createPrivateRoom = async (e) => {
-    e.preventDefault();
-    // setPrivateRooms([...privateRooms, newPrivateCode]);
+  const startPrivateGame = () => {
+    setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
+    socketRef.current.emit("start_private_game", {});
+  }
 
-    const data = { roomCode: newPrivateCode };
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on("user_joined_private_room", (users) => {
+        setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, users}));
+      });
 
-    await fetch("/private-rooms/create", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      if (res.ok) {
-        navigate("/game-play", { state: { username: username, roomCode: newPrivateCode } });
+      socketRef.current.on("private_game_started", () => {
+        setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
+      });
+    }
+  }, [socketActivated]);
+  
+  const createPrivateRoom = () => {
+    socketRef.current.emit("create_private_room", (response) => {
+      setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode, isHost: true }));
+    });
+  };
+
+  const joinPrivateRoom = () => {
+    socketRef.current.emit("join_private_room", { privateRoomCode }, (response) => {
+
+      if (response.gameStarted) {
+        setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }));
       } else {
-        navigate("/", { state: { username: username } });
+        setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, inuse: true, users: response.users, roomCode: response.roomCode }));
       }
     });
   };
 
-  const joinPrivateRoom = async (e) => {
-    e.preventDefault();
-
-    const data = { roomCode: existingPrivateCode };
-
-    await fetch("/private-rooms/join", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
-      if (res.ok) {
-        navigate("/game-play", { state: { username: username, roomCode: existingPrivateCode } });
-      } else {
-        navigate("/", { state: { username: username } });
-      }
-    });
+  const joinPublicRoom = () => {
+    setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "public" }))
   };
 
-  const enterPublicRoom = (e) => {
-    e.preventDefault();
-    navigate("/game-play", { state: { username: username, roomCode: "public" } });
-  };
+  if (privateLobby.inuse) {
+    return (
+      <PrivateLobby privateLobby={privateLobby} setRoomDetails={setRoomDetails} startPrivateGame={startPrivateGame} />
+    )
+  }
 
   return (
     <>
@@ -63,30 +57,24 @@ const SelectRoomPage = ({usernameP}) => {
       <h1>Play with random players?</h1>
       
       <div className="room-select">        
-        <button className="button animate__fadeInUp" id="join-public" onClick={enterPublicRoom}>
+        <button className="button animate__fadeInUp" id="join-public" onClick={joinPublicRoom}>
           Join Public
         </button>
       </div>
       <h1>Play with friends in private!</h1>
       <div className="room-select">
-        <input
-          type="text"
-          id="create-roomcode"
-          name="create-roomcode"
-          onChange={(e) => setNewPrivateCode(e.target.value)}
-          value={newPrivateCode}
-          placeholder="Type your roomcode to create..."
-        />
         <button className="button animate__fadeInUp" id="create-private" onClick={createPrivateRoom}>
           Create Private
         </button>
+
+        <h2>Or</h2>
 
         <input
           type="text"
           id="join-roomcode"
           name="join-roomcode"
-          onChange={(e) => setExistingPrivateCode(e.target.value)}
-          value={existingPrivateCode}
+          onChange={(e) => setPrivateRoomCode(e.target.value)}
+          value={privateRoomCode}
           placeholder="Type your roomcode to join..."
         />
         <button className="button animate__fadeInUp" id="join-private" onClick={joinPrivateRoom}>
