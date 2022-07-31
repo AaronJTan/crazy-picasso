@@ -1,15 +1,28 @@
 const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 
-const socketJoinRoom = async (socket, roomCode) => {
-  socket.roomCode = roomCode;
-  await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
-
-  socket.join(roomCode);
-}
-
 function createGameHandlers(io) {
   let module = {};
+
+  const socketJoinRoom = async (socket, roomCode) => {
+    socket.roomCode = roomCode;
+    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
+  
+    socket.join(roomCode);
+  }
+
+  const handleEmitUserJoinedGameEvents = (socket, usersInRoom) => {
+    const roomCode = socket.roomCode;
+  
+    if (usersInRoom.length >= 2) {
+      io.to(roomCode).emit("set_wait_status", false);
+      
+      socket.to(roomCode).emit("user_joined", usersInRoom);
+      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+    } else {
+      io.to(roomCode).emit("set_wait_status", true);
+    }
+  }
 
   module.createPrivateRoom = async function (callback) {
     const socket = this;
@@ -35,7 +48,7 @@ function createGameHandlers(io) {
 
     if (!room.game.hasStarted) {
       socket.to(roomCode).emit("user_joined_private_room", usersInRoom);
-      // socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+
       callback({ users: usersInRoom, roomCode });
     } else {
       callback({ users: usersInRoom, roomCode, gameStarted: true });
@@ -49,14 +62,7 @@ function createGameHandlers(io) {
 
     let usersInRoom = await roomObj.getUsersInRoom(socket.roomCode);
     
-    if (usersInRoom.length >= 2) {
-      io.to(socket.roomCode).emit("set_wait_status", false);
-      
-      socket.to(socket.roomCode).emit("user_joined", usersInRoom);
-      socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
-    } else {
-      io.to(socket.roomCode).emit("set_wait_status", true);
-    }
+    handleEmitUserJoinedGameEvents(socket, usersInRoom);
     
     callback({ users: usersInRoom });
   }
@@ -78,15 +84,7 @@ function createGameHandlers(io) {
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
     
-    if (usersInRoom.length >= 2) {
-      io.to(socket.roomCode).emit("set_wait_status", false);
-
-      socket.to(roomCode).emit("user_joined", usersInRoom);
-      socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
-
-    } else {
-      io.to(socket.roomCode).emit("set_wait_status", true);
-    }
+    handleEmitUserJoinedGameEvents(socket, usersInRoom);
 
     callback({ users: usersInRoom });
   }
