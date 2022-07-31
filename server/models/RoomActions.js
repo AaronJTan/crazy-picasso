@@ -14,9 +14,9 @@ const setGameStarted = async (roomCode, hasStarted) => {
   ).lean();
 }
 
-const addUserToRoom = async (username, roomCode) => {
+const addUserToRoom = async (socketId, username, roomCode) => {
   let room = await RoomModel.findOne({ roomCode });
-  let user = {username};
+  let user = {socketId, username};
   
   if (room === null ) {
     await RoomModel.create({ roomCode, users: [user] });

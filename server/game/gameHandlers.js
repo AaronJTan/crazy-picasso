@@ -9,7 +9,7 @@ function createGameHandlers(io) {
 
     let roomCode = uuidGenerator.generate();
     socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
@@ -24,7 +24,7 @@ function createGameHandlers(io) {
 
     let roomCode = data.privateRoomCode;
     socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
@@ -73,7 +73,7 @@ function createGameHandlers(io) {
 
     let roomCode = "public";
     socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.username, roomCode);
+    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
 
     socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
