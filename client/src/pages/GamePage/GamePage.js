@@ -6,7 +6,7 @@ import Container from "@mui/material/Container";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
-import RandomWords from "../../components/RandomWords/RandomWords";
+import GameBar from "../../components/GameBar/GameBar";
 
 const GamePage = ({user, roomDetails, socketRef}) => {
   const username = user;
@@ -56,23 +56,18 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   }
   
   return (
-    <>
-      <h1>I'm {username}. I joined the public room!</h1>
+    <Container maxWidth="xl">
+      <GameBar />
 
-      <Container maxWidth="xl">
-        <RandomWords />
-        <Box sx={{ display: "flex" }}>
-          <PlayersList users={users} />
-          <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <Canvas socketRef={socketRef} paintData={paintData} />
-            <PaintToolBar setPaintData={setPaintData} />
-          </Box>
-          <Chat username={username} socketRef={socketRef} guesses={guesses} setGuesses={setGuesses} />
+      <Box sx={{ display: "flex" }}>
+        <PlayersList users={users} />
+        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <Canvas socketRef={socketRef} paintData={paintData} />
+          <PaintToolBar setPaintData={setPaintData} />
         </Box>
-      </Container>
-
-      <br />
-    </>
+        <Chat username={username} socketRef={socketRef} guesses={guesses} setGuesses={setGuesses} />
+      </Box>
+    </Container>
   );
 };
 

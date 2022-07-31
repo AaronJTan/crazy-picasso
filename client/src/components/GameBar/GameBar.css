@@ -1,0 +1,18 @@
+.game-bar {
+    display: flex;
+    align-items: baseline;
+}
+
+.game-bar::after {
+    flex: 1;
+    content: '';
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.round-data {
+    text-align: left;
+    flex: 1;
+}
