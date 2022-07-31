@@ -54,11 +54,48 @@ const deleteRoomIfEmpty = async (roomCode) => {
   }
 }
 
+
+
+
+const generalUpdateHelper = async (roomCode, updateVal) => {
+  await RoomModel.findOneAndUpdate(
+    { roomCode },
+    { $set: updateVal },
+    { safe: true, multi: false, new: true }
+  );
+}
+
+const getGameStartedStatus = async (roomCode) => {
+  let room = await RoomModel.findOne({ roomCode }).lean();
+  let hasStarted = room.game.hasStarted;
+
+  return hasStarted;
+}
+
+const getTurnUser = async (roomCode) => {
+  const room = await getRoom(roomCode);
+  const users = room.users;
+  let currentDrawerIndex = room.game.currentDrawerIndex;
+
+  if (currentDrawerIndex === users.length - 1) {
+    currentDrawerIndex = 0;
+  } else {
+    currentDrawerIndex ++;
+  }
+
+  await generalUpdateHelper(roomCode, { 'game.currentDrawerIndex': currentDrawerIndex })
+
+  return users[currentDrawerIndex];
+}
+
 module.exports = {
   getRoom,
   setGameStarted,
   addUserToRoom,
   getUsersInRoom,
   removeUserFromRoom,
-  deleteRoomIfEmpty
+  deleteRoomIfEmpty,
+
+  getGameStartedStatus,
+  getTurnUser
 }
