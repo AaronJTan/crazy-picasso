@@ -15,6 +15,17 @@ const playerSchema = mongoose.Schema(
             required: false,
             default: 0
         },
+        madeCorrectGuess: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        alreadyDrawnInRound: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        
     },
     {
         _id: false
@@ -27,8 +38,27 @@ const gameSchema = mongoose.Schema(
             type: Boolean,
             required: true,
             default: false
-        }
-
+        },
+        currentRound: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        numberOfRounds: {
+            type: Number,
+            required: false,
+            default: 3
+        },
+        currentWord: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        currentDrawerIndex: {
+            type: Number,
+            required: false,
+            default: -1
+        },
     },
     {
         _id: false
