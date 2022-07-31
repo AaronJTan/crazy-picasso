@@ -1,6 +1,13 @@
 const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 
+const socketJoinRoom = async (socket, roomCode) => {
+  socket.roomCode = roomCode;
+  await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
+
+  socket.join(roomCode);
+}
+
 function createGameHandlers(io) {
   let module = {};
 
@@ -8,10 +15,7 @@ function createGameHandlers(io) {
     const socket = this;
 
     let roomCode = uuidGenerator.generate();
-    socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
-
-    socket.join(roomCode);
+    await socketJoinRoom(socket, roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
@@ -23,10 +27,7 @@ function createGameHandlers(io) {
     const socket = this;
 
     let roomCode = data.privateRoomCode;
-    socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
-
-    socket.join(roomCode);
+    await socketJoinRoom(socket, roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
     let room = await roomObj.getRoom(roomCode);
@@ -72,10 +73,7 @@ function createGameHandlers(io) {
     const socket = this;
 
     let roomCode = "public";
-    socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
-
-    socket.join(roomCode);
+    await socketJoinRoom(socket, roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
