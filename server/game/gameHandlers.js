@@ -11,7 +11,7 @@ function createGameHandlers(io) {
     socket.join(roomCode);
   }
 
-  const handleEmitUserJoinedGameEvents = (socket, usersInRoom) => {
+  const handleUserJoinedGameEvent = (socket, usersInRoom) => {
     const roomCode = socket.roomCode;
   
     if (usersInRoom.length >= 2) {
@@ -62,7 +62,7 @@ function createGameHandlers(io) {
 
     let usersInRoom = await roomObj.getUsersInRoom(socket.roomCode);
     
-    handleEmitUserJoinedGameEvents(socket, usersInRoom);
+    handleUserJoinedGameEvent(socket, usersInRoom);
     
     callback({ users: usersInRoom });
   }
@@ -84,7 +84,7 @@ function createGameHandlers(io) {
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
     
-    handleEmitUserJoinedGameEvents(socket, usersInRoom);
+    handleUserJoinedGameEvent(socket, usersInRoom);
 
     callback({ users: usersInRoom });
   }
