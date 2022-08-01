@@ -126,17 +126,17 @@ const handleUserGuess = async (roomCode, currentGuessData) => {
     let updatedScore = user.score + 50; // set score based on time later
     const query = {roomCode, "users.username": user.username};
     const updateValues = { "users.$.madeCorrectGuess": true, "users.$.score": updatedScore };
-    generalUpdateHelper(query, updateValues);
+    await generalUpdateHelper(query, updateValues);
 
     return "CORRECT_GUESS";
   }  
 }
 
-const getSocketsAlreadyGuessed = async (guesserUsername, roomCode) => {
+const getSocketsAlreadyGuessed = async (roomCode) => {
   let usersInRoom = await getUsersInRoom(roomCode);
 
   let filteredUsers = usersInRoom.filter((user) => {
-      return user.madeCorrectGuess && user.username != guesserUsername;
+      return user.madeCorrectGuess;
   })
 
   let socketIds = filteredUsers.map((user) => {

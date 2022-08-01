@@ -137,10 +137,10 @@ function createGameHandlers(io) {
     } 
     
     else if (guessStatus === "ALREADY_GUESSED_CORRECTLY") {
-      let socketsToNotify = await roomObj.getSocketsAlreadyGuessed(data.author, socket.roomCode);
+      let socketsToNotify = await roomObj.getSocketsAlreadyGuessed(socket.roomCode);
 
       if (socketsToNotify.length) {
-        io.to(socketsToNotify).emit("receive_guess", data);
+        io.to(socketsToNotify).except(socket.id).emit("receive_guess", data);
       }
     } 
     
