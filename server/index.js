@@ -6,6 +6,7 @@ require("dotenv").config();
 const session = require("express-session");
 const passport = require("passport");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const RoomModel = require("./models/schemas/Room");
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -124,30 +125,36 @@ const nodemailer = require("nodemailer");
 //   },
 // });
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
-  port: 587,
-  auth: {
-      user: 'coy82@ethereal.email',
-      pass: 'jtJHynyu5EcsfgW2Eh'
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   host: 'smtp.ethereal.email',
+//   port: 587,
+//   auth: {
+//       user: 'coy82@ethereal.email',
+//       pass: 'jtJHynyu5EcsfgW2Eh'
+//   }
+// });
 
-// Step 2
-let mailOptions = {
-  from: "coy82@ethereal.email",
-  to: "coy82@ethereal.email",
-  subject: "Testing",
-  text: "It works",
-};
+// // Step 2
+// let mailOptions = {
+//   from: "coy82@ethereal.email",
+//   to: "coy82@ethereal.email",
+//   subject: "Testing",
+//   text: "It works",
+// };
 
-transporter.sendMail(mailOptions, function (err, data) {
-  if (err) {
-    console.log("Error occurs when sending an email", err);
-  } else {
-    console.log("Email sent!");
-  }
-});
+// transporter.sendMail(mailOptions, function (err, data) {
+//   if (err) {
+//     console.log("Error occurs when sending an email", err);
+//   } else {
+//     console.log("Email sent!");
+//   }
+// });
+
+const clearRooms = async () => {
+  await RoomModel.deleteMany({});
+}
+
+clearRooms()
 
 gameSocketConnection.listen(io);
 /* ------------------------------INITIALIZE SERVER------------------------------*/

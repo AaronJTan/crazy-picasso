@@ -6,10 +6,11 @@ import Container from "@mui/material/Container";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
-import RandomWords from "../../components/RandomWords/RandomWords";
-import BaseLayout from "../../layouts/BaseLayout";
-import VideoChat from "../../components/VideoChat/VideoChat";
+// import RandomWords from "../../components/RandomWords/RandomWords";
+// import BaseLayout from "../../layouts/BaseLayout";
+// import VideoChat from "../../components/VideoChat/VideoChat";
 import GameBar from "../../components/GameBar/GameBar";
+import DrawingTimer from "../../components/Timer/gameTimer";
 
 const GamePage = ({user, roomDetails, socketRef}) => {
   const username = user;
@@ -22,6 +23,9 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   const [choiceOfWords, setChoiceOfWords] = useState([]);
   const [currentDrawerUsername, setCurrentDrawerUsername] = useState("");
   const [round, setRound] = useState(1);
+  const [roundTime, setRoundTime] = useState();
+
+  
 
   useEffect(() => {
     if (roomDetails.type == "public") {
@@ -46,6 +50,9 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     socketRef.current.on("word_selected", (data) => {
       setCurrentDrawerUsername(data.currentDrawerUsername);
       setWord(data.wordToDraw);
+      const time = new Date();
+      time.setSeconds(time.getSeconds() + 60); // 1 minute timer
+      setRoundTime(time);
     });
 
     socketRef.current.on("set_wait_status", (waitStatus) => {
@@ -91,6 +98,8 @@ const GamePage = ({user, roomDetails, socketRef}) => {
         setChoiceOfWords={setChoiceOfWords} 
         round={round}
       />
+      {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
+      
 
       <Box sx={{ display: "flex" }}>
         <PlayersList users={users} username={username} />
