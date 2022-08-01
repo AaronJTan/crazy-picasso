@@ -44,7 +44,8 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       });
     }
 
-    socketRef.current.on("clear_screen", () => {
+    socketRef.current.on("clear_canvas", () => {
+      setWord("");
       clearCanvas();
     });
     
