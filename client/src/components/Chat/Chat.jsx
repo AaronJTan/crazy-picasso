@@ -13,18 +13,20 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import { makeStyles } from "@mui/styles";
-import "./Chat.css";
 
 const useStyles = makeStyles({
   // each property inside makeStyles is a CSS class.
   chatWindow: {
-    height: "30rem",
-    width: '25rem'
+    height: "35rem",
+    width: "25rem",
   },
   chatList: {
-    height: "25rem",
+    maxHeight: "100%",
     overflow: "auto",
   },
+  inputBox: {
+    
+  }
 });
 
 export default function Chat({ username, socketRef, guesses, setGuesses }) {
@@ -58,10 +60,7 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
       // the message data will be broadcasted to other players
       socketRef.current.emit("send_message", { author: username, message: guess });
       // update previous message list
-      setGuesses(prevGuesses => [
-        ...prevGuesses,
-        { author: username, message: guess },
-      ]);
+      setGuesses((prevGuesses) => [...prevGuesses, { author: username, message: guess }]);
       // set current message back to empty string
       setGuess("");
     }
