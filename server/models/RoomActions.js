@@ -83,9 +83,16 @@ const getTurnUser = async (roomCode) => {
     currentDrawerIndex ++;
   }
 
-  await generalUpdateHelper({roomCode}, { 'game.currentDrawerIndex': currentDrawerIndex })
+  const user = users[currentDrawerIndex];
 
-  return users[currentDrawerIndex];
+  const updateValues = { 
+    'game.currentDrawerIndex': currentDrawerIndex, 
+    "game.currentDrawer": {socketId: user.socketId, username: user.username}
+  };
+
+  await generalUpdateHelper({roomCode}, updateValues)
+
+  return user;
 }
 
 const setGameCurrentWordToDraw = async (roomCode, wordToDraw) => {

@@ -20,6 +20,19 @@ function createGameHandlers(io) {
     io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", { author: currentDrawer.username, guess: "IS SELECTING A WORD" });
   }
 
+  const sendCurrentTurnData = async (roomCode, socket) => {
+    const room = await roomObj.getRoom(roomCode);
+    const wordToDraw = room.game.currentWord;
+    const currentDrawer = room.game.currentDrawer;
+
+    if (wordToDraw) {
+      socket.emit("word_selected", {currentDrawerUsername: currentDrawer.username, wordToDraw});
+      socket.emit("receive_guess", { author: socket.username, guess: "IS DRAWING NOW" });
+    } else {
+      socket.emit("receive_guess", { author: currentDrawer.username, guess: "IS SELECTING A WORD" }); 
+    }
+  }
+
   const handleUserJoinedGameEvent = async (socket, usersInRoom) => {
     const roomCode = socket.roomCode;
   
@@ -34,6 +47,8 @@ function createGameHandlers(io) {
       if (!gameHasStarted) {
         await roomObj.setGameStarted(socket.roomCode, true);
         await handleNextPlayerToDraw(roomCode);
+      } else {
+        await sendCurrentTurnData(roomCode, socket);
       }
     } else {
       io.to(roomCode).emit("set_wait_status", true);

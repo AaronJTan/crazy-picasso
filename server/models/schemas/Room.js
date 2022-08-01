@@ -59,6 +59,10 @@ const gameSchema = mongoose.Schema(
             required: false,
             default: -1
         },
+        currentDrawer: {
+            socketId: {type: String, require: true, default: "" },
+            username: {type: String, require: true, default: "" },
+        },
     },
     {
         _id: false
