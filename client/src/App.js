@@ -1,38 +1,36 @@
-import { useEffect, useState, useRef } from 'react';
-import './App.css';
-import BaseLayout from './layouts/BaseLayout';
-import GamePage from './pages/GamePage/GamePage';
-import HomePage from './pages/HomePage/HomePage';
-import SelectRoomPage from './pages/SelectRoomPage/SelectRoomPage';
-import AuthService from './services/AuthService';
+import { useEffect, useState, useRef } from "react";
+import "./App.css";
+import BaseLayout from "./layouts/BaseLayout";
+import GamePage from "./pages/GamePage/GamePage";
+import HomePage from "./pages/HomePage/HomePage";
+import SelectRoomPage from "./pages/SelectRoomPage/SelectRoomPage";
+import AuthService from "./services/AuthService";
 import io from "socket.io-client";
 
 function App() {
   const socketRef = useRef(null);
   const [user, setUser] = useState(null);
-  const updateUsername = useUpdateUsername();
   const [socketActivated, setSocketActivated] = useState(false);
-  const [roomDetails, setRoomDetails] = useState({type: null});
+  const [roomDetails, setRoomDetails] = useState({ type: null });
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
       if (response.body.username) {
-        // updateUsername(response.body.username);
         setUser(response.body.username);
       } else {
-        // updateUsername(null);
         setUser(null);
       }
-    })
+    });
   }, []);
 
   useEffect(() => {
     if (user != null) {
+      // socketRef.current = io("http://localhost:3000");
       socketRef.current = io(process.env.REACT_APP_SERVER_URL);
       // send username to socket to construct username list in socket server side
       socketRef.current.auth = { username: user };
       socketRef.current.connect();
-      setSocketActivated(true)
+      setSocketActivated(true);
     }
   }, [user]);
 
@@ -42,17 +40,20 @@ function App() {
     }
 
     if (roomDetails.type == null) {
-      return <SelectRoomPage user={user} setRoomDetails={setRoomDetails} socketRef={socketRef} socketActivated={socketActivated} />;
+      return (
+        <SelectRoomPage
+          user={user}
+          setRoomDetails={setRoomDetails}
+          socketRef={socketRef}
+          socketActivated={socketActivated}
+        />
+      );
     }
 
     return <GamePage user={user} roomDetails={roomDetails} socketRef={socketRef} />;
-  }
+  };
 
-  return (
-    <BaseLayout>
-      {renderComponent()}
-    </BaseLayout>
-  )
+  return <BaseLayout>{renderComponent()}</BaseLayout>;
 }
 
 export default App;
