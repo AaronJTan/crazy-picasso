@@ -61,7 +61,8 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     });
 
     socketRef.current.on("game_ended", () => {
-      alert("GAME_ENDED")
+      alert("The game has ended");
+      window.location.reload();
     });
 
     socketRef.current.on("user_disconnected", (users) => {
