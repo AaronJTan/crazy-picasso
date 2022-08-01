@@ -12,6 +12,14 @@ function createGameHandlers(io) {
     socket.join(roomCode);
   }
 
+  const handleNextPlayerToDraw = async (roomCode) => {
+    const currentDrawer = await roomObj.getTurnUser(roomCode);
+    const choiceOfWords = wordGenerator.getXWords(3);
+
+    io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
+    io.to(roomCode).except(currentDrawer.socketId).emit("receive_message", { author: currentDrawer.username, message: "IS SELECTING A WORD" });
+  }
+
   const handleUserJoinedGameEvent = async (socket, usersInRoom) => {
     const roomCode = socket.roomCode;
   
@@ -25,12 +33,7 @@ function createGameHandlers(io) {
 
       if (!gameHasStarted) {
         await roomObj.setGameStarted(socket.roomCode, true);
-        const currentDrawer = await roomObj.getTurnUser(socket.roomCode);
-        const choiceOfWords = wordGenerator.getXWords(3);
-
-        io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
-        io.to(roomCode).except(currentDrawer.socketId).emit("receive_message", { author: currentDrawer.username, message: "IS SELECTING A WORD" });
-
+        await handleNextPlayerToDraw(roomCode);
       }
     } else {
       io.to(roomCode).emit("set_wait_status", true);
