@@ -112,10 +112,29 @@ function createGameHandlers(io) {
     socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, guess: "IS DRAWING NOW" });
   }
 
-  module.sendGuess = function (data) {
+  module.sendGuess = async function (data) {
     const socket = this;
 
-    socket.to(socket.roomCode).emit("receive_guess", data);
+    const guessStatus = await roomObj.handleUserGuess(socket.roomCode, data);
+
+    if (guessStatus === "IS_DRAWER") {
+      return;
+    } 
+    
+    else if (guessStatus === "ALREADY_GUESSED_CORRECTLY") {
+      let socketsToNotify = await roomObj.getSocketsAlreadyGuessed(data.author, socket.roomCode);
+      io.to(socketsToNotify).emit("receive_guess", data);
+    } 
+    
+    else if (guessStatus === "CORRECT_GUESS") {
+      const messageObj = {author: data.author, guess: "GUESSED THE WORD"};
+      io.to(socket.roomCode).emit("receive_guess", messageObj);
+    } 
+    
+    else {
+      socket.to(socket.roomCode).emit("receive_guess", data);
+    }
+
   }
 
   module.drawing = function (data) {

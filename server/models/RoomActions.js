@@ -57,9 +57,9 @@ const deleteRoomIfEmpty = async (roomCode) => {
 
 
 
-const generalUpdateHelper = async (roomCode, updateVal) => {
+const generalUpdateHelper = async (query, updateVal) => {
   await RoomModel.findOneAndUpdate(
-    { roomCode },
+    query,
     { $set: updateVal },
     { safe: true, multi: false, new: true }
   );
@@ -83,13 +83,61 @@ const getTurnUser = async (roomCode) => {
     currentDrawerIndex ++;
   }
 
-  await generalUpdateHelper(roomCode, { 'game.currentDrawerIndex': currentDrawerIndex })
+  await generalUpdateHelper({roomCode}, { 'game.currentDrawerIndex': currentDrawerIndex })
 
   return users[currentDrawerIndex];
 }
 
 const setGameCurrentWordToDraw = async (roomCode, wordToDraw) => {
-  await generalUpdateHelper(roomCode, { 'game.currentWord': wordToDraw })
+  await generalUpdateHelper({roomCode}, { 'game.currentWord': wordToDraw })
+}
+
+const getUserByUsername = async (roomCode, username) => {
+  const userInListFormat = await RoomModel.findOne({ roomCode, "users.username": username }, "-_id users.$").lean();
+  const user = userInListFormat.users[0];
+
+  return user;
+}
+
+const handleUserGuess = async (roomCode, currentGuessData) => {
+  const room = await getRoom(roomCode);
+  const currentDrawerIndex = room.game.currentDrawerIndex;
+  const drawer = room.users[currentDrawerIndex];
+  const currentWord = room.game.currentWord.toLowerCase();
+
+  if (currentGuessData.author === drawer.username) {
+    return "IS_DRAWER";
+  }
+
+  const user = await getUserByUsername(roomCode, currentGuessData.author);
+  
+  if (user.madeCorrectGuess) {
+    return "ALREADY_GUESSED_CORRECTLY";
+  }
+
+  if (currentGuessData.guess.toLowerCase() === currentWord) {
+    let updatedScore = user.score + 50; // set score based on time later
+    const query = {roomCode, "users.username": user.username};
+    const updateValues = { "users.$.madeCorrectGuess": true, "users.$.score": updatedScore };
+    generalUpdateHelper(query, updateValues);
+
+    return "CORRECT_GUESS";
+  }  
+}
+
+const getSocketsAlreadyGuessed = async (guesserUsername, roomCode) => {
+  let usersInRoom = await getUsersInRoom(roomCode);
+
+  let filteredUsers = usersInRoom.filter((user) => {
+      return user.madeCorrectGuess && user.username != guesserUsername;
+  })
+
+  let socketIds = filteredUsers.map((user) => {
+      return user.socketId;
+  })
+
+  return socketIds;
+
 }
 
 module.exports = {
@@ -102,5 +150,8 @@ module.exports = {
 
   getGameStartedStatus,
   getTurnUser,
-  setGameCurrentWordToDraw
+  setGameCurrentWordToDraw,
+
+  handleUserGuess,
+  getSocketsAlreadyGuessed
 }
