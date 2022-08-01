@@ -57,11 +57,15 @@ const deleteRoomIfEmpty = async (roomCode) => {
 
 
 
-const generalUpdateHelper = async (query, updateVal) => {
+const generalUpdateHelper = async (query, updateVal, options = null) => {
+  if (options === null) {
+    options = { safe: true, multi: false, new: true }
+  }
+
   await RoomModel.findOneAndUpdate(
     query,
     { $set: updateVal },
-    { safe: true, multi: false, new: true }
+    options
   );
 }
 
