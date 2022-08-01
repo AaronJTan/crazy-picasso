@@ -88,13 +88,17 @@ const getTurnUser = async (roomCode) => {
   }
 
   const user = users[currentDrawerIndex];
+  await resetUsersMadeCorrectGuess(roomCode);
 
+  const query = { roomCode, "users.username": user.username };
   const updateValues = { 
+    'game.currentWord': "",
     'game.currentDrawerIndex': currentDrawerIndex, 
-    "game.currentDrawer": {socketId: user.socketId, username: user.username}
+    "game.currentDrawer": {socketId: user.socketId, username: user.username},
+    "users.$.alreadyDrawnInRound": true
   };
 
-  await generalUpdateHelper({roomCode}, updateValues)
+  await generalUpdateHelper(query, updateValues)
 
   return user;
 }
@@ -151,6 +155,71 @@ const getSocketsAlreadyGuessed = async (roomCode) => {
 
 }
 
+const resetUsersMadeCorrectGuess = async (roomCode) => {
+  const updateValues = {"users.$[].madeCorrectGuess": false}
+  await generalUpdateHelper({roomCode}, updateValues, { "multi": true });
+}
+
+const resetUsersAlreadyDrawnInRound = async (roomCode) => {
+  const updateValues = {"users.$[].alreadyDrawnInRound": false}
+  await generalUpdateHelper({roomCode}, updateValues, { "multi": true });
+}
+
+const allUsersDrawed = async (roomCode) => {
+  const usersThatDrawed = await RoomModel.aggregate([
+    {
+      "$match": {"roomCode": roomCode }
+    },
+    {
+      "$unwind": "$users"
+    },
+    {
+      "$match": {"users.alreadyDrawnInRound": true}
+    },
+    {
+      "$group": {
+        "_id": "$id",
+        "users": {"$push": "$users"}
+      }
+    }
+  ]);
+
+  if (usersThatDrawed.length) {
+    return usersThatDrawed[0].users;
+  }
+
+  return usersThatDrawed;
+}
+
+const handleRoundIncrement = async (roomCode) => {
+  const room = await getRoom(roomCode);
+  const numUsersInRoom = room.users.length
+  const round = room.game.currentRound;
+  const usersThatDrawed = await allUsersDrawed(roomCode);
+  const everyUserDrawed = usersThatDrawed.length === numUsersInRoom;
+
+  let roundDetails = {type: "NEXT_ROUND", round};
+
+  if (room.game.numberOfRounds < round + 1 && everyUserDrawed) {
+    roundDetails = {...roundDetails, type: "END_OF_GAME"};
+  }
+  
+  else if (everyUserDrawed) {
+    await resetUsersAlreadyDrawnInRound (roomCode);
+    let updatedRound = round + 1;
+
+    await generalUpdateHelper({roomCode}, { 'game.currentRound': updatedRound })
+
+    roundDetails = {...roundDetails, round: updatedRound};
+  } 
+  
+  else {
+    roundDetails = {...roundDetails, type: "SAME_ROUND"};
+  }
+
+  return roundDetails;
+}
+
 module.exports = {
   getRoom,
   setGameStarted,
@@ -164,5 +233,6 @@ module.exports = {
   setGameCurrentWordToDraw,
 
   handleUserGuess,
-  getSocketsAlreadyGuessed
+  getSocketsAlreadyGuessed,
+  handleRoundIncrement
 }

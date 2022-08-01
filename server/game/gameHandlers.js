@@ -13,6 +13,16 @@ function createGameHandlers(io) {
   }
 
   const handleNextPlayerToDraw = async (roomCode) => {
+    const roundDetails = await roomObj.handleRoundIncrement(roomCode);
+
+    if (roundDetails.type === "NEXT_ROUND") {
+      io.to(roomCode).emit("round_updated", roundDetails.round);
+    } 
+
+    else if (roundDetails.type === "END_OF_GAME") {
+      io.to(roomCode).emit("game_ended");
+    }
+
     const currentDrawer = await roomObj.getTurnUser(roomCode);
     const choiceOfWords = wordGenerator.getXWords(3);
 
@@ -147,6 +157,16 @@ function createGameHandlers(io) {
     else if (guessStatus === "CORRECT_GUESS") {
       const messageObj = {author: data.author, guess: "GUESSED THE WORD"};
       io.to(socket.roomCode).emit("receive_guess", messageObj);
+
+      const alreadyGuessedSockets = await roomObj.getSocketsAlreadyGuessed(socket.roomCode);
+      const numPlayers = io.sockets.adapter.rooms.get(socket.roomCode).size;
+
+      if (alreadyGuessedSockets.length === numPlayers - 1) {
+        const test = {author: data.author, guess: "EVERYBODY GUESSED"};
+        io.to(socket.roomCode).emit("receive_guess", test); 
+
+        await handleNextPlayerToDraw(socket.roomCode)
+      }
     } 
     
     else {

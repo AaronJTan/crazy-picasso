@@ -18,6 +18,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   const [word, setWord] = useState("");
   const [choiceOfWords, setChoiceOfWords] = useState([]);
   const [currentDrawerUsername, setCurrentDrawerUsername] = useState("");
+  const [round, setRound] = useState(1);
 
   useEffect(() => {
     if (roomDetails.type == "public") {
@@ -55,6 +56,14 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       ]);
     });
 
+    socketRef.current.on("round_updated", (nextRound) => {
+      setRound(nextRound);
+    });
+
+    socketRef.current.on("game_ended", () => {
+      alert("GAME_ENDED")
+    });
+
     socketRef.current.on("user_disconnected", (users) => {
       setUsers(users);
     });
@@ -70,7 +79,14 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   
   return (
     <Container maxWidth="xl">
-      <GameBar socketRef={socketRef} username={username} currentDrawerUsername={currentDrawerUsername} word={word} choiceOfWords={choiceOfWords} setChoiceOfWords={setChoiceOfWords} />
+      <GameBar 
+        socketRef={socketRef} 
+        username={username} 
+        currentDrawerUsername={currentDrawerUsername} 
+        word={word} choiceOfWords={choiceOfWords} 
+        setChoiceOfWords={setChoiceOfWords} 
+        round={round}
+      />
 
       <Box sx={{ display: "flex" }}>
         <PlayersList users={users} />

@@ -42,7 +42,7 @@ const gameSchema = mongoose.Schema(
         currentRound: {
             type: Number,
             required: false,
-            default: 0
+            default: 1
         },
         numberOfRounds: {
             type: Number,

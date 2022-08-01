@@ -2,7 +2,7 @@ import "./GameBar.css"
 import Paper from "@mui/material/Paper";
 import { Box } from "@mui/material";
 
-const GameBar = ({ socketRef, username, currentDrawerUsername, word, choiceOfWords, setChoiceOfWords }) => {
+const GameBar = ({ socketRef, username, currentDrawerUsername, word, choiceOfWords, setChoiceOfWords, round }) => {
 
   const isCurrentDrawer = () => {
     return currentDrawerUsername == username
@@ -49,7 +49,7 @@ const GameBar = ({ socketRef, username, currentDrawerUsername, word, choiceOfWor
       <Paper className="game-bar" elevation={10} sx={{ p: 1, mt: 3, mb: 2 }}>
         <Box className="round-data">
           <h3 className="no-margin">
-            Round 1 of 3
+            Round {round} of 3
           </h3>
         </Box>
 
