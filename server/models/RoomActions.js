@@ -88,6 +88,10 @@ const getTurnUser = async (roomCode) => {
   return users[currentDrawerIndex];
 }
 
+const setGameCurrentWordToDraw = async (roomCode, wordToDraw) => {
+  await generalUpdateHelper(roomCode, { 'game.currentWord': wordToDraw })
+}
+
 module.exports = {
   getRoom,
   setGameStarted,
@@ -97,5 +101,6 @@ module.exports = {
   deleteRoomIfEmpty,
 
   getGameStartedStatus,
-  getTurnUser
+  getTurnUser,
+  setGameCurrentWordToDraw
 }

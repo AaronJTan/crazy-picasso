@@ -1,5 +1,6 @@
 const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
+const wordGenerator = require("./wordGenerator")
 
 function createGameHandlers(io) {
   let module = {};
@@ -11,7 +12,7 @@ function createGameHandlers(io) {
     socket.join(roomCode);
   }
 
-  const handleUserJoinedGameEvent = (socket, usersInRoom) => {
+  const handleUserJoinedGameEvent = async (socket, usersInRoom) => {
     const roomCode = socket.roomCode;
   
     if (usersInRoom.length >= 2) {
@@ -19,6 +20,18 @@ function createGameHandlers(io) {
       
       socket.to(roomCode).emit("user_joined", usersInRoom);
       socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
+
+      const gameHasStarted = await roomObj.getGameStartedStatus(socket.roomCode);
+
+      if (!gameHasStarted) {
+        await roomObj.setGameStarted(socket.roomCode, true);
+        const currentDrawer = await roomObj.getTurnUser(socket.roomCode);
+        const choiceOfWords = wordGenerator.getXWords(3);
+
+        io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
+        io.to(roomCode).except(currentDrawer.socketId).emit("receive_message", { author: currentDrawer.username, message: "IS SELECTING A WORD" });
+
+      }
     } else {
       io.to(roomCode).emit("set_wait_status", true);
     }
@@ -70,8 +83,6 @@ function createGameHandlers(io) {
   module.startPrivateGame = async function () {
     const socket = this;
 
-    await roomObj.setGameStarted(socket.roomCode, true);
-
     socket.to(socket.roomCode).emit("private_game_started");
   }
 
@@ -87,6 +98,15 @@ function createGameHandlers(io) {
     handleUserJoinedGameEvent(socket, usersInRoom);
 
     callback({ users: usersInRoom });
+  }
+
+  module.drawerSelectedWord = async function (wordToDraw) {
+    const socket = this;
+
+    await roomObj.setGameCurrentWordToDraw(socket.roomCode, wordToDraw);
+
+    io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw});
+    socket.to(socket.roomCode).emit("receive_message", { author: socket.username, message: "IS DRAWING NOW" });
   }
 
   module.sendMessage = function (data) {
