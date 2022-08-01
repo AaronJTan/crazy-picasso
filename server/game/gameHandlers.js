@@ -82,7 +82,7 @@ function createGameHandlers(io) {
     
     if (usersInRoom.length >= 2) {
       io.to(socket.roomCode).emit("set_wait_status", false);
-
+      
       socket.to(roomCode).emit("user_joined", usersInRoom);
       socket.to(roomCode).emit("receive_message", { author: socket.username, message: "JOINED THE GAME" });
 
@@ -107,12 +107,12 @@ function createGameHandlers(io) {
 
   module.sendVideoSignal = function (data) {
     const socket = this;
-    socket.to(data.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
+    socket.to(data.existingUserID).emit('user_joined_video', { signal: data.signal, newUserID: data.newUserID });
   }
 
   module.returnVideoSignal = function (data) {
     const socket = this;
-    socket.to(data.callerID).emit("receiving returned signal", { signal: payload.signal, id: socket.id });
+    socket.to(data.newUserID).emit("receiving_returned_signal", { signal: data.signal, id: socket.id });
   }
 
   module.disconnect = async function () {
