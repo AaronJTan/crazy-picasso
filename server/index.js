@@ -6,6 +6,7 @@ require("dotenv").config();
 const session = require("express-session");
 const passport = require("passport");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const RoomModel = require("./models/schemas/Room");
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -24,6 +25,12 @@ let sessionStore = new MongoDBStore({
   collection: "sessions",
 });
 
+const clearRooms = async () => {
+  await RoomModel.deleteMany({});
+};
+
+clearRooms();
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -35,9 +42,6 @@ app.use(
     },
   })
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Uncomment below for docker run
 
@@ -52,8 +56,6 @@ app.use(passport.session());
 //   .catch(err => {
 //     console.log(err)
 //   });
-
-/* ------------------------------Google OAuth------------------------------*/
 
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
@@ -79,27 +81,13 @@ app.get("/", function (req, res, next) {
   res.json("HELLO");
 });
 
-require("./middleware/passport");
-
-// app.get('/google', passport.authenticate('google', { scope: ["email", "profile"] }));
-
-// app.get('/oauth2/redirect/google',
-//   passport.authenticate('google', { failureRedirect: '/auth/signin', failureMessage: true }),
-//   function(req, res) {
-//     res.redirect('/select-room');
-//   });
-
 // local signup/login routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
 
-// app.get("/google-auth", passport.authenticate("google", { scope: ["email", "profile"] }));
-
 // private-rooms routes (create and join a private room)
 const privateRoomRoutes = require("./routes/privateRoomRoutes");
 app.use("/private-rooms", privateRoomRoutes);
-
-// google oAuth login
 
 /* ------------------------------SOCKET.IO------------------------------*/
 
@@ -111,42 +99,6 @@ const io = new Server(server, {
     origin: process.env.CORS_ORIGIN,
     method: ["GET", "POST"],
   },
-});
-
-const nodemailer = require("nodemailer");
-
-// Step 1: Create transporter object
-// let transporter = nodemailer.createTransport({
-//   service: "AOL",
-//   auth: {
-//     user: "crazy_picasso@gmail.com",
-//     pass: "cscc09project",
-//   },
-// });
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
-  port: 587,
-  auth: {
-      user: 'coy82@ethereal.email',
-      pass: 'jtJHynyu5EcsfgW2Eh'
-  }
-});
-
-// Step 2
-let mailOptions = {
-  from: "coy82@ethereal.email",
-  to: "coy82@ethereal.email",
-  subject: "Testing",
-  text: "It works",
-};
-
-transporter.sendMail(mailOptions, function (err, data) {
-  if (err) {
-    console.log("Error occurs when sending an email", err);
-  } else {
-    console.log("Email sent!");
-  }
 });
 
 gameSocketConnection.listen(io);
