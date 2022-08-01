@@ -48,7 +48,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       setWait(waitStatus);
     });
 
-    socketRef.current.on("receive_message", (data) => {
+    socketRef.current.on("receive_guess", (data) => {
       setGuesses(prevGuesses =>[
         ...prevGuesses,
         { author: data.author, message: data.message },

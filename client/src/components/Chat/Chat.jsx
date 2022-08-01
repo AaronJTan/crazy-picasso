@@ -31,15 +31,15 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
   // Allow enter key to send message directly
   const handleEnterKey = (event) => {
     if (event.keyCode === ENTER_KEY_CODE) {
-      sendMessage();
+      sendGuess();
     }
   };
 
-  const sendMessage = () => {
+  const sendGuess = () => {
     if (guess) {
       // send current message with author info using socket io
       // the message data will be broadcasted to other players
-      socketRef.current.emit("send_message", { author: username, message: guess });
+      socketRef.current.emit("send_guess", { author: username, message: guess });
       // update previous message list
       setGuesses(prevGuesses => [
         ...prevGuesses,
@@ -83,7 +83,7 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
                 </Grid>
                 {/* Send Message */}
                 <Grid xs={1} item>
-                  <IconButton onClick={sendMessage} aria-label="send" color="primary">
+                  <IconButton onClick={sendGuess} aria-label="send" color="primary">
                     <SendIcon />
                   </IconButton>
                 </Grid>
