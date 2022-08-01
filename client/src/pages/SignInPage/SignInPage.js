@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
-import GoogleLogin from "../../components/googleLogin";
-import GoogleLogout from "../../components/googleLogout";
+import GoogleLogin from "../../components/GoogleLogin/GoogleLogin";
+// import GoogleLogout from "../../components/googleLogout";
 import { gapi } from "gapi-script";
 
 export default function SignIn() {
@@ -12,25 +12,17 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
-  const CLIENT_ID = "219662561135-pm8u2seq0jn6h9bebu6j86jlrjv8pmsi.apps.googleusercontent.com";
 
   useEffect(() => {
     AuthService.getPlayer().then((response) => {
       if (response.body.username) {
         setLoginStatus(true);
-        console.log(response.body.username);
+        console.log("username exists in AuthService: ", response.body.username);
         navigate("/");
       } else {
         setLoginStatus(false);
       }
     });
-    function start() {      
-      gapi.client.init({
-        clientId: CLIENT_ID,
-        scope: "profile email",
-      });
-    }
-    gapi.load("client:auth2", start);
   }, []);
 
   const onLocalSignIn = async (event) => {
