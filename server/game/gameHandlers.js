@@ -1,6 +1,7 @@
 const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 const wordGenerator = require("./wordGenerator")
+const msgFormatter = require("./messageFormatter");
 
 function createGameHandlers(io) {
   let module = {};
@@ -27,7 +28,7 @@ function createGameHandlers(io) {
     const choiceOfWords = wordGenerator.getXWords(3);
 
     io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
-    io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", { author: currentDrawer.username, guess: "IS SELECTING A WORD" });
+    io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", msgFormatter.createSelectingWordMessage(currentDrawer.username));
   }
 
   const sendCurrentTurnData = async (roomCode, socket) => {
@@ -37,9 +38,9 @@ function createGameHandlers(io) {
 
     if (wordToDraw) {
       socket.emit("word_selected", {currentDrawerUsername: currentDrawer.username, wordToDraw});
-      socket.emit("receive_guess", { author: socket.username, guess: "IS DRAWING NOW" });
+      socket.emit("receive_guess", msgFormatter.createDrawingNowMessage(socket.username));
     } else {
-      socket.emit("receive_guess", { author: currentDrawer.username, guess: "IS SELECTING A WORD" }); 
+      socket.emit("receive_guess", msgFormatter.createSelectingWordMessage(currentDrawer.username)); 
     }
   }
 
@@ -50,7 +51,7 @@ function createGameHandlers(io) {
       io.to(roomCode).emit("set_wait_status", false);
       
       socket.to(roomCode).emit("user_joined", usersInRoom);
-      socket.to(roomCode).emit("receive_guess", { author: socket.username, guess: "JOINED THE GAME" });
+      socket.to(roomCode).emit("receive_guess", msgFormatter.createJoinedGameMessage(socket.username));
 
       const gameHasStarted = await roomObj.getGameStartedStatus(socket.roomCode);
 
@@ -134,7 +135,7 @@ function createGameHandlers(io) {
     await roomObj.setGameCurrentWordToDraw(socket.roomCode, wordToDraw);
 
     io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw});
-    socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, guess: "IS DRAWING NOW" });
+    socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createDrawingNowMessage(socket.username));
   }
 
   module.sendGuess = async function (data) {
@@ -150,20 +151,18 @@ function createGameHandlers(io) {
       let socketsToNotify = await roomObj.getSocketsAlreadyGuessed(socket.roomCode);
 
       if (socketsToNotify.length) {
-        io.to(socketsToNotify).except(socket.id).emit("receive_guess", data);
+        io.to(socketsToNotify).except(socket.id).emit("receive_guess", msgFormatter.createMessageOnlyGuessedUsers(data));
       }
     } 
     
     else if (guessStatus === "CORRECT_GUESS") {
-      const messageObj = {author: data.author, guess: "GUESSED THE WORD"};
-      io.to(socket.roomCode).emit("receive_guess", messageObj);
+      io.to(socket.roomCode).emit("receive_guess", msgFormatter.createCorrectMessage(data.author));
 
       const alreadyGuessedSockets = await roomObj.getSocketsAlreadyGuessed(socket.roomCode);
       const numPlayers = io.sockets.adapter.rooms.get(socket.roomCode).size;
 
       if (alreadyGuessedSockets.length === numPlayers - 1) {
-        const test = {author: data.author, guess: "EVERYBODY GUESSED"};
-        io.to(socket.roomCode).emit("receive_guess", test); 
+        io.to(socket.roomCode).emit("receive_guess", msgFormatter.createAllCorrectGuessMessage()); 
 
         await handleNextPlayerToDraw(socket.roomCode)
       }
@@ -189,7 +188,7 @@ function createGameHandlers(io) {
       await roomObj.deleteRoomIfEmpty(socket.roomCode);
 
       socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
-      socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, guess: "LEFT THE GAME" });
+      socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createLeftGameMessage(socket.username));
 
       if (usersInRoom.length === 1) {
         socket.to(socket.roomCode).emit("set_wait_status", true);

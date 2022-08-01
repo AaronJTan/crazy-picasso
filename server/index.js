@@ -6,6 +6,7 @@ require("dotenv").config();
 const session = require("express-session");
 const passport = require("passport");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const RoomModel = require("./models/schemas/Room");
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -18,6 +19,12 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+const clearRooms = async () => {
+  await RoomModel.deleteMany({});
+}
+
+clearRooms()
 
 let sessionStore = new MongoDBStore({
   uri: process.env.MDB_URI,

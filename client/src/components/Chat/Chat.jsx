@@ -12,6 +12,7 @@ import {
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
+import "./Chat.css"
 
 export default function Chat({ username, socketRef, guesses, setGuesses }) {
   const ENTER_KEY_CODE = 13;
@@ -50,11 +51,52 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
     }
   };
 
-  const listPrevGuesses = guesses.map((guessObj, index) => (
-    <ListItem key={index}>
-      <ListItemText primary={`${guessObj.author}: ${guessObj.guess}`} />
-    </ListItem>
-  ));
+  const listPrevGuesses = guesses.map((guessObj, index) => {
+    let guessDisplay = `${guessObj.author} ${guessObj.guess}`;
+    let textColor;
+
+    if (guessObj.type === "SELECTING_WORD") {
+      textColor = "DodgerBlue"
+    }
+    
+    else if (guessObj.type === "DRAWING_NOW") {
+      textColor = "blue"
+    }
+
+    else if (guessObj.type === "JOINED_GAME") {
+      textColor = "green"
+    }
+
+    else if (guessObj.type === "LEFT_GAME") {
+      textColor = "red"
+    } 
+
+    else if (guessObj.type === "ALREADY_GUESSED") {
+      textColor = "orange"
+    } 
+    
+    else if (guessObj.type === "CORRECT_GUESS") {
+      textColor = "green"
+    } 
+
+    else if (guessObj.type === "ALL_CORRECT") {
+      textColor = "purple"
+    } 
+    
+    else {
+      guessDisplay = `${guessObj.author}: ${guessObj.guess}`;
+    }
+
+
+    return (
+      (
+        <ListItem key={index}>
+          <ListItemText primary={guessDisplay} sx={{color: textColor}} />
+        </ListItem>
+      )
+    )
+  });
+
 
   return (
     <Fragment>
