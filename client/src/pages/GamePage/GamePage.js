@@ -27,6 +27,12 @@ const GamePage = ({user, roomDetails, socketRef}) => {
 
   
 
+  const clearCanvas = () => {
+    const canvas = document.querySelector('#board')
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
   useEffect(() => {
     if (roomDetails.type == "public") {
       socketRef.current.emit("join_public_game", (response) => {
@@ -37,6 +43,10 @@ const GamePage = ({user, roomDetails, socketRef}) => {
         setUsers(response.users);
       });
     }
+
+    socketRef.current.on("clear_screen", () => {
+      clearCanvas();
+    });
     
     socketRef.current.on("user_joined", (users) => {
       setUsers(users);
