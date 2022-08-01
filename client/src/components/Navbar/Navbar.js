@@ -116,9 +116,9 @@ const Navbar = () => {
   }
 
   return (
-    <AppBar position="static" color='transparent'>
-      <Container maxWidth="xl" sx={{ backgroundColor: "white" }}>
-        <Toolbar disableGutters sx={{ backgroundColor: "white" }}>
+    <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
           <Typography
             variant="h4"
             noWrap

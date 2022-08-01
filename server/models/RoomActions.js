@@ -54,11 +54,185 @@ const deleteRoomIfEmpty = async (roomCode) => {
   }
 }
 
+
+
+
+const generalUpdateHelper = async (query, updateVal, options = null) => {
+  if (options === null) {
+    options = { safe: true, multi: false, new: true }
+  }
+
+  await RoomModel.findOneAndUpdate(
+    query,
+    { $set: updateVal },
+    options
+  );
+}
+
+const getGameStartedStatus = async (roomCode) => {
+  let room = await RoomModel.findOne({ roomCode }).lean();
+  let hasStarted = room.game.hasStarted;
+
+  return hasStarted;
+}
+
+const getTurnUser = async (roomCode) => {
+  const room = await getRoom(roomCode);
+  const users = room.users;
+  let currentDrawerIndex = room.game.currentDrawerIndex;
+
+  if (currentDrawerIndex === users.length - 1) {
+    currentDrawerIndex = 0;
+  } else {
+    currentDrawerIndex ++;
+  }
+
+  const user = users[currentDrawerIndex];
+  await resetUsersMadeCorrectGuess(roomCode);
+
+  const query = { roomCode, "users.username": user.username };
+  const updateValues = { 
+    'game.currentWord': "",
+    'game.currentDrawerIndex': currentDrawerIndex, 
+    "game.currentDrawer": {socketId: user.socketId, username: user.username},
+    "users.$.alreadyDrawnInRound": true
+  };
+
+  await generalUpdateHelper(query, updateValues)
+
+  return user;
+}
+
+const setGameCurrentWordToDraw = async (roomCode, wordToDraw) => {
+  await generalUpdateHelper({roomCode}, { 'game.currentWord': wordToDraw })
+}
+
+const getUserByUsername = async (roomCode, username) => {
+  const userInListFormat = await RoomModel.findOne({ roomCode, "users.username": username }, "-_id users.$").lean();
+  const user = userInListFormat.users[0];
+
+  return user;
+}
+
+const handleUserGuess = async (roomCode, currentGuessData) => {
+  const room = await getRoom(roomCode);
+  const currentDrawerIndex = room.game.currentDrawerIndex;
+  const drawer = room.users[currentDrawerIndex];
+  const currentWord = room.game.currentWord.toLowerCase();
+
+  if (currentGuessData.author === drawer.username) {
+    return "IS_DRAWER";
+  }
+
+  const user = await getUserByUsername(roomCode, currentGuessData.author);
+  
+  if (user.madeCorrectGuess) {
+    return "ALREADY_GUESSED_CORRECTLY";
+  }
+
+  if (currentGuessData.guess.toLowerCase() === currentWord) {
+    let updatedScore = user.score + 50; // set score based on time later
+    const query = {roomCode, "users.username": user.username};
+    const updateValues = { "users.$.madeCorrectGuess": true, "users.$.score": updatedScore };
+    await generalUpdateHelper(query, updateValues);
+
+    return "CORRECT_GUESS";
+  }  
+}
+
+const getSocketsAlreadyGuessed = async (roomCode) => {
+  let usersInRoom = await getUsersInRoom(roomCode);
+
+  let filteredUsers = usersInRoom.filter((user) => {
+      return user.madeCorrectGuess;
+  })
+
+  let socketIds = filteredUsers.map((user) => {
+      return user.socketId;
+  })
+
+  return socketIds;
+
+}
+
+const resetUsersMadeCorrectGuess = async (roomCode) => {
+  const updateValues = {"users.$[].madeCorrectGuess": false}
+  await generalUpdateHelper({roomCode}, updateValues, { "multi": true });
+}
+
+const resetUsersAlreadyDrawnInRound = async (roomCode) => {
+  const updateValues = {"users.$[].alreadyDrawnInRound": false}
+  await generalUpdateHelper({roomCode}, updateValues, { "multi": true });
+}
+
+const allUsersDrawed = async (roomCode) => {
+  const usersThatDrawed = await RoomModel.aggregate([
+    {
+      "$match": {"roomCode": roomCode }
+    },
+    {
+      "$unwind": "$users"
+    },
+    {
+      "$match": {"users.alreadyDrawnInRound": true}
+    },
+    {
+      "$group": {
+        "_id": "$id",
+        "users": {"$push": "$users"}
+      }
+    }
+  ]);
+
+  if (usersThatDrawed.length) {
+    return usersThatDrawed[0].users;
+  }
+
+  return usersThatDrawed;
+}
+
+const handleRoundIncrement = async (roomCode) => {
+  const room = await getRoom(roomCode);
+  const numUsersInRoom = room.users.length
+  const round = room.game.currentRound;
+  const usersThatDrawed = await allUsersDrawed(roomCode);
+  const everyUserDrawed = usersThatDrawed.length === numUsersInRoom;
+
+  let roundDetails = {type: "NEXT_ROUND", round};
+
+  if (room.game.numberOfRounds < round + 1 && everyUserDrawed) {
+    roundDetails = {...roundDetails, type: "END_OF_GAME"};
+  }
+  
+  else if (everyUserDrawed) {
+    await resetUsersAlreadyDrawnInRound (roomCode);
+    let updatedRound = round + 1;
+
+    await generalUpdateHelper({roomCode}, { 'game.currentRound': updatedRound })
+
+    roundDetails = {...roundDetails, round: updatedRound};
+  } 
+  
+  else {
+    roundDetails = {...roundDetails, type: "SAME_ROUND"};
+  }
+
+  return roundDetails;
+}
+
 module.exports = {
   getRoom,
   setGameStarted,
   addUserToRoom,
   getUsersInRoom,
   removeUserFromRoom,
-  deleteRoomIfEmpty
+  deleteRoomIfEmpty,
+
+  getGameStartedStatus,
+  getTurnUser,
+  setGameCurrentWordToDraw,
+
+  handleUserGuess,
+  getSocketsAlreadyGuessed,
+  handleRoundIncrement
 }

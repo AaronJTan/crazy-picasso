@@ -1,0 +1,31 @@
+.game-bar {
+    display: flex;
+    align-items: baseline;
+}
+
+.game-bar::after {
+    flex: 1;
+    content: '';
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.round-data {
+    text-align: left;
+    flex: 1;
+}
+
+.word-selection {
+    display: flex;
+    align-items: baseline;
+}
+
+.word-choices {
+    margin-left: 48px
+}
+
+.word-choices button {
+    margin-right: 20px
+}
