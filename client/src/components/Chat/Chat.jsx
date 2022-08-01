@@ -24,11 +24,11 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
     }
   }, [guesses]);
 
-  const handleMessageChange = (event) => {
+  const handleGuessChange = (event) => {
     setGuess(event.target.value);
   };
 
-  // Allow enter key to send message directly
+  // Allow enter key to send guess directly
   const handleEnterKey = (event) => {
     if (event.keyCode === ENTER_KEY_CODE) {
       sendGuess();
@@ -37,22 +37,22 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
 
   const sendGuess = () => {
     if (guess) {
-      // send current message with author info using socket io
-      // the message data will be broadcasted to other players
-      socketRef.current.emit("send_guess", { author: username, message: guess });
-      // update previous message list
+      // send current guess with author info using socket io
+      // the guess data will be broadcasted to other players
+      socketRef.current.emit("send_guess", { author: username, guess: guess });
+      // update previous guess list
       setGuesses(prevGuesses => [
         ...prevGuesses,
-        { author: username, message: guess },
+        { author: username, guess: guess },
       ]);
-      // set current message back to empty string
+      // set current guess back to empty string
       setGuess("");
     }
   };
 
-  const listPrevMessages = guesses.map((msg, index) => (
+  const listPrevGuesses = guesses.map((guessObj, index) => (
     <ListItem key={index}>
-      <ListItemText primary={`${msg.author}: ${msg.message}`} />
+      <ListItemText primary={`${guessObj.author}: ${guessObj.guess}`} />
     </ListItem>
   ));
 
@@ -64,16 +64,16 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
               <Grid container spacing={4} alignItems="center">
                 {/* Chat Window */}
                 <Grid id="chat-window" xs={12} item>
-                  <List id="chat-window-messages">
-                    {listPrevMessages}
+                  <List id="chat-window-guesses">
+                    {listPrevGuesses}
                     <ListItem ref={scrollBottomRef}></ListItem>
                   </List>
                 </Grid>
-                {/* Message Input */}
+                {/* Guess Input */}
                 <Grid xs={10} item>
                   <FormControl fullWidth>
                     <TextField
-                      onChange={handleMessageChange}
+                      onChange={handleGuessChange}
                       onKeyDown={handleEnterKey}
                       value={guess}
                       label="Type your guess..."
@@ -81,7 +81,7 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
                     />
                   </FormControl>
                 </Grid>
-                {/* Send Message */}
+                {/* Send Guess */}
                 <Grid xs={1} item>
                   <IconButton onClick={sendGuess} aria-label="send" color="primary">
                     <SendIcon />

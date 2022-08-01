@@ -17,7 +17,7 @@ function createGameHandlers(io) {
     const choiceOfWords = wordGenerator.getXWords(3);
 
     io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
-    io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", { author: currentDrawer.username, message: "IS SELECTING A WORD" });
+    io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", { author: currentDrawer.username, guess: "IS SELECTING A WORD" });
   }
 
   const handleUserJoinedGameEvent = async (socket, usersInRoom) => {
@@ -27,7 +27,7 @@ function createGameHandlers(io) {
       io.to(roomCode).emit("set_wait_status", false);
       
       socket.to(roomCode).emit("user_joined", usersInRoom);
-      socket.to(roomCode).emit("receive_guess", { author: socket.username, message: "JOINED THE GAME" });
+      socket.to(roomCode).emit("receive_guess", { author: socket.username, guess: "JOINED THE GAME" });
 
       const gameHasStarted = await roomObj.getGameStartedStatus(socket.roomCode);
 
@@ -109,7 +109,7 @@ function createGameHandlers(io) {
     await roomObj.setGameCurrentWordToDraw(socket.roomCode, wordToDraw);
 
     io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw});
-    socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, message: "IS DRAWING NOW" });
+    socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, guess: "IS DRAWING NOW" });
   }
 
   module.sendGuess = function (data) {
@@ -132,7 +132,7 @@ function createGameHandlers(io) {
       await roomObj.deleteRoomIfEmpty(socket.roomCode);
 
       socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
-      socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, message: "LEFT THE GAME" });
+      socket.to(socket.roomCode).emit("receive_guess", { author: socket.username, guess: "LEFT THE GAME" });
 
       if (usersInRoom.length === 1) {
         socket.to(socket.roomCode).emit("set_wait_status", true);
