@@ -90,7 +90,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       />
 
       <Box sx={{ display: "flex" }}>
-        <PlayersList users={users} />
+        <PlayersList users={users} username={username} />
         <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <Canvas socketRef={socketRef} paintData={paintData} />
           <PaintToolBar setPaintData={setPaintData} />
