@@ -22,6 +22,7 @@ const listen = (io) => {
     socket.on("send_guess", gameHandlers.sendGuess);
     socket.on("drawing", gameHandlers.drawing);
     socket.on("disconnect", gameHandlers.disconnect);
+    socket.on("timer_is_up", gameHandlers.timerIsUpNextTurn);
   });
 }
 

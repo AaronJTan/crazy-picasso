@@ -2,6 +2,7 @@ const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 const wordGenerator = require("./wordGenerator")
 const msgFormatter = require("./messageFormatter");
+const roundTimer = require("./roundTimer");
 
 function createGameHandlers(io) {
   let module = {};
@@ -64,6 +65,10 @@ function createGameHandlers(io) {
     } else {
       io.to(roomCode).emit("set_wait_status", true);
     }
+  }
+
+  module.timerIsUpNextTurn = async function (data) {
+    await handleNextPlayerToDraw(data.roomCode);
   }
 
   module.createPrivateRoom = async function (callback) {
@@ -134,7 +139,7 @@ function createGameHandlers(io) {
 
     await roomObj.setGameCurrentWordToDraw(socket.roomCode, wordToDraw);
 
-    io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw});
+    io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw, roundTimer});
     socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createDrawingNowMessage(socket.username));
   }
 

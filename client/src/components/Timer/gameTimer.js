@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTimer } from 'react-timer-hook';
 
-export default function DrawingTimer({ expiryTimestamp, currentDrawerUsername }) {
+export default function DrawingTimer({ setWord, roomCode, socketRef, expiryTimestamp, currentDrawerUsername }) {
   const {
     seconds,
     minutes,
@@ -10,12 +10,18 @@ export default function DrawingTimer({ expiryTimestamp, currentDrawerUsername })
     pause,
     resume,
     restart,
-  } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called') });
+  } = useTimer({ expiryTimestamp, onExpire: () => {
+    setWord("");
+    socketRef.current.emit("timer_is_up", {roomCode}, () => {
+      console.log(roomCode);
+      console.log("timer_is_up emitted");
+    });
+    
+  }});
 
   const twoDigitFormat = (time) => {
     return String(time).padStart(2, '0');
   }
-
 
   return (
     <div style={{textAlign: 'center'}}>
@@ -23,7 +29,7 @@ export default function DrawingTimer({ expiryTimestamp, currentDrawerUsername })
         <span>{twoDigitFormat(minutes)}</span>:<span>{twoDigitFormat(seconds)}</span>
       </div>
       <div style={{fontSize: '20px'}}>
-        <p>{isRunning ? `${currentDrawerUsername} is drawing...` : `${currentDrawerUsername} is choosing a word...`}</p>
+        <p>{isRunning && `${currentDrawerUsername} is drawing...`}</p>
       </div>
       {/* <button onClick={start}>Start</button>
       <button onClick={pause}>Pause</button>

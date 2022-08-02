@@ -51,7 +51,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       setCurrentDrawerUsername(data.currentDrawerUsername);
       setWord(data.wordToDraw);
       const time = new Date();
-      time.setSeconds(time.getSeconds() + 60); // 1 minute timer
+      time.setSeconds(time.getSeconds() + 5); // 1 minute timer
       setRoundTime(time);
     });
 
@@ -98,7 +98,8 @@ const GamePage = ({user, roomDetails, socketRef}) => {
         setChoiceOfWords={setChoiceOfWords} 
         round={round}
       />
-      {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
+
+      {word && <DrawingTimer setWord={setWord} roomCode={roomDetails.type} socketRef={socketRef} expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
       
 
       <Box sx={{ display: "flex" }}>
