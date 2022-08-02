@@ -42,7 +42,7 @@ const gameSchema = mongoose.Schema(
         currentRound: {
             type: Number,
             required: false,
-            default: 0
+            default: 1
         },
         numberOfRounds: {
             type: Number,
@@ -58,6 +58,10 @@ const gameSchema = mongoose.Schema(
             type: Number,
             required: false,
             default: -1
+        },
+        currentDrawer: {
+            socketId: {type: String, require: true, default: "" },
+            username: {type: String, require: true, default: "" },
         },
     },
     {

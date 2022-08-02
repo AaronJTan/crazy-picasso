@@ -2,7 +2,7 @@
   height: 30rem;
 }
 
-#chat-window-messages {
+#chat-window-guesses {
   height: 25rem;
   overflow: auto;
 }
