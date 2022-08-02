@@ -2,7 +2,6 @@ const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 const wordGenerator = require("./wordGenerator")
 const msgFormatter = require("./messageFormatter");
-const roundTimer = require("./roundTimer");
 
 function createGameHandlers(io) {
   let module = {};
@@ -139,7 +138,7 @@ function createGameHandlers(io) {
 
     await roomObj.setGameCurrentWordToDraw(socket.roomCode, wordToDraw);
 
-    io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw, roundTimer});
+    io.to(socket.roomCode).emit("word_selected", {currentDrawerUsername: socket.username, wordToDraw});
     socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createDrawingNowMessage(socket.username));
   }
 

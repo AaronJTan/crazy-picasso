@@ -20,12 +20,6 @@ mongoose
     console.log(err);
   });
 
-const clearRooms = async () => {
-  await RoomModel.deleteMany({});
-}
-
-clearRooms()
-
 let sessionStore = new MongoDBStore({
   uri: process.env.MDB_URI,
   collection: "sessions",
