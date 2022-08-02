@@ -1,14 +1,14 @@
 import React from 'react';
 import { useTimer } from 'react-timer-hook';
 
-export default function DrawingTimer({ isCurrentDrawer, roomCode, socketRef, expiryTimestamp }) {
+export default function DrawingTimer({ isCurrentDrawer, socketRef, expiryTimestamp }) {
   
   const {
     seconds,
     minutes,
   } = useTimer({ expiryTimestamp, onExpire: () => {
     if (isCurrentDrawer()) {
-      socketRef.current.emit("timer_is_up", {roomCode});
+      socketRef.current.emit("timer_is_up");
     }
   }});
 

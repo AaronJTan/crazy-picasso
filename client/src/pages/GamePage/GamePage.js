@@ -113,7 +113,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
         round={round}
       />
 
-      {(word && roomDetails.type == "public") && <DrawingTimer isCurrentDrawer={isCurrentDrawer} roomCode={roomDetails.type} socketRef={socketRef} expiryTimestamp={roundTime} />}
+      { word && <DrawingTimer isCurrentDrawer={isCurrentDrawer} socketRef={socketRef} expiryTimestamp={roundTime} />}
       
 
       <Box sx={{ display: "flex" }}>
