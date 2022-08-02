@@ -27,11 +27,15 @@ const GamePage = ({user, roomDetails, socketRef}) => {
 
   
 
+  const isCurrentDrawer = () => {
+    return currentDrawerUsername == username
+  }
+
   const clearCanvas = () => {
     const canvas = document.querySelector('#board')
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+  }
 
   useEffect(() => {
     if (roomDetails.type == "public") {
@@ -103,8 +107,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     <Container maxWidth="xl">
       <GameBar 
         socketRef={socketRef} 
-        username={username} 
-        currentDrawerUsername={currentDrawerUsername} 
+        isCurrentDrawer={isCurrentDrawer}
         word={word} choiceOfWords={choiceOfWords} 
         setChoiceOfWords={setChoiceOfWords} 
         round={round}
@@ -115,7 +118,13 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       <Box sx={{ display: "flex" }}>
         <PlayersList users={users} username={username} />
         <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <Canvas socketRef={socketRef} paintData={paintData} />
+          <Canvas 
+            socketRef={socketRef}
+            paintData={paintData}
+            currentDrawerUsername={currentDrawerUsername}
+            isCurrentDrawer={isCurrentDrawer}
+            word={word}
+          />
           <PaintToolBar setPaintData={setPaintData} />
         </Box>
         <Chat username={username} socketRef={socketRef} guesses={guesses} setGuesses={setGuesses} />
