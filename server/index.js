@@ -57,8 +57,8 @@ const cors = require("cors");
 // app.use(cors());
 
 app.use(function (req, res, next) {
-  req.header("Access-Control-Allow-Origin", "*");
-  req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  req.setHeader("Access-Control-Allow-Origin", "*");
+  req.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
