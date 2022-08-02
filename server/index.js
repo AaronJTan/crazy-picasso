@@ -54,13 +54,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const cors = require("cors");
-// app.use(cors());
+app.use(cors());
 
-app.use(function (req, res, next) {
-  req.setHeader("Access-Control-Allow-Origin", "*");
-  req.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function (req, res, next) {
+//   req.setHeader("Access-Control-Allow-Origin", "*");
+//   req.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
