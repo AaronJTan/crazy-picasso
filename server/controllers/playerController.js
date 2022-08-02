@@ -1,7 +1,7 @@
 const Player = require("../models/schemas/playerModel");
 const bcrypt = require("bcrypt");
 const { sendEmail } = require("../email/sendgridEmail");
-const TIMEOUT_PERIOD = 3000;
+const TIMEOUT_PERIOD = 5000;
 
 const signupPlayer = async (req, res) => {
   let firstName = req.body.firstName;

@@ -20,7 +20,7 @@ function sendEmail(firstName, email) {
 
   sgMail
     .send(message)
-    .then((response) => console.log("Email Sent from worker.js!"))
+    .then((response) => console.log("Email Sent!"))
     .catch((error) => console.log(error.message));
 }
 
