@@ -125,7 +125,7 @@ const Navbar = () => {
             component="div"
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}
           >
-            <Link component={RouterLink} to="/" style={{ textDecoration: "none", color: "black" }}>
+            <Link href="/" style={{ textDecoration: "none", color: "black" }}>
               Crazy Picasso
             </Link>
           </Typography>

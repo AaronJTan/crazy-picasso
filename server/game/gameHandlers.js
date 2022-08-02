@@ -27,6 +27,7 @@ function createGameHandlers(io) {
     const currentDrawer = await roomObj.getTurnUser(roomCode);
     const choiceOfWords = wordGenerator.getXWords(3);
 
+    io.to(roomCode).emit("clear_canvas");
     io.to(currentDrawer.socketId).emit("select_word_to_draw", {currentDrawerUsername: currentDrawer.username, choiceOfWords});
     io.to(roomCode).except(currentDrawer.socketId).emit("receive_guess", msgFormatter.createSelectingWordMessage(currentDrawer.username));
   }
