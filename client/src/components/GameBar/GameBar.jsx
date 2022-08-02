@@ -2,11 +2,7 @@ import "./GameBar.css"
 import Paper from "@mui/material/Paper";
 import { Box } from "@mui/material";
 
-const GameBar = ({ socketRef, username, currentDrawerUsername, word, choiceOfWords, setChoiceOfWords, round }) => {
-
-  const isCurrentDrawer = () => {
-    return currentDrawerUsername == username
-  }
+const GameBar = ({ socketRef, isCurrentDrawer, word, choiceOfWords, setChoiceOfWords, round }) => {
 
   const handleWordDisplay = () => {
     if (isCurrentDrawer()) {
