@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseLayout from "../../layouts/BaseLayout";
 import AuthService from "../../services/AuthService";
+import API_URL from "../../constants/url";
 
 import "./SignUpPage.css";
 
@@ -34,7 +35,7 @@ export default function SignUp() {
     const player = { firstName, lastName, username, email, password };
 
     console.log("hit handleSubmit signup");
-    await fetch("/auth/signup", {
+    await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
       body: JSON.stringify(player),
       headers: {

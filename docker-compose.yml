@@ -23,6 +23,7 @@ services:
     environment:
       DB_CONNECTION: mongodb://mongo:27017/crazy-picasso_backend
       CORS_ORIGIN: http://localhost
+      SESSION_SECRET: secret
     external_links:
       - mongo
 
