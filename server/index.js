@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
-require("dotenv").config();
+// require("dotenv").config();
 const session = require("express-session");
 const passport = require("passport");
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -12,12 +12,15 @@ const RoomModel = require("./models/schemas/Room");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(process.env.MDB_URI, { useNewUrlParser: true })
+  .connect(
+    process.env.DB_CONNECTION,
+    { useNewUrlParser: true }
+  )
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log('MongoDB Connected')
   })
-  .catch((err) => {
-    console.log(err);
+  .catch(err => {
+    console.log(err)
   });
 
 const clearRooms = async () => {
@@ -27,7 +30,7 @@ const clearRooms = async () => {
 clearRooms()
 
 let sessionStore = new MongoDBStore({
-  uri: process.env.MDB_URI,
+  uri: process.env.DB_CONNECTION,
   collection: "sessions",
 });
 
@@ -45,20 +48,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Uncomment below for docker run
-
-// mongoose
-//   .connect(
-//     process.env.DB_CONNECTION,
-//     { useNewUrlParser: true }
-//   )
-//   .then(() => {
-//     console.log('MongoDB Connected')
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   });
 
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
