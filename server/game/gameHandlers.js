@@ -67,8 +67,10 @@ function createGameHandlers(io) {
     }
   }
 
-  module.timerIsUpNextTurn = async function (data) {
-    await handleNextPlayerToDraw(data.roomCode);
+  module.timerIsUpNextTurn = async function () {
+    const socket = this;
+
+    await handleNextPlayerToDraw(socket.roomCode);
   }
 
   module.createPrivateRoom = async function (callback) {

@@ -8,13 +8,16 @@
     content: '';
 }
 
-.no-margin {
-    margin: 0;
-}
-
 .round-data {
     text-align: left;
     flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.round-num {
+    margin-right: 8px;
 }
 
 .word-selection {

@@ -1,20 +1,16 @@
 import React from 'react';
 import { useTimer } from 'react-timer-hook';
+import "./DrawingTimer.css" 
 
-export default function DrawingTimer({ setWord, roomCode, socketRef, expiryTimestamp, currentDrawerUsername }) {
+export default function DrawingTimer({ isCurrentDrawer, socketRef, expiryTimestamp }) {
+  
   const {
     seconds,
     minutes,
-    isRunning,
   } = useTimer({ expiryTimestamp, onExpire: () => {
-    setWord("");
-    console.log("onExpire");
-
-    socketRef.current.emit("timer_is_up", {roomCode}, () => {
-      console.log(roomCode);
-      console.log("timer_is_up emitted");
-    });
-    
+    if (isCurrentDrawer()) {
+      socketRef.current.emit("timer_is_up");
+    }
   }});
 
   const twoDigitFormat = (time) => {
@@ -22,10 +18,11 @@ export default function DrawingTimer({ setWord, roomCode, socketRef, expiryTimes
   }
 
   return (
-    <div style={{textAlign: 'center'}}>
-      <div style={{fontSize: '50px'}}>
-        <span>{twoDigitFormat(minutes)}</span>:<span>{twoDigitFormat(seconds)}</span>
-      </div>
+    <div className="timer-container d-inline-block">
+      Time Remaining
+      <h3 className="timer d-inline-block">
+        {twoDigitFormat(minutes)}:{twoDigitFormat(seconds)}
+      </h3>
     </div>
   );
 }
