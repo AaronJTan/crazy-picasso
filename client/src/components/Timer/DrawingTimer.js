@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTimer } from 'react-timer-hook';
+import "./DrawingTimer.css" 
 
 export default function DrawingTimer({ isCurrentDrawer, socketRef, expiryTimestamp }) {
   
@@ -17,10 +18,11 @@ export default function DrawingTimer({ isCurrentDrawer, socketRef, expiryTimesta
   }
 
   return (
-    <div style={{textAlign: 'center'}}>
-      <div style={{fontSize: '50px'}}>
-        <span>{twoDigitFormat(minutes)}</span>:<span>{twoDigitFormat(seconds)}</span>
-      </div>
+    <div className="timer-container d-inline-block">
+      Time Remaining
+      <h3 className="timer d-inline-block">
+        {twoDigitFormat(minutes)}:{twoDigitFormat(seconds)}
+      </h3>
     </div>
   );
 }
