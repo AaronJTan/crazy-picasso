@@ -209,6 +209,12 @@ function createGameHandlers(io) {
 
       socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
       socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createLeftGameMessage(socket.username));
+      
+      const prevWord = room.game.currentWord;
+
+      if (prevWord) {
+        socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createWordWasMessage(socket.username, prevWord));
+      }
 
       if (currentDrawer.username == socket.username && usersInRoom.length) {
         await handleNextPlayerToDraw(socket.roomCode);

@@ -31,6 +31,14 @@ module.exports = {
         };
     },
 
+    createWordWasMessage: (username, word) => {
+        return {
+            type: "PREV_WORD",
+            author: username,
+            guess: `the word was: ${word}.`
+        };
+    },
+
     createMessageOnlyGuessedUsers: (messageObj) => {
         return {
             ...messageObj,
