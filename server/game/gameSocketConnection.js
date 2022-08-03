@@ -21,6 +21,8 @@ const listen = (io) => {
     socket.on("drawer_selected_word", gameHandlers.drawerSelectedWord);
     socket.on("send_guess", gameHandlers.sendGuess);
     socket.on("drawing", gameHandlers.drawing);
+    socket.on("send_video_signal", gameHandlers.sendVideoSignal);
+    socket.on("return_video_signal", gameHandlers.returnVideoSignal);
     socket.on("disconnect", gameHandlers.disconnect);
     socket.on("timer_is_up", gameHandlers.timerIsUpNextTurn);
   });

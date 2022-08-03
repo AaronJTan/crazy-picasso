@@ -1,5 +1,7 @@
+import API_URL from "../config/url";
+
 const login = async (loginPayload) => {
-    const response = await fetch("/auth/signin/", {
+    const response = await fetch(`${API_URL}/auth/signin/`, {
         method: "POST",
         body: JSON.stringify(loginPayload),
         headers: {
@@ -18,11 +20,11 @@ const login = async (loginPayload) => {
 }
 
 const logout = async () => {
-    await fetch("/auth/logout/");
+    await fetch(`${API_URL}/auth/logout/`);
 }
 
 const getPlayer = async () => {
-    const response = await fetch("/auth/player/");
+    const response = await fetch(`${API_URL}/auth/player/`);
 
     let body = await response.json();
     let data = {status: response.status, body};

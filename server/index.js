@@ -12,16 +12,19 @@ const RoomModel = require("./models/schemas/Room");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(process.env.MDB_URI, { useNewUrlParser: true })
+  .connect(
+    process.env.DB_CONNECTION,
+    { useNewUrlParser: true }
+  )
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log('MongoDB Connected')
   })
-  .catch((err) => {
-    console.log(err);
+  .catch(err => {
+    console.log(err)
   });
 
 let sessionStore = new MongoDBStore({
-  uri: process.env.MDB_URI,
+  uri: process.env.DB_CONNECTION,
   collection: "sessions",
 });
 
@@ -40,22 +43,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Uncomment below for docker run
-
-// mongoose
-//   .connect(
-//     process.env.DB_CONNECTION,
-//     { useNewUrlParser: true }
-//   )
-//   .then(() => {
-//     console.log('MongoDB Connected')
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   });
-
-/* ------------------------------Google OAuth------------------------------*/
-
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -63,11 +50,11 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
-app.use(function (req, res, next) {
-  req.header("Access-Control-Allow-Origin", "*");
-  req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function (req, res, next) {
+//   req.header("Access-Control-Allow-Origin", "*");
+//   req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
@@ -80,27 +67,13 @@ app.get("/", function (req, res, next) {
   res.json("HELLO");
 });
 
-require("./middleware/passport");
-
-// app.get('/google', passport.authenticate('google', { scope: ["email", "profile"] }));
-
-// app.get('/oauth2/redirect/google',
-//   passport.authenticate('google', { failureRedirect: '/auth/signin', failureMessage: true }),
-//   function(req, res) {
-//     res.redirect('/select-room');
-//   });
-
 // local signup/login routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
 
-// app.get("/google-auth", passport.authenticate("google", { scope: ["email", "profile"] }));
-
 // private-rooms routes (create and join a private room)
 const privateRoomRoutes = require("./routes/privateRoomRoutes");
 app.use("/private-rooms", privateRoomRoutes);
-
-// google oAuth login
 
 /* ------------------------------SOCKET.IO------------------------------*/
 
@@ -113,42 +86,6 @@ const io = new Server(server, {
     method: ["GET", "POST"],
   },
 });
-
-const nodemailer = require("nodemailer");
-
-// Step 1: Create transporter object
-// let transporter = nodemailer.createTransport({
-//   service: "AOL",
-//   auth: {
-//     user: "crazy_picasso@gmail.com",
-//     pass: "cscc09project",
-//   },
-// });
-
-// const transporter = nodemailer.createTransport({
-//   host: 'smtp.ethereal.email',
-//   port: 587,
-//   auth: {
-//       user: 'coy82@ethereal.email',
-//       pass: 'jtJHynyu5EcsfgW2Eh'
-//   }
-// });
-
-// // Step 2
-// let mailOptions = {
-//   from: "coy82@ethereal.email",
-//   to: "coy82@ethereal.email",
-//   subject: "Testing",
-//   text: "It works",
-// };
-
-// transporter.sendMail(mailOptions, function (err, data) {
-//   if (err) {
-//     console.log("Error occurs when sending an email", err);
-//   } else {
-//     console.log("Email sent!");
-//   }
-// });
 
 const clearRooms = async () => {
   await RoomModel.deleteMany({});

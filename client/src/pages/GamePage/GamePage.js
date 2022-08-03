@@ -4,11 +4,8 @@ import Canvas from "../../components/Canvas/Canvas.jsx";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
-// import RandomWords from "../../components/RandomWords/RandomWords";
-// import BaseLayout from "../../layouts/BaseLayout";
-// import VideoChat from "../../components/VideoChat/VideoChat";
 import GameBar from "../../components/GameBar/GameBar";
 import DrawingTimer from "../../components/Timer/DrawingTimer";
 
@@ -38,7 +35,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   }
 
   useEffect(() => {
-    if (roomDetails.type == "public") {
+    if (roomDetails.type === "public") {
       socketRef.current.emit("join_public_game", (response) => {
         setUsers(response.users);
       });
@@ -93,7 +90,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
     socketRef.current.on("user_disconnected", (users) => {
       setUsers(users);
     });
-  }, [])
+  }, []);
 
   if (wait) {
     return (
@@ -102,7 +99,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       </>
     );
   }
-  
+
   return (
     <Container maxWidth="xl">
       <GameBar 
