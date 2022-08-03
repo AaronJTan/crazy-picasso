@@ -12,16 +12,19 @@ const RoomModel = require("./models/schemas/Room");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(process.env.MDB_URI, { useNewUrlParser: true })
+  .connect(
+    process.env.DB_CONNECTION,
+    { useNewUrlParser: true }
+  )
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log('MongoDB Connected')
   })
-  .catch((err) => {
-    console.log(err);
+  .catch(err => {
+    console.log(err)
   });
 
 let sessionStore = new MongoDBStore({
-  uri: process.env.MDB_URI,
+  uri: process.env.DB_CONNECTION,
   collection: "sessions",
 });
 
@@ -37,19 +40,8 @@ app.use(
   })
 );
 
-// Uncomment below for docker run
-
-// mongoose
-//   .connect(
-//     process.env.DB_CONNECTION,
-//     { useNewUrlParser: true }
-//   )
-//   .then(() => {
-//     console.log('MongoDB Connected')
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   });
+app.use(passport.initialize());
+app.use(passport.session());
 
 /* ------------------------------MIDDLEWARES------------------------------*/
 app.use(express.urlencoded({ extended: true }));
@@ -58,11 +50,11 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
-app.use(function (req, res, next) {
-  req.header("Access-Control-Allow-Origin", "*");
-  req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function (req, res, next) {
+//   req.header("Access-Control-Allow-Origin", "*");
+//   req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
