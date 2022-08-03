@@ -90,7 +90,7 @@ const logoutPlayer = (req, res) => {
 
 const currentPlayer = (req, res) => {
   if (!req.session.username) {
-    return res.status(200).json({ error: "user not logged in" });
+    return res.status(401).json({ error: "user not logged in" });
   }
 
   return res.status(200).json({ username: req.session.username });

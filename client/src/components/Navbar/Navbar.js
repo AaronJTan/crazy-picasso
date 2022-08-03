@@ -84,14 +84,19 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    AuthService.getPlayer().then((response) => {
-      if (response.body.username) {
-        setUser(response.body.username);
-      } else {
+    const fetchData = async () => {
+      try {
+        const response = await AuthService.getPlayer();
+        if (response.body.username) {
+          setUser(response.body.username);
+        }
+      } catch (error) {
         setUser(null);
       }
-    })
-  }, [])
+    }
+
+    fetchData();
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
