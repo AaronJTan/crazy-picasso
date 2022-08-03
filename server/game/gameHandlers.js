@@ -201,11 +201,18 @@ function createGameHandlers(io) {
     const socket = this;
 
     if (socket.roomCode) {
+      const room = await roomObj.getRoom(socket.roomCode);
+      const currentDrawer = room.game.currentDrawer;
+
       let usersInRoom = await roomObj.removeUserFromRoom(socket.roomCode, socket.username);
       await roomObj.deleteRoomIfEmpty(socket.roomCode);
 
       socket.to(socket.roomCode).emit("user_disconnected", usersInRoom);
       socket.to(socket.roomCode).emit("receive_guess", msgFormatter.createLeftGameMessage(socket.username));
+
+      if (currentDrawer.username == socket.username && usersInRoom.length) {
+        await handleNextPlayerToDraw(socket.roomCode);
+      }
 
       if (usersInRoom.length === 1) {
         socket.to(socket.roomCode).emit("set_wait_status", true);
