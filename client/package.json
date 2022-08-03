@@ -22,6 +22,7 @@
     "random-word-slugs": "^0.1.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-facebook-login": "^4.1.1",
     "react-google-button": "^0.7.2",
     "react-google-login": "^5.2.2",
     "react-router-dom": "^6.3.0",

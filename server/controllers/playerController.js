@@ -51,13 +51,20 @@ const signinPlayer = async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let googleId = req.body.googleId;
+  let fbLogin = req.body.facebookLogin;
 
   if (googleId && username) {
     // user logged in with google account
     req.session.username = username;
     res.status(200).json({
-      // firstName: player.firstName,
-      // lastName: player.lastName,
+      username: username,
+    });
+    return;
+  }
+
+  if (fbLogin && username) {
+    req.session.username = username;
+    res.status(200).json({
       username: username,
     });
     return;
