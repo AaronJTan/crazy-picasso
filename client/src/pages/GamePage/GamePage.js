@@ -75,14 +75,14 @@ const GamePage = ({ user, roomDetails, socketRef }) => {
 
   return (
     <Container maxWidth="xl">
-      <GameBar 
+      {/* <GameBar 
         socketRef={socketRef} 
         isCurrentDrawer={isCurrentDrawer}
         word={word} choiceOfWords={choiceOfWords} 
         setChoiceOfWords={setChoiceOfWords} 
         round={round}
-      />
-      {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
+      /> */}
+      {/* {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>}; */}
       
 
       <Box sx={{ display: "flex" }}>

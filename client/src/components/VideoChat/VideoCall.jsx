@@ -22,8 +22,14 @@ const VideoCall = () => {
       getUserMedia(
         { video: true, audio: true },
         function (stream) {
+          myVideoRef.current.srcObject = stream;
+          myVideoRef.current.play();
           // send myMediaStream to the caller
           call.answer(stream);
+          call.on("stream", (remoteStream) => {
+            anotherVideoRef.current.srcObject = remoteStream;
+            anotherVideoRef.current.play();
+          });
         },
         function (err) {
           console.log("Failed to get local stream", err);
