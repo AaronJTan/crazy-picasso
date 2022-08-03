@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import "./Canvas.css";
 
-function Canvas({ socketRef, paintData }) {
+function Canvas({ socketRef, paintData, currentDrawerUsername, isCurrentDrawer, word }) {
 
     useEffect(() => {
         const handleLiveDrawing = () => {
@@ -44,16 +44,6 @@ function Canvas({ socketRef, paintData }) {
             mouseData.y = e.pageY - canvas.offsetTop + 20;
         }
 
-        canvas.addEventListener('mousemove', handleCanvasMouseXY);
-
-        canvas.addEventListener('mousedown', function (e) {
-            canvas.addEventListener('mousemove', handleUserDraw);
-        });
-
-        canvas.addEventListener('mouseup', function () {
-            canvas.removeEventListener('mousemove', handleUserDraw);
-        });
-
         const handleUserDraw = () => {
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
@@ -67,7 +57,32 @@ function Canvas({ socketRef, paintData }) {
 
             socketRef.current.emit("drawing", { socketData });
         };
-    }, [paintData]);
+
+        const addUserDrawListener = () => {
+            canvas.addEventListener('mousemove', handleUserDraw);
+        }
+
+        if (word != "" && isCurrentDrawer()) {
+            canvas.addEventListener('mousemove', handleCanvasMouseXY);
+    
+            canvas.addEventListener('mousedown', addUserDrawListener);
+    
+            canvas.addEventListener('mouseup', function () {
+                canvas.removeEventListener('mousemove', handleUserDraw);
+            });
+        } 
+
+        else {
+            return;            
+        }
+
+        return () => {
+            canvas.removeEventListener('mousedown', addUserDrawListener);
+            canvas.removeEventListener('mousemove', handleCanvasMouseXY);
+            canvas.removeEventListener('mousemove', handleUserDraw);
+        }
+
+    }, [paintData, currentDrawerUsername, word]);
 
     return (
         <Container>

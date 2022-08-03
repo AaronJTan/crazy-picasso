@@ -116,16 +116,16 @@ const Navbar = () => {
   }
 
   return (
-    <AppBar position="static" color='transparent'>
-      <Container maxWidth="xl" sx={{ backgroundColor: "white" }}>
-        <Toolbar disableGutters sx={{ backgroundColor: "white" }}>
+    <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
           <Typography
             variant="h4"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}
           >
-            <Link component={RouterLink} to="/" style={{ textDecoration: "none", color: "black" }}>
+            <Link href="/" style={{ textDecoration: "none", color: "black" }}>
               Crazy Picasso
             </Link>
           </Typography>
