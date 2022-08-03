@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
-import GoogleLogin from "../../components/googleLogin";
 import { gapi } from "gapi-script";
+import GoogleLoginButton from "../../components/GoogleLogin/GoogleLoginButton";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -66,8 +66,7 @@ export default function SignIn() {
           <button className="button animate__zoomIn animate__delay-2s" onClick={onLocalSignIn}>
             Sign In with Username
           </button>
-          <GoogleLogin />
-          {/* <button className="button animate__zoomIn animate__delay-2s" onClick={onGoogleSignIn} id="google-button">Sign In with Google</button> */}
+          <GoogleLoginButton />
           <button className="button animate__zoomIn animate__delay-2s" id="fb-button">
             Sign In with Facebook
           </button>
