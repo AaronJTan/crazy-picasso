@@ -25,12 +25,6 @@ let sessionStore = new MongoDBStore({
   collection: "sessions",
 });
 
-const clearRooms = async () => {
-  await RoomModel.deleteMany({});
-};
-
-clearRooms();
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -100,6 +94,12 @@ const io = new Server(server, {
     method: ["GET", "POST"],
   },
 });
+
+const clearRooms = async () => {
+  await RoomModel.deleteMany({});
+}
+
+clearRooms()
 
 gameSocketConnection.listen(io);
 /* ------------------------------INITIALIZE SERVER------------------------------*/
