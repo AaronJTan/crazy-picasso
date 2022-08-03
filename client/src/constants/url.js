@@ -1,3 +1,3 @@
-const API_URL = "http://35.182.87.161/api"
+const API_URL = "http://crazypicasso.me/"
 
 export default API_URL;
