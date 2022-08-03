@@ -7,7 +7,7 @@ import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState, useRef } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import GameBar from "../../components/GameBar/GameBar";
-import DrawingTimer from "../../components/Timer/gameTimer";
+import DrawingTimer from "../../components/Timer/DrawingTimer";
 
 const GamePage = ({user, roomDetails, socketRef}) => {
   const username = user;
@@ -20,7 +20,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   const [choiceOfWords, setChoiceOfWords] = useState([]);
   const [currentDrawerUsername, setCurrentDrawerUsername] = useState("");
   const [round, setRound] = useState(1);
-  const [roundTime, setRoundTime] = useState();
+  const [roundTime, setRoundTime] = useState(null);
 
   
 
@@ -63,7 +63,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
       setCurrentDrawerUsername(data.currentDrawerUsername);
       setWord(data.wordToDraw);
       const time = new Date();
-      time.setSeconds(time.getSeconds() + 60); // 1 minute timer
+      time.setSeconds(time.getSeconds() + 15); // 1 minute timer
       setRoundTime(time);
     });
 
@@ -109,7 +109,8 @@ const GamePage = ({user, roomDetails, socketRef}) => {
         setChoiceOfWords={setChoiceOfWords} 
         round={round}
       />
-      {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
+
+      {/* {word && <DrawingTimer setWord={setWord} roomCode={roomDetails.type} socketRef={socketRef} expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>}; */}
       
 
       <Box sx={{ display: "flex" }}>
