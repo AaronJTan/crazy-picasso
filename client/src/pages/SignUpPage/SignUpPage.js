@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseLayout from "../../layouts/BaseLayout";
 import AuthService from "../../services/AuthService";
-import API_URL from "../../constants/url";
+import API_URL from "../../config/url";
 
 import "./SignUpPage.css";
 

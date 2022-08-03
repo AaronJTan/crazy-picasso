@@ -1,4 +1,4 @@
-import API_URL from "../constants/url";
+import API_URL from "../config/url";
 
 const login = async (loginPayload) => {
     const response = await fetch(`${API_URL}/auth/signin/`, {
