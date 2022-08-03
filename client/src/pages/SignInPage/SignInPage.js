@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
-import GoogleLogin from "../../components/GoogleLogin/GoogleLogin";
-// import GoogleLogout from "../../components/googleLogout";
+import GoogleLogin from "../../components/googleLogin";
 import { gapi } from "gapi-script";
 
 export default function SignIn() {

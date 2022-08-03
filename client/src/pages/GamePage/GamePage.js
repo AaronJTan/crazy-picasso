@@ -6,11 +6,12 @@ import Container from "@mui/material/Container";
 import PaintToolBar from "../../components/PaintToolbar/PaintToolbar";
 import { useEffect, useState, useRef } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
-import RandomWords from "../../components/RandomWords/RandomWords";
-import BaseLayout from "../../layouts/BaseLayout";
-import VideoChat from "../../components/VideoChat/VideoChat";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Button } from "@mui/material";
+// import RandomWords from "../../components/RandomWords/RandomWords";
+// import BaseLayout from "../../layouts/BaseLayout";
+// import VideoChat from "../../components/VideoChat/VideoChat";
+import GameBar from "../../components/GameBar/GameBar";
+import DrawingTimer from "../../components/Timer/gameTimer";
+import VideoCall from "../../components/VideoChat/VideoCall";
 
 
 
@@ -73,30 +74,33 @@ const GamePage = ({ user, roomDetails, socketRef }) => {
   }
 
   return (
-    <>
-      <h1>I'm {username}. I joined the public room!</h1>
-      <ThemeProvider theme={theme}>
-        <Container maxWidth="xl">
-        
-          <RandomWords />
-          <Box sx={{ display: "flex" }}>
-            <VideoChat socketRef={socketRef} username={username} users={users}/>
-            <PlayersList users={users} />
-            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <Canvas socketRef={socketRef} paintData={paintData} />
-              <PaintToolBar setPaintData={setPaintData} />
-            </Box>
-            <Chat
-              username={username}
-              socketRef={socketRef}
-              guesses={guesses}
-              setGuesses={setGuesses}
-            />
-          </Box>
-        </Container>
-      </ThemeProvider>
-      <br />
-    </>
+    <Container maxWidth="xl">
+      <GameBar 
+        socketRef={socketRef} 
+        isCurrentDrawer={isCurrentDrawer}
+        word={word} choiceOfWords={choiceOfWords} 
+        setChoiceOfWords={setChoiceOfWords} 
+        round={round}
+      />
+      {word && <DrawingTimer expiryTimestamp={roundTime} currentDrawerUsername={currentDrawerUsername}/>};
+      
+
+      <Box sx={{ display: "flex" }}>
+        <VideoCall />
+        <PlayersList users={users} username={username} />
+        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <Canvas 
+            socketRef={socketRef}
+            paintData={paintData}
+            currentDrawerUsername={currentDrawerUsername}
+            isCurrentDrawer={isCurrentDrawer}
+            word={word}
+          />
+          <PaintToolBar setPaintData={setPaintData} />
+        </Box>
+        <Chat username={username} socketRef={socketRef} guesses={guesses} setGuesses={setGuesses} />
+      </Box>
+    </Container>
   );
 };
 
