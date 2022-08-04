@@ -93,7 +93,7 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
     return (
       (
         <ListItem key={index}>
-          <ListItemText primary={guessDisplay} sx={{color: textColor}} />
+          <ListItemText primaryTypographyProps={{fontSize: '20px', fontFamily: 'Indie Flower'}}  primary={guessDisplay} sx={{color: textColor}} />
         </ListItem>
       )
     )
@@ -121,6 +121,8 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
                       onChange={handleGuessChange}
                       onKeyDown={handleEnterKey}
                       value={guess}
+                      InputProps={{ style: { fontSize: '20px', fontFamily: "Indie Flower" } }}
+                      InputLabelProps={{ style: { fontSize: '20px', fontFamily: "Indie Flower" } }}
                       label="Type your guess..."
                       variant="outlined"
                     />
