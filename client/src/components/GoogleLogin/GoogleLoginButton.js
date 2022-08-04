@@ -28,9 +28,6 @@ export default function GoogleLoginButton() {
       navigate("/", { state: { username: res.profileObj.name } });
     });
   };
-  const onFailure = (res) => {
-    // console.log("LOGIN Failed! res: ", res);
-  };
   return (
     <div id="googleSignInButton">
       <GoogleLogin
@@ -42,7 +39,6 @@ export default function GoogleLoginButton() {
           </button>
         )}
         onSuccess={onSuccess}
-        onFailure={onFailure}
         cookiePolicy={"single_host_origin"}
         isSignedIn={false}
       />

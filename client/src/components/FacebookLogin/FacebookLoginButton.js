@@ -18,7 +18,7 @@ const FacebookLoginButton = () => {
 
   return (
     <FacebookLogin
-      appId="999375250754939"
+      appId={process.env.FACEBOOK_APP_ID}
       autoLoad={false}
       fields="name,email,picture"
       onClick={componentClicked}
