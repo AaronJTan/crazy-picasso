@@ -18,6 +18,10 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
         setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, users}));
       });
 
+      socketRef.current.on("left_private_wait", (users) => {
+        setPrivateLobby(prevPrivateLobby => ({...prevPrivateLobby, users}));
+      });
+
       socketRef.current.on("private_game_started", () => {
         setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
       });

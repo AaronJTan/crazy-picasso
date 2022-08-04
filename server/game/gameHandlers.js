@@ -199,8 +199,22 @@ function createGameHandlers(io) {
 
   module.disconnect = async function () {
     const socket = this;
+    if (!socket.roomCode) {
+      return;
+    }
 
-    if (socket.roomCode) {
+    const room = await roomObj.getRoom(socket.roomCode);
+
+    if (room.roomCode !== "public" && !room.game.hasStarted) {
+      let usersInRoom = await roomObj.removeUserFromRoom(socket.roomCode, socket.username);
+      let isRoomDeleted = await roomObj.deleteRoomIfEmpty(socket.roomCode);
+
+      if (!isRoomDeleted) {
+        socket.to(socket.roomCode).emit("left_private_wait", usersInRoom);
+      }
+    }
+
+    else {
       const room = await roomObj.getRoom(socket.roomCode);
       const currentDrawer = room.game.currentDrawer;
 

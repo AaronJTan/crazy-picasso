@@ -48,10 +48,14 @@ const removeUserFromRoom = async (roomCode, username) => {
 
 const deleteRoomIfEmpty = async (roomCode) => {
   let usersInRoom = await getUsersInRoom(roomCode);
+  let isDeleted = false;;
 
   if (usersInRoom.length === 0) {
     await RoomModel.deleteOne({ roomCode });
+    isDeleted = true;
   }
+
+  return isDeleted;
 }
 
 
