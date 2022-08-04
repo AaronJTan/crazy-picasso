@@ -1,4 +1,3 @@
-const uuidGenerator = require('short-uuid');
 const roomObj = require("../models/RoomActions");
 const wordGenerator = require("./wordGenerator")
 const msgFormatter = require("./messageFormatter");
@@ -6,9 +5,9 @@ const msgFormatter = require("./messageFormatter");
 function createGameHandlers(io) {
   let module = {};
 
-  const socketJoinRoom = async (socket, roomCode) => {
+  const socketCreateOrJoinPublicRoom = async (socket, roomCode) => {
     socket.roomCode = roomCode;
-    await roomObj.addUserToRoom(socket.id, socket.username, roomCode);
+    await roomObj.addUserToPublicRoom(socket.id, socket.username, roomCode);
   
     socket.join(roomCode);
   }
@@ -76,8 +75,10 @@ function createGameHandlers(io) {
   module.createPrivateRoom = async function (callback) {
     const socket = this;
 
-    let roomCode = uuidGenerator.generate();
-    await socketJoinRoom(socket, roomCode);
+    let roomCode = await roomObj.createPrivateRoom(socket.id, socket.username);  
+    socket.roomCode = roomCode;
+    socket.join(roomCode);
+
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
@@ -89,7 +90,15 @@ function createGameHandlers(io) {
     const socket = this;
 
     let roomCode = data.privateRoomCode;
-    await socketJoinRoom(socket, roomCode);
+    let success = await roomObj.joinPrivateRoom(socket.id, socket.username, roomCode);
+
+    if (!success) {
+      socket.emit("no_private_room");
+      return;
+    }
+    
+    socket.roomCode = roomCode;
+    socket.join(roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
     let room = await roomObj.getRoom(roomCode);
@@ -126,7 +135,7 @@ function createGameHandlers(io) {
     const socket = this;
 
     let roomCode = "public";
-    await socketJoinRoom(socket, roomCode);
+    await socketCreateOrJoinPublicRoom(socket, roomCode);
     console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);

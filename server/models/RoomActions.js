@@ -1,4 +1,5 @@
 const RoomModel = require("./schemas/Room");
+const uuidGenerator = require('short-uuid');
 
 const getRoom = async (roomCode) => {
   let room = await RoomModel.findOne({ roomCode }).lean();
@@ -14,7 +15,7 @@ const setGameStarted = async (roomCode, hasStarted) => {
   ).lean();
 }
 
-const addUserToRoom = async (socketId, username, roomCode) => {
+const addUserToPublicRoom = async (socketId, username, roomCode) => {
   let room = await RoomModel.findOne({ roomCode });
   let user = {socketId, username};
   
@@ -25,6 +26,35 @@ const addUserToRoom = async (socketId, username, roomCode) => {
 
     await room.save();
   }
+}
+
+const createPrivateRoom = async (socketId, username) => {
+  let roomCode = uuidGenerator.generate();
+  let room = await RoomModel.findOne({ roomCode });
+  let user = {socketId, username};
+
+  if (room === null ) {
+    await RoomModel.create({ roomCode, users: [user] });
+
+    return roomCode;
+  } 
+
+  return null;
+}
+
+const joinPrivateRoom = async (socketId, username, roomCode) => {
+  let room = await RoomModel.findOne({ roomCode });
+  let user = {socketId, username};
+  
+  if (room === null ) {
+    return false;
+  } else {
+    room.users.push(user);
+
+    await room.save();
+  }
+
+  return true;
 }
 
 const getUsersInRoom = async (roomCode) => {
@@ -227,7 +257,9 @@ const handleRoundIncrement = async (roomCode) => {
 module.exports = {
   getRoom,
   setGameStarted,
-  addUserToRoom,
+  addUserToPublicRoom,
+  createPrivateRoom,
+  joinPrivateRoom,
   getUsersInRoom,
   removeUserFromRoom,
   deleteRoomIfEmpty,
