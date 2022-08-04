@@ -73,6 +73,11 @@ export default function Chat({ username, socketRef, guesses, setGuesses }) {
       textColor = "red"
     } 
 
+    else if (guessObj.type === "PREV_WORD") {
+      textColor = "red"
+      guessDisplay = `${guessObj.guess}`;
+    } 
+
     else if (guessObj.type === "ALREADY_GUESSED") {
       textColor = "orange"
     } 
