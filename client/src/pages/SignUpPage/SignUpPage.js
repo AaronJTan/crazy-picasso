@@ -41,7 +41,6 @@ export default function SignUp() {
 
     const player = { firstName, lastName, username, email, password };
 
-    console.log("hit handleSubmit signup");
     await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
       body: JSON.stringify(player),
@@ -54,7 +53,6 @@ export default function SignUp() {
       setEmail("");
       setPassword("");
       if (!res.ok) {
-        console.log("signup not okay");
         setError("User already exists.");
         setTimeout(() => {
           setError("");
@@ -62,7 +60,6 @@ export default function SignUp() {
         setUsername("");
         navigate("/signup");
       } else {
-        console.log("signup okay");
         navigate("/", { state: { username: username } });
       }
     });

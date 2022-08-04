@@ -30,9 +30,7 @@ function App() {
 
   useEffect(() => {
     if (user != null) {
-      // socketRef.current = io("http://localhost:3000");
       socketRef.current = io(process.env.REACT_APP_SERVER_URL);
-      // send username to socket to construct username list in socket server side
       socketRef.current.auth = { username: user };
       socketRef.current.connect();
       setSocketActivated(true);

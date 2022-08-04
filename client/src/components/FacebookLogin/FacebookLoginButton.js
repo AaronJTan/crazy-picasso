@@ -5,7 +5,6 @@ import AuthService from "../../services/AuthService";
 const FacebookLoginButton = () => {
   const navigate = useNavigate();
   const responseFacebook = (response) => {
-    console.log(response);
     const loginPayload = { username: response.name, email: response.email, facebookLogin: true };
     AuthService.login(loginPayload).then((response) => {
       navigate("/", { state: { username: response.name } });
@@ -13,7 +12,6 @@ const FacebookLoginButton = () => {
   };
 
   const componentClicked = (data) => {
-    console.log(data);
   };
 
   return (

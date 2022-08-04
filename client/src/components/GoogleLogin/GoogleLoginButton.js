@@ -10,8 +10,6 @@ export default function GoogleLoginButton() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize gapi object to enable Google OAuth login
-    // the codes below run only once
     function start() {
       gapi.client.init({
         clientId: CLIENT_ID,
@@ -22,7 +20,6 @@ export default function GoogleLoginButton() {
   }, []);
 
   const onSuccess = async (res) => {
-    console.log("LOGIN SUCCESS! Current user: ", res.profileObj);
     const loginPayload = { username: res.profileObj.name, googleId: res.profileObj.googleId };
     AuthService.login(loginPayload).then((response) => {
       navigate("/", { state: { username: res.profileObj.name } });
