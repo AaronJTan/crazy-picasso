@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ErrorAlert from "../../components/ErrorAlert/ErrorAlert.js";
 import PrivateLobby from "./PrivateLobby.js";
 import "./SelectRoomPage.css";
 
@@ -6,6 +7,7 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
   const username = user;
   const [privateLobby, setPrivateLobby] = useState({inuse: false, users: [], roomCode: "", isHost: false});
   const [privateRoomCode, setPrivateRoomCode] = useState("");
+  const [error, setError] = useState("");
 
   const startPrivateGame = () => {
     setRoomDetails(prevRoomDetails => ({ ...prevRoomDetails, type: "private" }))
@@ -23,7 +25,11 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
       });
 
       socketRef.current.on("no_private_room", () => {
-        console.log("HERE");
+        setError("Private room does not exist.")
+        setPrivateRoomCode("");
+        setTimeout(() => {
+          setError("");
+        }, 1500);
       });
 
       socketRef.current.on("private_game_started", () => {
@@ -88,6 +94,8 @@ const SelectRoomPage = ({user, setRoomDetails, socketRef, socketActivated}) => {
         <button className="button animate__fadeInUp" id="join-private" onClick={joinPrivateRoom}>
           Join Private
         </button>
+
+        { error && <ErrorAlert message={error}/> }
       </div>
     </>
   );
