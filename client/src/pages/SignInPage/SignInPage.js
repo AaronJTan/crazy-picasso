@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
-import { gapi } from "gapi-script";
 import GoogleLoginButton from "../../components/GoogleLogin/GoogleLoginButton";
+import FacebookLoginButton from "../../components/FacebookLogin/FacebookLoginButton";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -71,9 +71,7 @@ export default function SignIn() {
             Sign In with Username
           </button>
           <GoogleLoginButton />
-          <button className="button animate__zoomIn animate__delay-2s" id="fb-button">
-            Sign In with Facebook
-          </button>
+          <FacebookLoginButton />
         </div>
       </form>
     </BaseLayout>

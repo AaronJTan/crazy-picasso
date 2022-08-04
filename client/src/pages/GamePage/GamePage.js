@@ -8,6 +8,7 @@ import { useEffect, useState, useRef } from "react";
 import PlayersList from "../../components/PlayersList/PlayersList";
 import GameBar from "../../components/GameBar/GameBar";
 import DrawingTimer from "../../components/Timer/DrawingTimer";
+import WaitingSpinner from "../../components/WaitingSpinner/WaitingSpinner";
 
 const GamePage = ({user, roomDetails, socketRef}) => {
   const username = user;
@@ -95,7 +96,7 @@ const GamePage = ({user, roomDetails, socketRef}) => {
   if (wait) {
     return (
       <>
-        Wait for users
+        <WaitingSpinner />
       </>
     );
   }
