@@ -6,7 +6,6 @@ require("dotenv").config();
 const session = require("express-session");
 const passport = require("passport");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const RoomModel = require("./models/schemas/Room");
 
 /* ------------------------------CONNECT DATABASE------------------------------*/
 const mongoose = require("mongoose");
@@ -50,30 +49,15 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
-// app.use(function (req, res, next) {
-//   req.header("Access-Control-Allow-Origin", "*");
-//   req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
   next();
 });
 
 /* ------------------------------ROUTES------------------------------*/
-/* Temporary*/
-app.get("/", function (req, res, next) {
-  res.json("HELLO");
-});
-
 // local signup/login routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/auth", authRoutes);
-
-// private-rooms routes (create and join a private room)
-const privateRoomRoutes = require("./routes/privateRoomRoutes");
-app.use("/private-rooms", privateRoomRoutes);
 
 /* ------------------------------SOCKET.IO------------------------------*/
 
@@ -86,12 +70,6 @@ const io = new Server(server, {
     method: ["GET", "POST"],
   },
 });
-
-const clearRooms = async () => {
-  await RoomModel.deleteMany({});
-}
-
-clearRooms()
 
 gameSocketConnection.listen(io);
 /* ------------------------------INITIALIZE SERVER------------------------------*/

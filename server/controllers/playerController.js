@@ -46,8 +46,6 @@ const signupPlayer = async (req, res) => {
 };
 
 const signinPlayer = async (req, res) => {
-  console.log("signinPlayer");
-
   let username = req.body.username;
   let password = req.body.password;
   let googleId = req.body.googleId;
