@@ -79,8 +79,6 @@ function createGameHandlers(io) {
     socket.roomCode = roomCode;
     socket.join(roomCode);
 
-    console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
-
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
 
     callback({ users: usersInRoom, roomCode });
@@ -99,7 +97,6 @@ function createGameHandlers(io) {
     
     socket.roomCode = roomCode;
     socket.join(roomCode);
-    console.log(`User with ID: ${socket.id} ${socket.username} joined the private room (${roomCode})`);
 
     let room = await roomObj.getRoom(roomCode);
     let usersInRoom = room.users;
@@ -136,7 +133,6 @@ function createGameHandlers(io) {
 
     let roomCode = "public";
     await socketCreateOrJoinPublicRoom(socket, roomCode);
-    console.log(`User with ID: ${socket.id} ${socket.username} joined the public room (${roomCode})`);
 
     let usersInRoom = await roomObj.getUsersInRoom(roomCode);
     

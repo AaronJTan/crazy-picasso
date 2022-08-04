@@ -19,14 +19,6 @@ passport.use(
       passReqToCallback: true,
     },
     (request, accessToken, refreshToken, profile, done) => {
-      // passport callback function
-      console.log("passport cb function fired");
-      console.log(profile);
-      console.log(profile.displayName);
-      console.log(profile.name.familyName);
-      console.log(profile.name.givenName);
-      console.log(profile.id);
-
       new Player({
         firstName: profile.name.givenName,
         lastName: profile.name.familyName,

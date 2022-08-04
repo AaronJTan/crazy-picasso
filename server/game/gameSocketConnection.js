@@ -6,7 +6,6 @@ const listen = (io) => {
   // Socket middleware to check the username and allow the connection
   io.use((socket, next) => {
     const username = socket.handshake.auth.username;
-    console.log("io middleware username: ", username);
     // username is added as an attribute of socket object which can be reused later
     socket.username = username;
     next();
