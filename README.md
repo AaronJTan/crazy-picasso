@@ -1,5 +1,9 @@
 # Crazy Picasso
 
+## Project URL
+
+http://crazypicasso.me
+
 ## Youtube Demo URL
 
 https://youtu.be/C1bTk5BwFIs
