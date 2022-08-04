@@ -5,12 +5,14 @@ import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
 import GoogleLoginButton from "../../components/GoogleLogin/GoogleLoginButton";
 import FacebookLoginButton from "../../components/FacebookLogin/FacebookLoginButton";
+import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +25,7 @@ export default function SignIn() {
       } catch (error) {
         setLoginStatus(false);
       }
-    }
+    };
 
     fetchData();
   }, []);
@@ -37,8 +39,12 @@ export default function SignIn() {
         navigate("/", { state: { username: username } });
       })
       .catch((response) => {
+        setError("Invalid username/password.");
         setUsername("");
         setPassword("");
+        setTimeout(() => {
+          setError("");
+        }, 1500);
       });
   };
 
@@ -66,8 +72,13 @@ export default function SignIn() {
           placeholder="Type your password..."
           required
         />
+
+        {error && <ErrorAlert message={error} />}
         <div className="auth-buttons">
-          <button className="button animate__zoomIn animate__delay-2s" onClick={onLocalSignIn}>
+          <button
+            className="button animate__zoomIn animate__delay-2s"
+            onClick={onLocalSignIn}
+          >
             Sign In with Username
           </button>
           <GoogleLoginButton />

@@ -7,6 +7,7 @@ import AuthService from "../../services/AuthService";
 import API_URL from "../../config/url";
 
 import "./SignUpPage.css";
+import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +15,7 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,12 +25,11 @@ export default function SignUp() {
         if (response.body.username) {
           navigate("/");
         }
-      } catch (error) {
-      }
-    }
+      } catch (error) {}
+    };
 
     fetchData();
-  }, [])
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +55,11 @@ export default function SignUp() {
       setPassword("");
       if (!res.ok) {
         console.log("signup not okay");
+        setError("User already exists.");
+        setTimeout(() => {
+          setError("");
+        }, 1500);
+        setUsername("");
         navigate("/signup");
       } else {
         console.log("signup okay");
@@ -112,6 +118,8 @@ export default function SignUp() {
           placeholder="Type your password..."
           required
         />
+
+        {error && <ErrorAlert message={error} />}
         <div className="auth-buttons">
           <button
             className="button animate__zoomIn animate__delay-2s"
