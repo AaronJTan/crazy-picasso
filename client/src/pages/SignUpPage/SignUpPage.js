@@ -17,11 +17,17 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    AuthService.getPlayer().then((response) => {
-      if (response.body.username) {
-        navigate("/");
-      } 
-    })
+    const fetchData = async () => {
+      try {
+        const response = await AuthService.getPlayer();
+        if (response.body.username) {
+          navigate("/");
+        }
+      } catch (error) {
+      }
+    }
+
+    fetchData();
   }, [])
 
   const handleSubmit = async (e) => {

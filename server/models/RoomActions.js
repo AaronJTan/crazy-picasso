@@ -81,7 +81,7 @@ const getTurnUser = async (roomCode) => {
   const users = room.users;
   let currentDrawerIndex = room.game.currentDrawerIndex;
 
-  if (currentDrawerIndex === users.length - 1) {
+  if (currentDrawerIndex === users.length - 1 || users.length == 1) {
     currentDrawerIndex = 0;
   } else {
     currentDrawerIndex ++;

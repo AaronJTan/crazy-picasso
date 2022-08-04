@@ -13,15 +13,19 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    AuthService.getPlayer().then((response) => {
-      if (response.body.username) {
-        setLoginStatus(true);
-        console.log("username exists in AuthService: ", response.body.username);
-        navigate("/");
-      } else {
+    const fetchData = async () => {
+      try {
+        const response = await AuthService.getPlayer();
+        if (response.body.username) {
+          setLoginStatus(true);
+          navigate("/");
+        }
+      } catch (error) {
         setLoginStatus(false);
       }
-    });
+    }
+
+    fetchData();
   }, []);
 
   const onLocalSignIn = async (event) => {
