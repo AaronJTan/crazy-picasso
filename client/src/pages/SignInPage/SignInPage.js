@@ -1,32 +1,50 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
-import AuthService from "../../services/AuthService"
+import AuthService from "../../services/AuthService";
 import BaseLayout from "../../layouts/BaseLayout";
+import GoogleLoginButton from "../../components/GoogleLogin/GoogleLoginButton";
+import FacebookLoginButton from "../../components/FacebookLogin/FacebookLoginButton";
+import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginStatus, setLoginStatus] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    AuthService.getPlayer().then((response) => {
-      if (response.body.username) {
-        navigate("/");
-      } 
-    })
-  }, [])
+    const fetchData = async () => {
+      try {
+        const response = await AuthService.getPlayer();
+        if (response.body.username) {
+          setLoginStatus(true);
+          navigate("/");
+        }
+      } catch (error) {
+        setLoginStatus(false);
+      }
+    };
 
-  const handleSubmit = async (event) => {
+    fetchData();
+  }, []);
+
+  const onLocalSignIn = async (event) => {
     event.preventDefault();
     const loginPayload = { username, password };
 
-    AuthService.login(loginPayload).then((response) => {
-      navigate("/", { state: { username: username } });
-    })
+    AuthService.login(loginPayload)
+      .then((response) => {
+        navigate("/", { state: { username: username } });
+      })
       .catch((response) => {
+        setError("Invalid username/password.");
         setUsername("");
         setPassword("");
+        setTimeout(() => {
+          setError("");
+        }, 1500);
       });
   };
 
@@ -39,7 +57,7 @@ export default function SignIn() {
           className="animate__lightSpeedInRight animate__delay-1s"
           type="text"
           name="username"
-          onChange={e => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
           placeholder="Type your username..."
           value={username}
           required
@@ -49,15 +67,22 @@ export default function SignIn() {
           type="password"
           id="create-roomcode"
           name="password"
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           value={password}
           placeholder="Type your password..."
           required
         />
+
+        {error && <ErrorAlert message={error} />}
         <div className="auth-buttons">
-          <button className="button animate__zoomIn animate__delay-2s" onClick={handleSubmit}>Sign In with Username</button>
-          <button className="button animate__zoomIn animate__delay-2s" id="google-button">Sign In with Google</button>
-          <button className="button animate__zoomIn animate__delay-2s" id="fb-button">Sign In with Facebook</button>
+          <button
+            className="button animate__zoomIn animate__delay-2s"
+            onClick={onLocalSignIn}
+          >
+            Sign In with Username
+          </button>
+          <GoogleLoginButton />
+          <FacebookLoginButton />
         </div>
       </form>
     </BaseLayout>

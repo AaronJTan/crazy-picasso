@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseLayout from "../../layouts/BaseLayout";
 import AuthService from "../../services/AuthService";
+import API_URL from "../../config/url";
 
 import "./SignUpPage.css";
+import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -13,15 +15,21 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    AuthService.getPlayer().then((response) => {
-      if (response.body.username) {
-        navigate("/");
-      } 
-    })
-  }, [])
+    const fetchData = async () => {
+      try {
+        const response = await AuthService.getPlayer();
+        if (response.body.username) {
+          navigate("/");
+        }
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +42,7 @@ export default function SignUp() {
     const player = { firstName, lastName, username, email, password };
 
     console.log("hit handleSubmit signup");
-    await fetch("/auth/signup", {
+    await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
       body: JSON.stringify(player),
       headers: {
@@ -47,6 +55,11 @@ export default function SignUp() {
       setPassword("");
       if (!res.ok) {
         console.log("signup not okay");
+        setError("User already exists.");
+        setTimeout(() => {
+          setError("");
+        }, 1500);
+        setUsername("");
         navigate("/signup");
       } else {
         console.log("signup okay");
@@ -105,6 +118,8 @@ export default function SignUp() {
           placeholder="Type your password..."
           required
         />
+
+        {error && <ErrorAlert message={error} />}
         <div className="auth-buttons">
           <button
             className="button animate__zoomIn animate__delay-2s"

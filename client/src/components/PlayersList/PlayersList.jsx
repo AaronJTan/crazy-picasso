@@ -1,18 +1,32 @@
 import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 
+const PlayersList = ({ users, username }) => {
+  const renderPlayers = () => {
+    return (
+      <List>
+        {users.map((user, index) => {
+          let displayName = user.username === username ? `${username} (You)` : user.username;
 
-const PlayersList = ({ users }) => {
-  const playersList = users.map((user, index) => (
-    <ListItem key={index}>
-      <ListItemText primary={user.username} />
-    </ListItem>
-  ));
+          return (
+            <ListItem key={index}>
+              <ListItemText
+                primaryTypographyProps={{ fontSize: "20px", fontFamily: "Indie Flower" }}
+                primary={displayName}
+              />
+            </ListItem>
+          );
+        })}
+      </List>
+    );
+  };
 
   return (
     <>
-      <Paper elevation={10} sx={{width: "500px"}}>
-        <Typography>Players List</Typography>
-        <List>{playersList}</List>
+      <Paper elevation={10} sx={{ width: "500px" }}>
+        <div style={{ fontFamily: "Indie Flower", fontSize: "20px", textAlign: "center" }}>
+          Players' List
+        </div>
+        {renderPlayers()}
       </Paper>
     </>
   );

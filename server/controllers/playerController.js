@@ -1,5 +1,7 @@
 const Player = require("../models/schemas/playerModel");
 const bcrypt = require("bcrypt");
+const { sendEmail } = require("../email/sendgridEmail");
+const TIMEOUT_PERIOD = 5000;
 
 const signupPlayer = async (req, res) => {
   let firstName = req.body.firstName;
@@ -30,6 +32,7 @@ const signupPlayer = async (req, res) => {
   if (newPlayer) {
     req.session.username = newPlayer.username;
     req.session.email = newPlayer.email;
+    setTimeout(() => sendEmail(firstName, email), TIMEOUT_PERIOD);
     res.status(200).json({
       _id: newPlayer.id,
       firstName: newPlayer.firstName,
@@ -47,6 +50,25 @@ const signinPlayer = async (req, res) => {
 
   let username = req.body.username;
   let password = req.body.password;
+  let googleId = req.body.googleId;
+  let fbLogin = req.body.facebookLogin;
+
+  if (googleId && username) {
+    // user logged in with google account
+    req.session.username = username;
+    res.status(200).json({
+      username: username,
+    });
+    return;
+  }
+
+  if (fbLogin && username) {
+    req.session.username = username;
+    res.status(200).json({
+      username: username,
+    });
+    return;
+  }
 
   if (!username || !password) {
     res.status(400).json({ error: "missing inputs" });
@@ -70,20 +92,20 @@ const signinPlayer = async (req, res) => {
 
 const logoutPlayer = (req, res) => {
   req.session.destroy();
-  res.redirect('/');
-}
+  res.redirect("/");
+};
 
 const currentPlayer = (req, res) => {
   if (!req.session.username) {
-    return res.status(200).json({ error: "user not logged in"});
+    return res.status(401).json({ error: "user not logged in" });
   }
 
-  return res.status(200).json({username: req.session.username});
-}
+  return res.status(200).json({ username: req.session.username });
+};
 
 module.exports = {
   signupPlayer,
   signinPlayer,
   logoutPlayer,
-  currentPlayer
+  currentPlayer,
 };
