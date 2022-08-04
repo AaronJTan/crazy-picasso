@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import Link from "@mui/material/Link";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
-import "./Navbar.css";
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 const pages = [];
