@@ -1,4 +1,3 @@
-const API_URL = (process.env.NODE_ENV == "production") ?
-    "http://crazypicasso.me/api" : "";
+const API_URL = "http://localhost/api";
 
 export default API_URL

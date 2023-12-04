@@ -32,7 +32,7 @@ const signupPlayer = async (req, res) => {
   if (newPlayer) {
     req.session.username = newPlayer.username;
     req.session.email = newPlayer.email;
-    setTimeout(() => sendEmail(firstName, email), TIMEOUT_PERIOD);
+    // setTimeout(() => sendEmail(firstName, email), TIMEOUT_PERIOD);
     res.status(200).json({
       _id: newPlayer.id,
       firstName: newPlayer.firstName,
